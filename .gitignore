@@ -1,0 +1,15 @@
+# 1) Hugo build output (recreated on every build)
+/public/
+/resources/_gen/
+.hugo_build.lock
+hugo_stats.json
+
+# 2) OS and editor clutter
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 3) Private data, never publish these
+*.env
+*.key
