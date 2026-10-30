@@ -1,0 +1,4 @@
+{{- /* PaperMod includes this partial at the end of <head>. */ -}}
+{{- /* Start downloading Open Sans right away instead of after the stylesheet is parsed, so text
+       renders in it from the first paint. crossorigin is required for font preloads. */ -}}
+<link rel="preload" href="{{ "fonts/open-sans-latin-wght-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
