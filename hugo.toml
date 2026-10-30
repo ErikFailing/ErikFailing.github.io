@@ -1,7 +1,212 @@
-baseURL = 'https://example.org/'
+# Hugo site configuration for erikfailing.com, using the PaperMod theme.
+# Lines starting with # are comments. Uncomment a setting by removing the leading "# ".
+# Settings under [params] are PaperMod's; the rest are Hugo's own.
+# PaperMod docs: https://github.com/adityatelange/hugo-PaperMod/wiki
+
+# The GitHub Actions build overrides baseURL with the address from the repo's Pages settings,
+# so this value matters mostly for local builds.
+baseURL = 'https://erikfailing.com/'
 locale = 'en-us'
-title = 'My New Hugo Project'
+title = 'Erik Failing'
 theme = 'PaperMod'
 
+# Generate /robots.txt (PaperMod allows search engines only on the production build).
+enableRobotsTXT = true
+
+# Show posts with a future date or past expiryDate. Leave off so scheduled posts stay hidden.
+# buildFuture = false
+# buildExpired = false
+
+[pagination]
+  pagerSize = 10        # posts per page on list pages
+
 [caches.images]
-  dir = ':cacheDir/images'
+  dir = ':cacheDir/images'   # keeps processed images in the cache the GitHub workflow saves
+
+# Search needs a JSON index of the site. To turn on search:
+#   1. uncomment [outputs] below,
+#   2. create content/search.md with front matter:  title = "Search"  and  layout = "search",
+#   3. uncomment the Search menu entry further down.
+# [outputs]
+#   home = ['HTML', 'RSS', 'JSON']
+
+# Tag and category pages. Hugo creates these two by default; listed here so you can rename
+# or add one (for example  series = 'series').
+[taxonomies]
+  tag = 'tags'
+  category = 'categories'
+  # series = 'series'
+
+# ---------------------------------------------------------------------------------------------
+# Top navigation. Each entry needs its page to exist first (for example content/about.md for
+# pageRef = '/about'); otherwise the link points to the home page. Lower weight = further left.
+# ---------------------------------------------------------------------------------------------
+# [[menu.main]]
+#   name = 'About'
+#   pageRef = '/about'
+#   weight = 10
+# [[menu.main]]
+#   name = 'Projects'
+#   pageRef = '/projects'
+#   weight = 20
+# [[menu.main]]
+#   name = 'Resume'
+#   pageRef = '/resume'
+#   weight = 30
+# [[menu.main]]
+#   name = 'Writing'
+#   pageRef = '/posts'
+#   weight = 40
+# [[menu.main]]
+#   name = 'Tags'
+#   pageRef = '/tags'
+#   weight = 50
+# [[menu.main]]
+#   name = 'Archive'      # needs content/archives.md with  layout = "archives"
+#   pageRef = '/archives'
+#   weight = 60
+# [[menu.main]]
+#   name = 'Search'       # see the search steps above
+#   pageRef = '/search'
+#   weight = 70
+
+# ---------------------------------------------------------------------------------------------
+# PaperMod settings
+# ---------------------------------------------------------------------------------------------
+[params]
+  description = 'Software and security engineer: application security, pentesting, fuzzing.'
+  author = 'Erik Failing'
+  # keywords = ['application security', 'pentesting', 'fuzzing', 'software engineering']
+
+  # Which content sections count as "posts" on the home page and in RSS.
+  mainSections = ['posts']
+
+  # Appearance: 'dark', 'light', or 'auto' (follows the visitor's OS setting).
+  defaultTheme = 'dark'
+  disableThemeToggle = false   # set true to hide the light/dark switch and stay dark
+
+  # Dates, e.g. "October 29, 2026". Uses Go's reference date: https://gohugo.io/functions/time/format/
+  DateFormat = 'January 2, 2006'
+
+  # Post page features. Any of these can also be set per post in its front matter.
+  ShowReadingTime = true
+  ShowWordCount = false
+  ShowToc = true             # table of contents on posts with headings
+  TocOpen = false            # start the table of contents collapsed
+  ShowCodeCopyButtons = true
+  ShowPostNavLinks = true    # "previous / next post" links at the bottom of a post
+  ShowBreadCrumbs = true
+  ShowShareButtons = false
+  # ShareButtons = ['linkedin', 'x', 'reddit', 'ycombinator']   # limit which share buttons show
+  ShowRssButtonInSectionTermList = true
+  # ShowFullTextinRSS = true       # put whole posts in the RSS feed, not just summaries
+  # ShowAllPagesInArchive = true   # include non-post pages on the Archive page
+  # ShowPageNums = true            # page numbers instead of only Prev/Next on list pages
+  # hideSummary = true             # hide post summaries on list pages
+  # disableScrollToTop = true
+  # disableAnchoredHeadings = true # stop headings from being clickable links
+
+  # Treat every build as production (search-engine indexing, analytics). Not needed: the
+  # GitHub Actions build is already production, and `hugo server` locally is not.
+  # env = 'production'
+
+  # Home page, option A: profile mode. Centered photo, name, one-line subtitle, social icons and
+  # buttons. Replaces the post list on the home page (posts stay reachable from the menu).
+  [params.profileMode]
+    enabled = true
+    title = 'Erik Failing'
+    subtitle = 'Software & Security Engineer'
+    # imageUrl = 'img/erik.jpg'        # file goes at assets/img/erik.jpg
+    # imageTitle = 'Erik Failing'
+    # imageWidth = 150
+    # imageHeight = 150
+
+    # Buttons under the subtitle. Uncomment each once its page exists.
+    # [[params.profileMode.buttons]]
+    #   name = 'About'
+    #   url = '/about/'
+    # [[params.profileMode.buttons]]
+    #   name = 'Projects'
+    #   url = '/projects/'
+    # [[params.profileMode.buttons]]
+    #   name = 'Resume'
+    #   url = '/resume/'
+    # [[params.profileMode.buttons]]
+    #   name = 'Writing'
+    #   url = '/posts/'
+
+  # Home page, option B: a short intro box above your latest posts. To use it, set
+  # profileMode.enabled = false above and uncomment this block.
+  # [params.homeInfoParams]
+  #   Title = "Hi, I'm Erik"
+  #   Content = 'I find security weaknesses in complex systems and build the tools that find them faster.'
+  #   AlignSocialIconsTo = 'left'
+
+  # Social icons, shown in profile mode or the intro box. `name` must be one of PaperMod's icons,
+  # e.g. github, linkedin, email, rss, cv, itchio, hackerone, bugcrowd, hackthebox, tryhackme,
+  # ctftime, keybase, mastodon, bluesky, x, youtube, stackoverflow.
+  [[params.socialIcons]]
+    name = 'github'
+    url = 'https://github.com/ErikFailing'
+  [[params.socialIcons]]
+    name = 'linkedin'
+    url = 'https://www.linkedin.com/in/erikfailing'   # check this matches your profile URL
+  # [[params.socialIcons]]
+  #   name = 'cv'
+  #   title = 'Resume'
+  #   url = '/resume.pdf'          # file goes at static/resume.pdf
+  # [[params.socialIcons]]
+  #   name = 'itchio'
+  #   url = 'https://YOUR-NAME.itch.io'
+  # [[params.socialIcons]]
+  #   name = 'email'
+  #   url = 'mailto:you@example.com'
+  # [[params.socialIcons]]
+  #   name = 'rss'
+  #   url = '/index.xml'
+
+  # Text or image in the top-left corner instead of the site title.
+  # [params.label]
+  #   text = 'Erik Failing'
+  #   icon = 'img/logo.png'        # file goes at assets/img/logo.png
+  #   iconHeight = 30
+
+  # Browser tab icons. Put the files in static/ and use paths from the site root.
+  # [params.assets]
+  #   favicon = '/favicon.ico'
+  #   favicon16x16 = '/favicon-16x16.png'
+  #   favicon32x32 = '/favicon-32x32.png'
+  #   apple_touch_icon = '/apple-touch-icon.png'
+  #   safari_pinned_tab = '/safari-pinned-tab.svg'
+  #   theme_color = '#0b0a10'
+
+  # Footer.
+  # [params.footer]
+  #   text = 'Views are my own.'
+  #   hideCopyright = false
+
+  # "Suggest changes" link on each post, pointing at the post's source on GitHub.
+  # [params.editPost]
+  #   URL = 'https://github.com/ErikFailing/ErikFailing.github.io/blob/main/content'
+  #   Text = 'Suggest changes'
+  #   appendFilePath = true
+
+  # Cover images on posts (set per post with  cover.image = '...' ).
+  # [params.cover]
+  #   hidden = false          # hide on post pages
+  #   hiddenInList = false    # hide on list pages
+  #   responsiveImages = true
+
+  # Search engine verification codes (only needed if you use these webmaster tools).
+  # [params.analytics.google]
+  #   SiteVerificationTag = ''
+  # [params.analytics.bing]
+  #   SiteVerificationTag = ''
+
+# Syntax highlighting for code blocks. Defaults work; uncomment to change the color style.
+# Styles: https://xyproto.github.io/splash/docs/
+# [markup.highlight]
+#   style = 'dracula'
+#   lineNos = false
+#   codeFences = true
+#   guessSyntax = true
