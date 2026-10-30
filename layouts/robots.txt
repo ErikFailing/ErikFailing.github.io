@@ -1,0 +1,25 @@
+# robots.txt for erikfailing.com
+# Search engines and AI search assistants are welcome; AI model-training crawlers are not.
+# Rules are requests that well-behaved crawlers follow, not access control.
+
+User-agent: *
+{{- if hugo.IsProduction | or (eq site.Params.env "production") }}
+Disallow:
+{{- else }}
+# Non-production build (e.g. `hugo server`): keep preview copies out of search engines.
+Disallow: /
+{{- end }}
+
+# AI model training. Blocking these does not affect search indexing or ranking, and the companies'
+# search and user-request crawlers (OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User,
+# PerplexityBot, Perplexity-User, Googlebot, Applebot) still fall under the rule above.
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Meta-ExternalAgent
+User-agent: CCBot
+User-agent: Bytespider
+Disallow: /
+
+Sitemap: {{ "sitemap.xml" | absURL }}
