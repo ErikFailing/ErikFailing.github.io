@@ -53,10 +53,10 @@ enableRobotsTXT = true
   name = 'Resume'
   pageRef = '/resume'
   weight = 30
-# [[menu.main]]
-#   name = 'Writing'
-#   pageRef = '/posts'
-#   weight = 40
+[[menu.main]]
+  name = 'Writing'
+  pageRef = '/posts'
+  weight = 40
 # [[menu.main]]
 #   name = 'Tags'
 #   pageRef = '/tags'
@@ -133,9 +133,9 @@ enableRobotsTXT = true
     [[params.profileMode.buttons]]
       name = 'Resume'
       url = '/resume/'
-    # [[params.profileMode.buttons]]
-    #   name = 'Writing'
-    #   url = '/posts/'
+    [[params.profileMode.buttons]]
+      name = 'Writing'
+      url = '/posts/'
 
   # Home page, option B: a short intro box above your latest posts. To use it, set
   # profileMode.enabled = false above and uncomment this block.
