@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- "EF" monogram, drawn on a 16px grid so edges stay sharp at 16, 32 and 48px.
+       Source for static/favicon.ico and static/favicon-*.png. -->
+  <rect width="16" height="16" rx="3" fill="#1a1320"/>
+  <g fill="#e7a3b8">
+    <!-- E -->
+    <rect x="2" y="3" width="2" height="10"/>
+    <rect x="2" y="3" width="5" height="2"/>
+    <rect x="2" y="7" width="4" height="2"/>
+    <rect x="2" y="11" width="5" height="2"/>
+    <!-- F -->
+    <rect x="9" y="3" width="2" height="10"/>
+    <rect x="9" y="3" width="5" height="2"/>
+    <rect x="9" y="7" width="4" height="2"/>
+  </g>
+</svg>
