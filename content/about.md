@@ -8,8 +8,8 @@ ShowBreadCrumbs = false
 +++
 
 I'm a software and security engineer in Huntsville, Alabama, with 5+ years in defense and
-aerospace. I find security weaknesses in complex systems, and I build the tools that make
-finding them faster.
+aerospace. Most of my work comes down to two things: finding security weaknesses in complex
+systems, and building the tools that make finding them faster.
 
 ## What I do
 
@@ -22,13 +22,20 @@ Before that, at Northrop Grumman, I managed a software assurance platform, autom
 change-approval pipelines, and reviewed hundreds of software and hardware changes for security
 risk.
 
+I like work that sits between building software and breaking it, and I think security
+engineering is a great place for that: half the job is building tools, and the other half is
+using them to find out what breaks.
+
 ## Building things
 
-On the software side, I founded World Anchor, a small game studio where I build in C++ and C#
-with Unreal Engine: client-server networking, a Roslyn compiler plugin, and CI/CD that ships
-Windows, Mac, and Linux builds automatically. My game jam and prototype projects are on
-[itch.io](https://erikfailing.itch.io/), including *PLAN-IT*, which won 1st place globally at
-NASA Space Apps 2019.
+On the side, I founded World Anchor, a small game studio where I build in C++ and C# with Unreal
+Engine: client-server networking, a Roslyn compiler plugin, and CI/CD that ships Windows, Mac,
+and Linux builds automatically. I mostly make co-op games meant to be played with groups of
+friends, and honestly my favorite part isn't playing them myself, it's watching other people
+enjoy something I made.
+
+My game jam and prototype projects are on [itch.io](https://erikfailing.itch.io/), including
+*PLAN-IT*, which won 1st place globally at NASA Space Apps 2019.
 
 ## Background
 
@@ -36,7 +43,14 @@ I hold a CISSP, an M.S. in Cybersecurity and Information Assurance from Western 
 University, and a B.S. in Computer Science from the University of Alabama in Huntsville, where I
 was vice president of the Cybersecurity Club.
 
-I like work that sits between building software and breaking it.
+## About this site
+
+This is where I write up projects, CTFs and security research I do on my own time, along with
+whatever I'm learning along the way.
+
+Honestly, it's also a way to share the things I'm excited about. A lot of what I work on is hard
+to show friends or colleagues without a proper write up to point them to, so this site is that
+write up.
 
 ## Find me
 
