@@ -65,6 +65,36 @@ Before adding it we checked that:
 private vulnerability reporting. Its `Expires` date must stay in the future (and under a year
 away), so **update it every year**; the current one expires 2027-10-29.
 
+## Security headers
+
+GitHub Pages can't send custom response headers, so the site carries what it can as meta tags in
+[`layouts/_partials/extend_head.html`](layouts/_partials/extend_head.html):
+
+- **Content-Security-Policy:** only the site's own origin may supply scripts, styles, fonts and
+  images. No `'unsafe-inline'`, which works because:
+  - PaperMod's inline scripts were moved to [`assets/js/site.js`](assets/js/site.js), loaded by a
+    footer override ([`layouts/_partials/footer.html`](layouts/_partials/footer.html)) as one
+    fingerprinted file with an `integrity` hash. Hashing inline scripts in the CSP instead would
+    break silently whenever Hugo's minifier or a theme update changed them.
+  - Code highlighting uses CSS classes (`noClasses = false` in `hugo.toml`) with colors in
+    `assets/css/extended/zz-chroma.css`, instead of inline `style=""` attributes.
+- **Referrer policy:** `strict-origin-when-cross-origin`.
+
+Meta tags can't deliver HSTS, `X-Content-Type-Options`, `X-Frame-Options`/`frame-ancestors` or
+`Permissions-Policy`. For a static site with no cookies, forms or third-party content, only HSTS
+has real value; it was requested from GitHub Support (community reports say they'll enable it on
+request). Getting the rest would mean a proxy or a different host, which wasn't worth it here.
+
+**Keeping it working:**
+
+- After updating PaperMod, diff `themes/PaperMod/layouts/_partials/footer.html` against the
+  override and `site.js`, and copy over any changes.
+- Adding anything from another domain (analytics, embeds, a CDN font) needs a CSP change, and
+  inline `<script>`/`style=""` will be blocked. Check the browser console for "Refused to..."
+  errors after changes.
+- Scan with [Mozilla HTTP Observatory](https://developer.mozilla.org/en-US/observatory). The
+  expected score is 55 (C), or 75 (B) once HSTS is enabled.
+
 ## One-time GitHub setting
 
 In the repo, **Settings > Pages > Build and deployment > Source** must be **GitHub Actions**

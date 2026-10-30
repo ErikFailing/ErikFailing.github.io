@@ -213,6 +213,9 @@ enableRobotsTXT = true
 # Styles: https://xyproto.github.io/splash/docs/
 [markup.highlight]
   style = 'github-dark'
+  noClasses = false   # CSS classes instead of inline style="" so the CSP needs no 'unsafe-inline'.
+                      # Colors come from assets/css/extended/zz-chroma.css; regenerate it if the style changes:
+                      # hugo gen chromastyles --style=github-dark > assets/css/extended/zz-chroma.css
   codeFences = true
   lineNos = false
   # guessSyntax = true   # highlight fenced blocks that have no language tag

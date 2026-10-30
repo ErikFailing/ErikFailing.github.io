@@ -1,4 +1,10 @@
 {{- /* PaperMod includes this partial at the end of <head>. */ -}}
+{{- /* Security policy as meta tags, since GitHub Pages can't send custom response headers. Everything is
+       self-hosted and there are no inline scripts or styles (scripts live in assets/js/site.js, code
+       highlighting uses CSS classes), so the policy only allows the site's own origin. A meta CSP can't
+       carry frame-ancestors or reporting; see "Security headers" in DEPLOY.md. */ -}}
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 {{- /* Start downloading Open Sans right away instead of after the stylesheet is parsed, so text
        renders in it from the first paint. crossorigin is required for font preloads. */ -}}
 <link rel="preload" href="{{ "fonts/open-sans-latin-wght-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
