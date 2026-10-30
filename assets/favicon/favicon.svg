@@ -1,16 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
-  <!-- "EF" monogram, drawn on a 16px grid so edges stay sharp at 16, 32 and 48px.
-       Source for static/favicon.ico and static/favicon-*.png. -->
-  <rect width="16" height="16" rx="3" fill="#1a1320"/>
-  <g fill="#e7a3b8">
-    <!-- E -->
-    <rect x="2" y="3" width="2" height="10"/>
-    <rect x="2" y="3" width="5" height="2"/>
-    <rect x="2" y="7" width="4" height="2"/>
-    <rect x="2" y="11" width="5" height="2"/>
-    <!-- F -->
-    <rect x="9" y="3" width="2" height="10"/>
-    <rect x="9" y="3" width="5" height="2"/>
-    <rect x="9" y="7" width="4" height="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- "EF" monogram in World Anchor-inspired blue and green. Drawn on an even 32-unit grid so edges
+       stay sharp at 16, 32 and 48px. Source for static/favicon.ico and static/favicon-*.png;
+       static/safari-pinned-tab.svg is the same letters in one color. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2fa8"/>
+      <stop offset="1" stop-color="#0a0f3d"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <!-- E -->
+  <g fill="#3fc8ff">
+    <rect x="4" y="6" width="4" height="20"/>
+    <rect x="4" y="6" width="10" height="4"/>
+    <rect x="4" y="14" width="8" height="4"/>
+    <rect x="4" y="22" width="10" height="4"/>
+  </g>
+  <!-- F -->
+  <g fill="#3ee67a">
+    <rect x="18" y="6" width="4" height="20"/>
+    <rect x="18" y="6" width="10" height="4"/>
+    <rect x="18" y="14" width="8" height="4"/>
   </g>
 </svg>
