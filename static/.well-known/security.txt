@@ -1,0 +1,5 @@
+Contact: https://github.com/ErikFailing/ErikFailing.github.io/security/advisories/new
+Expires: 2027-10-29T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://erikfailing.com/.well-known/security.txt
+Policy: https://github.com/ErikFailing/ErikFailing.github.io/blob/main/SECURITY.md

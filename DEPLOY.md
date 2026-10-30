@@ -22,8 +22,13 @@ If the build fails, nothing is deployed, so the live site stays on the last good
 
 It is a copy of Hugo's official workflow from
 [Deploy to GitHub Pages](https://gohugo.io/host-and-deploy/deploy-to-github-pages/) (checked
-2026-10-29). The only change is the build time zone, `TZ: America/Chicago`, which affects dates
-Hugo prints. Staying close to the official file makes future updates a simple compare-and-copy.
+2026-10-29), with two changes:
+
+- `TZ: America/Chicago`, the build time zone, which affects dates Hugo prints.
+- `include-hidden-files: true` on the upload step, so `/.well-known/security.txt` is published.
+  Without it, the upload skips every file or folder whose name starts with a dot.
+
+Staying close to the official file makes future updates a simple compare-and-copy.
 
 Before adding it we checked that:
 
@@ -53,6 +58,13 @@ Before adding it we checked that:
 - **Concurrency.** `group: pages` with `cancel-in-progress: false` means two quick pushes deploy
   one after the other instead of interrupting each other.
 
+## security.txt
+
+[`static/.well-known/security.txt`](static/.well-known/security.txt) follows
+[RFC 9116](https://www.rfc-editor.org/rfc/rfc9116) and points security reports to this repo's
+private vulnerability reporting. Its `Expires` date must stay in the future (and under a year
+away), so **update it every year**; the current one expires 2027-10-29.
+
 ## One-time GitHub setting
 
 In the repo, **Settings > Pages > Build and deployment > Source** must be **GitHub Actions**
@@ -74,7 +86,7 @@ step links to it. Pages with `draft = true` are never published.
 
 1. Compare our workflow with the one on Hugo's
    [Deploy to GitHub Pages](https://gohugo.io/host-and-deploy/deploy-to-github-pages/) page and
-   copy over any changes, keeping `TZ: America/Chicago`.
+   copy over any changes, keeping `TZ: America/Chicago` and `include-hidden-files: true`.
 2. To bump only Hugo, change `HUGO_VERSION` and install the same version locally, so previews
    match the live build. Check the theme still supports it (`min_version` in
    `themes/PaperMod/theme.toml`).
