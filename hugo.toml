@@ -81,9 +81,11 @@ enableRobotsTXT = true
   # Which content sections count as "posts" on the home page and in RSS.
   mainSections = ['posts']
 
-  # Appearance: 'dark', 'light', or 'auto' (follows the visitor's OS setting).
+  # Appearance: dark-only. Colors live in assets/css/extended/theme.css (see STYLE.md). Only the dark
+  # palette is designed, so the light/dark switch is hidden; with it hidden PaperMod also ignores any
+  # light preference a visitor saved earlier.
   defaultTheme = 'dark'
-  disableThemeToggle = false   # set true to hide the light/dark switch and stay dark
+  disableThemeToggle = true
 
   # Dates, e.g. "October 29, 2026". Uses Go's reference date: https://gohugo.io/functions/time/format/
   DateFormat = 'January 2, 2006'
@@ -172,14 +174,16 @@ enableRobotsTXT = true
   #   icon = 'img/logo.png'        # file goes at assets/img/logo.png
   #   iconHeight = 30
 
-  # Browser tab icons. Put the files in static/ and use paths from the site root.
-  # [params.assets]
+  # Browser UI color and tab icons. The icon files are in static/ under PaperMod's default names, so
+  # the paths only need uncommenting if a file is renamed.
+  [params.assets]
+    theme_color = '#08090c'              # mobile browser bar; matches the page background
+    msapplication_TileColor = '#08090c'
   #   favicon = '/favicon.ico'
   #   favicon16x16 = '/favicon-16x16.png'
   #   favicon32x32 = '/favicon-32x32.png'
   #   apple_touch_icon = '/apple-touch-icon.png'
   #   safari_pinned_tab = '/safari-pinned-tab.svg'
-  #   theme_color = '#0b0a10'
 
   # Footer.
   # [params.footer]
@@ -204,10 +208,11 @@ enableRobotsTXT = true
   # [params.analytics.bing]
   #   SiteVerificationTag = ''
 
-# Syntax highlighting for code blocks. Defaults work; uncomment to change the color style.
+# Syntax highlighting for code blocks. github-dark's token colors pass 7:1 on the code background
+# except comments (6:1). theme.css sets the block background and border.
 # Styles: https://xyproto.github.io/splash/docs/
-# [markup.highlight]
-#   style = 'dracula'
-#   lineNos = false
-#   codeFences = true
-#   guessSyntax = true
+[markup.highlight]
+  style = 'github-dark'
+  codeFences = true
+  lineNos = false
+  # guessSyntax = true   # highlight fenced blocks that have no language tag

@@ -28,6 +28,7 @@ hugo server -D        # http://localhost:1313, including drafts
 
 ## More docs
 
+- [STYLE.md](STYLE.md): colors, typography and component rules.
 - [THEME.md](THEME.md): why PaperMod, how it's installed, and how to update it.
 - [DEPLOY.md](DEPLOY.md): how the GitHub Actions build and deploy works.
 - [SECURITY.md](SECURITY.md): how to report a security issue.
