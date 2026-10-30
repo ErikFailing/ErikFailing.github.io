@@ -41,18 +41,18 @@ enableRobotsTXT = true
 # Top navigation. Each entry needs its page to exist first (for example content/about.md for
 # pageRef = '/about'); otherwise the link points to the home page. Lower weight = further left.
 # ---------------------------------------------------------------------------------------------
-# [[menu.main]]
-#   name = 'About'
-#   pageRef = '/about'
-#   weight = 10
+[[menu.main]]
+  name = 'About'
+  pageRef = '/about'
+  weight = 10
 # [[menu.main]]
 #   name = 'Projects'
 #   pageRef = '/projects'
 #   weight = 20
-# [[menu.main]]
-#   name = 'Resume'
-#   pageRef = '/resume'
-#   weight = 30
+[[menu.main]]
+  name = 'Resume'
+  pageRef = '/resume'
+  weight = 30
 # [[menu.main]]
 #   name = 'Writing'
 #   pageRef = '/posts'
@@ -122,15 +122,15 @@ enableRobotsTXT = true
     # imageHeight = 150
 
     # Buttons under the subtitle. Uncomment each once its page exists.
-    # [[params.profileMode.buttons]]
-    #   name = 'About'
-    #   url = '/about/'
+    [[params.profileMode.buttons]]
+      name = 'About'
+      url = '/about/'
     # [[params.profileMode.buttons]]
     #   name = 'Projects'
     #   url = '/projects/'
-    # [[params.profileMode.buttons]]
-    #   name = 'Resume'
-    #   url = '/resume/'
+    [[params.profileMode.buttons]]
+      name = 'Resume'
+      url = '/resume/'
     # [[params.profileMode.buttons]]
     #   name = 'Writing'
     #   url = '/posts/'
@@ -150,14 +150,15 @@ enableRobotsTXT = true
     url = 'https://github.com/ErikFailing'
   [[params.socialIcons]]
     name = 'linkedin'
-    url = 'https://www.linkedin.com/in/erikfailing'   # check this matches your profile URL
+    url = 'https://www.linkedin.com/in/erikfailing'
   # [[params.socialIcons]]
   #   name = 'cv'
   #   title = 'Resume'
   #   url = '/resume.pdf'          # file goes at static/resume.pdf
-  # [[params.socialIcons]]
-  #   name = 'itchio'
-  #   url = 'https://YOUR-NAME.itch.io'
+  [[params.socialIcons]]
+    name = 'itchio'
+    title = 'itch.io'
+    url = 'https://erikfailing.itch.io/'
   # [[params.socialIcons]]
   #   name = 'email'
   #   url = 'mailto:you@example.com'
