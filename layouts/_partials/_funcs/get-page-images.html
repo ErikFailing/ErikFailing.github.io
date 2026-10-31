@@ -1,0 +1,4 @@
+{{- /* Override of Hugo's embedded _partials/_funcs/get-page-images.html, which PaperMod's opengraph.html
+       calls (its twitter_cards.html and schema_json.html call the theme's templates/_funcs copy instead).
+       Hands off to our override of that copy, so every tag picks the same image. */ -}}
+{{- return partial "templates/_funcs/get-page-images.html" . }}

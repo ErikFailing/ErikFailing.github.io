@@ -13,6 +13,11 @@ theme = 'PaperMod'
 # Generate /robots.txt (PaperMod allows search engines only on the production build).
 enableRobotsTXT = true
 
+# Read each page's last-modified date from its latest Git commit. It feeds the sitemap, the
+# article:modified_time tag and the structured data, so search engines see when a post changed.
+# The GitHub workflow fetches full history for this. A `lastmod` in front matter overrides it.
+enableGitInfo = true
+
 # Show posts with a future date or past expiryDate. Leave off so scheduled posts stay hidden.
 # buildFuture = false
 # buildExpired = false
@@ -30,11 +35,11 @@ enableRobotsTXT = true
 # [outputs]
 #   home = ['HTML', 'RSS', 'JSON']
 
-# Tag and category pages. Hugo creates these two by default; listed here so you can rename
-# or add one (for example  series = 'series').
+# Tag pages. Hugo also makes category pages by default; they're left out because no post uses
+# categories (it was an empty page). Add one back here if needed (for example  series = 'series').
 [taxonomies]
   tag = 'tags'
-  category = 'categories'
+  # category = 'categories'
   # series = 'series'
 
 # ---------------------------------------------------------------------------------------------
@@ -76,7 +81,12 @@ enableRobotsTXT = true
 [params]
   description = 'Software and security engineer: application security, pentesting, fuzzing.'
   author = 'Erik Failing'
-  # keywords = ['application security', 'pentesting', 'fuzzing', 'software engineering']
+  # One-line pitch: shown under the subtitle on the home page (layouts/_partials/index_profile.html)
+  # and as the big text on the home page's social card. The \u00A0 (a non-breaking space) keeps
+  # "breaking it" together when the line wraps on phones.
+  tagline = "Building software, breaking\u00A0it, and making it secure."
+  # Topics for search engines: the home page's keywords tag and "knowsAbout" in the structured data.
+  keywords = ['application security', 'product security', 'penetration testing', 'fuzzing', 'reverse engineering', 'software engineering']
 
   # Which content sections count as "posts" on the home page and in RSS.
   mainSections = ['posts']
@@ -101,7 +111,7 @@ enableRobotsTXT = true
   ShowShareButtons = false
   # ShareButtons = ['linkedin', 'x', 'reddit', 'ycombinator']   # limit which share buttons show
   ShowRssButtonInSectionTermList = true
-  # ShowFullTextinRSS = true       # put whole posts in the RSS feed, not just summaries
+  ShowFullTextinRSS = true         # put whole posts in the RSS feed, not just summaries
   # ShowAllPagesInArchive = true   # include non-post pages on the Archive page
   # ShowPageNums = true            # page numbers instead of only Prev/Next on list pages
   # hideSummary = true             # hide post summaries on list pages
@@ -153,10 +163,10 @@ enableRobotsTXT = true
   [[params.socialIcons]]
     name = 'linkedin'
     url = 'https://www.linkedin.com/in/erikfailing'
-  # [[params.socialIcons]]
-  #   name = 'cv'
-  #   title = 'Resume'
-  #   url = '/resume.pdf'          # file goes at static/resume.pdf
+  [[params.socialIcons]]
+    name = 'cv'
+    title = 'Resume (PDF)'
+    url = '/Erik-Failing-Resume.pdf'   # file is static/Erik-Failing-Resume.pdf
   [[params.socialIcons]]
     name = 'itchio'
     title = 'itch.io'

@@ -11,14 +11,17 @@ on:
   push:
     branches:
       - main
+  # Pull requests (including Dependabot's) only build, as a check; the deploy job skips them.
+  pull_request:
   workflow_dispatch:
 # No permissions by default; each job asks only for what it needs. The build job runs Hugo and the
 # theme, so it can read the repo but can't publish. Only the deploy job, which runs GitHub's own
 # deploy action, gets the rights to publish to Pages.
 permissions: {}
+# Deploys queue one after another; a pull request's newer push cancels its older check.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: pages-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 defaults:
   run:
     shell: bash
@@ -106,6 +109,7 @@ jobs:
           include-hidden-files: true   # publishes .well-known/security.txt
           path: ./public
   deploy:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: build
     permissions:

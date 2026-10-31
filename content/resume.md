@@ -5,10 +5,12 @@ draft = false
 hideMeta = true
 ShowToc = false
 ShowBreadCrumbs = false
+schemaType = 'ProfilePage'   # structured data: a profile page about me, not a blog post
 +++
 
 **Software & Security Engineer** · 5+ years in defense and aerospace · CISSP · Huntsville, AL
 
+[Download PDF](/Erik-Failing-Resume.pdf) ·
 [LinkedIn](https://www.linkedin.com/in/erikfailing) ·
 [GitHub](https://github.com/ErikFailing) ·
 [itch.io](https://erikfailing.itch.io/)

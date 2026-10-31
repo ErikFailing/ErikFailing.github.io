@@ -5,6 +5,7 @@ draft = false
 hideMeta = true
 ShowToc = false
 ShowBreadCrumbs = false
+schemaType = 'ProfilePage'   # structured data: a profile page about me, not a blog post
 +++
 
 I'm a software and security engineer in {=rocket: Huntsville, Alabama=}, with 5+ years in defense and
@@ -57,4 +58,4 @@ write up.
 - [GitHub](https://github.com/ErikFailing)
 - [LinkedIn](https://www.linkedin.com/in/erikfailing), the best way to reach me
 - [itch.io](https://erikfailing.itch.io/)
-- [Resume](/resume/)
+- [Resume](/resume/) ([PDF](/Erik-Failing-Resume.pdf))

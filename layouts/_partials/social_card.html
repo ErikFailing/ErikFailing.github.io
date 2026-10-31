@@ -1,0 +1,39 @@
+{{- /* Builds a page's social card: the 1200x630 image link previews show (LinkedIn, Slack, Discord, X).
+       Returns an image resource. Drawn at build time with Hugo's images.Text on
+       assets/img/social-card-base.png (canvas, blue-to-green top strip, navy logo square), using static
+       instances of the site's Open Sans in assets/fonts/. Used through
+       layouts/_partials/templates/_funcs/get-page-images.html for any page without its own image.
+       See "Social cards" in STYLE.md. */ -}}
+{{- $bold := resources.Get "fonts/open-sans-latin-bold.ttf" }}
+{{- $regular := resources.Get "fonts/open-sans-latin-regular.ttf" }}
+{{- $card := resources.Get "img/social-card-base.png" }}
+
+{{- /* Big text: the page title, or params.tagline on the home page. Long titles get a smaller size
+       so they stay within three lines. */ -}}
+{{- $title := .Title | plainify | htmlUnescape }}
+{{- if .IsHome }}{{ $title = site.Params.tagline }}{{ end }}
+{{- $size := 76 }}
+{{- if gt (len $title) 60 }}{{ $size = 56 }}{{ else if gt (len $title) 36 }}{{ $size = 66 }}{{ end }}
+
+{{- /* Small green label above the title: the post number on posts, "Tag" on tag pages. */ -}}
+{{- $eyebrow := "" }}
+{{- with .Params.number }}{{ $eyebrow = printf "NO. %v" . }}{{ end }}
+{{- if eq .Kind "term" }}{{ $eyebrow = "TAG" }}{{ end }}
+
+{{- $filters := slice
+  (images.Text "E" (dict "font" $bold "size" 60 "color" "#4db8ff" "x" 94 "y" 80))
+  (images.Text "F" (dict "font" $bold "size" 60 "color" "#3fd68a" "x" 132 "y" 80))
+  (images.Text site.Title (dict "font" $bold "size" 34 "color" "#e9edf2" "x" 204 "y" 80))
+  (images.Text site.Params.profileMode.subtitle (dict "font" $regular "size" 26 "color" "#aab2bd" "x" 204 "y" 128))
+  (images.Text $title (dict "font" $bold "size" $size "color" "#e9edf2" "x" 80 "y" 260 "linespacing" 6))
+  (images.Text (urls.Parse site.BaseURL).Host (dict "font" $regular "size" 26 "color" "#aab2bd" "x" 80 "y" 548))
+}}
+{{- with $eyebrow }}
+  {{- $filters = $filters | append (images.Text . (dict "font" $bold "size" 24 "color" "#3fd68a" "x" 80 "y" 214)) }}
+{{- end }}
+
+{{- /* Published next to the page, e.g. /posts/securing-this-site/social-card.png. */ -}}
+{{- /* The 404 page gets none: its URL is a file (/404.html), and nobody shares it. */ -}}
+{{- if eq .Kind "404" }}{{ return "" }}{{ end }}
+{{- $card = images.Filter $filters $card | resources.Copy (path.Join .RelPermalink "social-card.png") }}
+{{- return $card }}

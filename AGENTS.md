@@ -32,8 +32,10 @@ read like Erik showing someone something cool, not like marketing.
 
 - Colors, typography and components follow [STYLE.md](STYLE.md); CSS lives in
   `assets/css/extended/`. Never edit files under `themes/PaperMod/` (a Git submodule). Theme
-  templates overridden in `layouts/` (`single.html`, `list.html`, `_partials/footer.html`, `_partials/post_meta.html`) must be diffed
-  against the theme's versions when PaperMod updates.
+  templates overridden in `layouts/` (`single.html`, `list.html`, `_partials/footer.html`,
+  `_partials/post_meta.html`, `_partials/index_profile.html`, `_partials/templates/schema_json.html`,
+  `_partials/templates/_funcs/get-page-images.html`) must be diffed against the theme's versions
+  when PaperMod updates.
 - The site has a strict Content-Security-Policy (see "Security headers" in DEPLOY.md): no inline
   `<script>`, no `style=""` attributes, and no resources from other domains unless the CSP in
   `layouts/_partials/extend_head.html` is updated deliberately. Put JavaScript in `assets/js/site.js`.

@@ -1,0 +1,49 @@
+name: Check security.txt
+# Fails when the Expires date in static/.well-known/security.txt is less than 60 days away (or
+# already past, or more than a year out, which RFC 9116 advises against). A failed scheduled run
+# emails the repo owner, so this is the yearly reminder to update it. See "security.txt" in DEPLOY.md.
+on:
+  schedule:
+    - cron: '23 19 1 * *'   # 19:23 UTC on the 1st of every month
+  push:
+    branches:
+      - main
+    paths:
+      - static/.well-known/security.txt
+  pull_request:
+    paths:
+      - static/.well-known/security.txt
+  workflow_dispatch:
+permissions: {}
+defaults:
+  run:
+    shell: bash
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read   # check out the repo
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false   # don't leave the job's token on disk for later steps
+
+      - name: Check the Expires date
+        run: |
+          file=static/.well-known/security.txt
+          expires=$(sed -n 's/^Expires: *//p' "$file" | tr -d '\r')
+          if [[ -z "$expires" ]]; then
+            echo "::error file=$file::No Expires field found."
+            exit 1
+          fi
+          days=$(( ( $(date -u -d "$expires" +%s) - $(date -u +%s) ) / 86400 ))
+          echo "Expires: $expires ($days days from now)"
+          if (( days < 60 )); then
+            echo "::error file=$file::security.txt expires in $days days ($expires). Set Expires to a date under a year away."
+            exit 1
+          fi
+          if (( days > 366 )); then
+            echo "::error file=$file::Expires is $days days away; RFC 9116 recommends less than a year."
+            exit 1
+          fi

@@ -98,6 +98,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 /* 4. Profile mode (home page) */
 .profile_inner h1 { font-size: var(--step-5); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
 .profile_inner > span { font-size: var(--step-1); font-weight: 600; color: var(--green); }
+.profile-tagline { margin-top: -0.25rem; font-size: 1.25rem; line-height: 1.45; color: var(--content); text-wrap: balance; }
 .profile .social-icons a { color: var(--secondary); border-radius: var(--radius); }
 .profile .social-icons a:hover { color: var(--blue); }
 .profile .button { background: var(--code-bg); border: 1px solid var(--border-strong); font-weight: 600; }

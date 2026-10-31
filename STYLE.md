@@ -102,6 +102,8 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 
 ## Components
 
+- **Home page tagline:** `params.tagline`, one line under the green subtitle in body-text color
+  (`--content`, 20px, regular); one line on desktop, balanced across two lines on phones.
 - **Profile buttons:** surface-2 fill, `--border-strong` outline, 600 weight; on hover a blue
   border and light-blue text.
 - **Social icons:** muted gray at rest, blue on hover.
@@ -128,6 +130,31 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   counters, so headings are written plainly in Markdown, never numbered by hand. Pages (About,
   Resume) aren't numbered; any page can override with `numberHeadings = true` or `false` in front
   matter. `###` subsections stay unnumbered.
+
+## Social cards
+
+Every page gets a 1200×630 preview image for shared links (LinkedIn, Slack, Discord, X), drawn at
+build time by [`layouts/_partials/social_card.html`](layouts/_partials/social_card.html) and
+published next to the page as `social-card.png`. Nothing to do per post: the card picks up the
+title and post number on its own.
+
+- **Layout:** the canvas with a blue-to-green strip along the top; the EF logo square, my name
+  (`--primary`, bold) and "Software & Security Engineer" (`--secondary`) at the top left; the post
+  number ("NO. 3") or "TAG" as a green label; the page title large in `--primary` bold; the
+  domain in `--secondary` at the bottom. Titles over 36 characters shrink a step and over 60 shrink
+  again, so they stay within three lines. The home page shows `params.tagline` from `hugo.toml`
+  instead of a title.
+- **Files:** the background is [`assets/img/social-card-base.png`](assets/img/social-card-base.png)
+  (strip and logo square only; all text is drawn by Hugo). The fonts are static Regular and Bold
+  instances of the site's Open Sans in `assets/fonts/`, made from
+  `static/fonts/open-sans-latin-wght-normal.woff2` with fontTools' `instantiateVariableFont`
+  (`wght` 400 and 700, saved uncompressed as TTF), because Hugo's text drawing can't read WOFF2 or
+  variable fonts. They're build inputs only and aren't published.
+- **Overriding:** a page with its own image (`images = ['...']` in front matter, or a page resource
+  named `*feature*`, `*cover*` or `*thumbnail*`) uses that instead, through
+  `layouts/_partials/templates/_funcs/get-page-images.html`.
+- **Checking:** LinkedIn caches previews; after changing a published card, refresh it with the
+  [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/).
 
 ## Accents
 

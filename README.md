@@ -43,8 +43,9 @@ Start a new post with `hugo new content posts/my-post-title.md`; it begins as a 
 | `content/` | Pages and posts, in Markdown |
 | `hugo.toml` | Site and theme settings |
 | `assets/css/extended/` | Custom CSS, added after the theme's styles |
+| `assets/fonts/`, `assets/img/` | Build-time inputs for the generated social cards (see STYLE.md) |
 | `layouts/` | Template overrides for the theme |
-| `static/` | Files published as-is (fonts, `.well-known/security.txt`) |
+| `static/` | Files published as-is (fonts, `.well-known/security.txt`, the resume PDF) |
 | `themes/PaperMod/` | The theme, as a Git submodule |
 
 ## More docs

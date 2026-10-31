@@ -30,6 +30,10 @@ It is a copy of Hugo's official workflow from
 - **Removed the Go, Node.js and Dart Sass steps** (2026-10-30). The site uses none of them. Go
   and Node were skipped at runtime anyway, but Dart Sass downloaded an unverified binary onto the
   build's PATH on every run, which was attack surface for nothing.
+- **Pull requests only build** (2026-10-31). The `pull_request` trigger runs the build job as a
+  check, including on Dependabot's pull requests, and the deploy job is skipped
+  (`if: github.event_name != 'pull_request'`). Concurrency is per branch, so deploys from `main`
+  still queue one after another, while a newer push to a pull request cancels its older check.
 - **Hugo's download is checked against a pinned SHA-256** (`HUGO_SHA256`), taken from the
   release's `hugo_<version>_checksums.txt`. If the tarball doesn't match, `sha256sum --check`
   fails the build before Hugo is unpacked. The hash lives in the workflow, not fetched at build
@@ -49,8 +53,9 @@ Before adding it we checked that:
 
 - **Submodules.** `submodules: recursive` on checkout, plus the "Initialize Git submodules" step,
   pull in `themes/PaperMod` at the commit this repo pins. Without it the build has no theme.
-- **Full history (`fetch-depth: 0`).** Lets Hugo read Git dates (for example, last-modified dates)
-  if we turn that on later.
+- **Full history (`fetch-depth: 0`).** Hugo reads each page's last-modified date from Git
+  (`enableGitInfo = true` in `hugo.toml`), which needs the full history. A shallow clone would
+  give every page the date of the latest commit.
 - **`baseURL`.** The build passes `--baseURL` from GitHub's own Pages setting, so the site works
   at `https://erikfailing.github.io/` now and switches to `https://erikfailing.com/` once the
   custom domain is set, with no workflow change.
@@ -80,6 +85,12 @@ Before adding it we checked that:
 private vulnerability reporting. Its `Expires` date must stay in the future (and under a year
 away), so **update it every year**; the current one expires 2027-10-29.
 
+[`.github/workflows/security-txt.yml`](.github/workflows/security-txt.yml) is the reminder: on
+the 1st of every month (and whenever the file changes) it fails if `Expires` is less than 60 days
+away or more than a year out, and GitHub emails the repo owner about the failed run. GitHub pauses
+scheduled workflows after 60 days without any commits to the repo; re-enable it from the Actions
+tab if that happens.
+
 ## Security headers
 
 GitHub Pages can't send custom response headers, so the site carries what it can as meta tags in
@@ -97,16 +108,22 @@ GitHub Pages can't send custom response headers, so the site carries what it can
 
 Meta tags can't deliver HSTS, `X-Content-Type-Options`, `X-Frame-Options`/`frame-ancestors` or
 `Permissions-Policy`. For a static site with no cookies, forms or third-party content, only HSTS
-has real value. Community reports say GitHub Support will enable it on request, but a ticket from
-this (free) account was closed without review in October 2026, since free plans only get
-self-service support. Getting HSTS or the other headers would mean a proxy (e.g. Cloudflare's free
-plan) or a different host, which wasn't worth the rework or risk for this site.
+has real value. Community reports say GitHub Support will enable it on request. A ticket from the
+free account was closed without review in October 2026, since free plans only get self-service
+support, so the account was upgraded to Pro and the ticket reopened; it's pending as of
+2026-10-31. Getting the other headers would mean a proxy (e.g. Cloudflare's free plan) or a
+different host, which wasn't worth the rework or risk for this site.
 
 **Keeping it working:**
 
 - After updating PaperMod, diff `themes/PaperMod/layouts/_partials/footer.html` against the
-  override and `site.js`, and `themes/PaperMod/layouts/single.html`, `list.html` and `_partials/post_meta.html` against the
-  overrides in `layouts/` (numbered headings, tags, post numbers), and copy over any changes.
+  override and `site.js`, and `themes/PaperMod/layouts/single.html`, `list.html`,
+  `_partials/post_meta.html`, `_partials/index_profile.html`, `_partials/templates/schema_json.html` and
+  `_partials/templates/_funcs/get-page-images.html` against the overrides in `layouts/`
+  (numbered headings, tags, post numbers, home page tagline, structured data, social cards), and copy over any
+  changes. `layouts/_partials/_funcs/get-page-images.html` overrides a template built into Hugo
+  itself (PaperMod's `opengraph.html` calls it); it only forwards to the PaperMod override, so it
+  needs no diffing.
 - Adding anything from another domain (analytics, embeds, a CDN font) needs a CSP change, and
   inline `<script>`/`style=""` will be blocked. Check the browser console for "Refused to..."
   errors after changes.

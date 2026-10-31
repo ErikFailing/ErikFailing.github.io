@@ -1,0 +1,119 @@
+{{- /* Override of themes/PaperMod/layouts/_partials/templates/schema_json.html: the structured data
+       (schema.org JSON-LD) search engines read. Changes from the theme's:
+       1. The site is a Person (me), not an Organization with the favicon as its logo. One Person is
+          defined here, with the same @id everywhere, and is the author and publisher of every post.
+       2. Pages with  schemaType = 'ProfilePage'  in front matter (About, Resume) are profile pages
+          about that Person instead of blog posts. Other non-post pages are plain WebPages.
+       3. Posts no longer copy their whole text into the JSON-LD (articleBody), and their image is the
+          page's social card.
+       The BreadcrumbList is the theme's, unchanged. When updating PaperMod, diff this file against
+       the theme's. */ -}}
+{{- $personID := printf "%s#person" site.Home.Permalink }}
+{{- $person := dict
+  "@type" "Person"
+  "@id" $personID
+  "name" site.Params.author
+  "url" site.Home.Permalink
+  "jobTitle" site.Params.profileMode.subtitle
+  "description" site.Params.description
+}}
+{{- with site.Params.keywords }}{{ $person = merge $person (dict "knowsAbout" .) }}{{ end }}
+{{- $sameAs := slice }}
+{{- /* Only other sites' profiles; on-site links like the resume PDF aren't "same as" me. */ -}}
+{{- range site.Params.socialIcons }}{{ if (urls.Parse .url).IsAbs }}{{ $sameAs = $sameAs | append .url }}{{ end }}{{ end }}
+{{- with $sameAs }}{{ $person = merge $person (dict "sameAs" .) }}{{ end }}
+{{- /* The profile photo, once profileMode.imageUrl is set. */ -}}
+{{- with site.Params.profileMode.imageUrl }}
+  {{- with resources.Get . }}{{ $person = merge $person (dict "image" .Permalink) }}{{ end }}
+{{- end }}
+{{- $personRef := dict "@type" "Person" "@id" $personID "name" site.Params.author "url" site.Home.Permalink }}
+
+{{- $image := "" }}
+{{- with index (partial "templates/_funcs/get-page-images.html" .) 0 }}{{ $image = .Permalink }}{{ end }}
+
+{{- if .IsHome }}
+<script type="application/ld+json">
+{{ dict "@context" "https://schema.org" "@graph" (slice
+  (dict
+    "@type" "WebSite"
+    "@id" (printf "%s#website" site.Home.Permalink)
+    "name" site.Title
+    "url" site.Home.Permalink
+    "description" site.Params.description
+    "inLanguage" site.Language.Locale
+    "publisher" (dict "@id" $personID))
+  $person) }}
+</script>
+{{- else if (or .IsPage .IsSection) }}
+{{/* BreadcrumbList */}}
+{{- $url := replace .Parent.Permalink ( printf "%s" site.Home.Permalink) "" }}
+{{- $lang_url := strings.TrimPrefix ( printf "%s/" .Lang) $url }}
+{{- $bc_list := (split $lang_url "/")}}
+
+{{- $path := "" }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+  {{- range $index, $element := $bc_list }}
+
+    {{- $path = printf "%s%s/" $path $element }}
+    {{- $bc_pg := site.GetPage $path -}}
+
+    {{- if (and ($bc_pg) (gt (len . ) 0))}}
+    {{- if (and $index)}}, {{end }}
+    {
+      "@type": "ListItem",
+      "position": {{ add 1 $index  }},
+      "name": {{ $bc_pg.Name }},
+      "item": {{ $bc_pg.Permalink | safeHTML }}
+    }
+    {{- end }}
+
+  {{- end }}
+  {{- /*  self-page addition  */ -}}
+  {{- if (ge (len $bc_list) 2) }}, {{end }}
+    {
+      "@type": "ListItem",
+      "position": {{len $bc_list}},
+      "name": {{ .Name }},
+      "item": {{ .Permalink | safeHTML }}
+    }
+  ]
+}
+</script>
+{{- if .IsPage }}
+{{- $description := or .Description .Summary | plainify | htmlUnescape | strings.TrimSpace }}
+{{- $page := dict
+  "@context" "https://schema.org"
+  "@id" .Permalink
+  "url" .Permalink
+  "name" (.Title | plainify)
+  "description" $description
+  "inLanguage" site.Language.Locale
+  "isPartOf" (dict "@id" (printf "%s#website" site.Home.Permalink))
+}}
+{{- with $image }}{{ $page = merge $page (dict "image" .) }}{{ end }}
+{{- if eq .Params.schemaType "ProfilePage" }}
+  {{- $page = merge $page (dict "@type" "ProfilePage" "mainEntity" $person "dateModified" .Lastmod) }}
+{{- else if eq .Section "posts" }}
+  {{- $page = merge $page (dict
+    "@type" "BlogPosting"
+    "headline" (.Title | plainify)
+    "keywords" (.Params.keywords | default .Params.tags | default slice)
+    "wordCount" .WordCount
+    "datePublished" .PublishDate
+    "dateModified" .Lastmod
+    "author" $personRef
+    "publisher" $personRef
+    "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)) }}
+{{- else }}
+  {{- $page = merge $page (dict "@type" "WebPage" "author" $personRef) }}
+{{- end }}
+<script type="application/ld+json">
+{{ $page }}
+</script>
+{{- end }}{{/* .IsPage end */}}
+
+{{- end -}}

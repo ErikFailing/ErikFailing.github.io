@@ -17,7 +17,11 @@ updates:
   # and diff the theme files this repo overrides: layouts/_partials/footer.html (against the
   # footer override and assets/js/site.js, see "Security headers" in DEPLOY.md) and
   # layouts/single.html, layouts/list.html and layouts/_partials/post_meta.html (numbered headings,
-  # tags, post numbers; see STYLE.md).
+  # tags, post numbers; see STYLE.md), layouts/_partials/index_profile.html (home page tagline), and
+  # layouts/_partials/templates/schema_json.html and templates/_funcs/get-page-images.html
+  # (structured data and social cards).
+  # Pull requests get a build-only check from hugo.yaml, so a theme update that breaks the build
+  # shows a red X before merging.
   # Also check the theme hasn't added its own layouts/_markup/render-link.html (ours renders accents).
   - package-ecosystem: gitsubmodule
     directory: /
