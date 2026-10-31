@@ -6,8 +6,9 @@
           about that Person instead of blog posts. Other non-post pages are plain WebPages.
        3. Posts no longer copy their whole text into the JSON-LD (articleBody), and their image is the
           page's social card.
-       The BreadcrumbList is the theme's, unchanged. When updating PaperMod, diff this file against
-       the theme's. */ -}}
+       4. The BreadcrumbList always starts at Home (the theme's left Home out, so About, Resume and
+          Blog had one-item trails, which Google rejects).
+       When updating PaperMod, diff this file against the theme's. */ -}}
 {{- $personID := printf "%s#person" site.Home.Permalink }}
 {{- $person := dict
   "@type" "Person"
@@ -43,6 +44,7 @@
     "@type" "WebSite"
     "@id" (printf "%s#website" site.Home.Permalink)
     "name" site.Title
+    "alternateName" (urls.Parse site.BaseURL).Host
     "url" site.Home.Permalink
     "description" site.Params.description
     "inLanguage" site.Language.Locale
@@ -50,43 +52,15 @@
   $person) }}
 </script>
 {{- else if (or .IsPage .IsSection) }}
-{{/* BreadcrumbList */}}
-{{- $url := replace .Parent.Permalink ( printf "%s" site.Home.Permalink) "" }}
-{{- $lang_url := strings.TrimPrefix ( printf "%s/" .Lang) $url }}
-{{- $bc_list := (split $lang_url "/")}}
-
-{{- $path := "" }}
+{{- /* BreadcrumbList: Home, then each section above this page, then the page itself, so every trail
+       has the two or more items Google requires. */ -}}
+{{- $crumbs := .Ancestors.Reverse | append . }}
+{{- $items := slice }}
+{{- range $i, $p := $crumbs }}
+  {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" (cond $p.IsHome site.Title ($p.LinkTitle | plainify)) "item" $p.Permalink) }}
+{{- end }}
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-  {{- range $index, $element := $bc_list }}
-
-    {{- $path = printf "%s%s/" $path $element }}
-    {{- $bc_pg := site.GetPage $path -}}
-
-    {{- if (and ($bc_pg) (gt (len . ) 0))}}
-    {{- if (and $index)}}, {{end }}
-    {
-      "@type": "ListItem",
-      "position": {{ add 1 $index  }},
-      "name": {{ $bc_pg.Name }},
-      "item": {{ $bc_pg.Permalink | safeHTML }}
-    }
-    {{- end }}
-
-  {{- end }}
-  {{- /*  self-page addition  */ -}}
-  {{- if (ge (len $bc_list) 2) }}, {{end }}
-    {
-      "@type": "ListItem",
-      "position": {{len $bc_list}},
-      "name": {{ .Name }},
-      "item": {{ .Permalink | safeHTML }}
-    }
-  ]
-}
+{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $items }}
 </script>
 {{- if .IsPage }}
 {{- $description := or .Description .Summary | plainify | htmlUnescape | strings.TrimSpace }}
@@ -102,6 +76,7 @@
 {{- with $image }}{{ $page = merge $page (dict "image" .) }}{{ end }}
 {{- if eq .Params.schemaType "ProfilePage" }}
   {{- $page = merge $page (dict "@type" "ProfilePage" "mainEntity" $person "dateModified" .Lastmod) }}
+  {{- if not .Date.IsZero }}{{ $page = merge $page (dict "dateCreated" .Date) }}{{ end }}
 {{- else if eq .Section "posts" }}
   {{- $page = merge $page (dict
     "@type" "BlogPosting"

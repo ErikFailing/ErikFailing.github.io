@@ -6,6 +6,7 @@ hideMeta = true
 ShowToc = false
 ShowBreadCrumbs = false
 schemaType = 'ProfilePage'   # structured data: a profile page about me, not a blog post
+date = 2026-10-29T21:17:09-05:00   # first published; becomes dateCreated in the structured data
 +++
 
 I'm a software and security engineer in {=rocket: Huntsville, Alabama=}, with 5+ years in defense and
@@ -46,8 +47,8 @@ was vice president of the Cybersecurity Club.
 
 ## About this site
 
-This is where I write up projects, CTFs and {=arcane: security research=} I do on my own time, along with
-whatever I'm learning along the way.
+This is where I write up the projects I work on and whatever I'm learning along the way, and where
+CTFs and {=arcane: security research=} I do on my own time will go as I get to them.
 
 Honestly, it's also a way to {=point: share the things I'm excited about=}. A lot of what I work on is hard
 to show friends or colleagues without a proper write up to point them to, so this site is that

@@ -67,8 +67,13 @@ Before adding it we checked that:
   (`contents: read`, `pages: read`). Only the deploy job, which runs GitHub's own deploy action,
   can publish (`pages: write`, `id-token: write`). Neither can push commits. Checkout uses
   `persist-credentials: false`, so the job's token isn't left on disk for later steps.
+- **Hugo's own limits.** `[security]` in `hugo.toml` lets the build run only `git` (for
+  last-modified dates) and fetch nothing from the network, so a compromised theme update can't run
+  other tools or pull in remote content. If a future feature needs one (e.g. Dart Sass), add it to
+  `security.exec.allow` deliberately.
 - **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)) checks monthly for new
-  major versions of the actions (one grouped pull request) and for PaperMod updates. Nothing
+  major versions of the actions (one grouped pull request, only for releases at least 7 days old)
+  and for PaperMod updates. Nothing
   changes until a pull request is merged. Before merging a PaperMod update, review its changes and
   diff its `footer.html` against the override (see "Security headers" below). Actions use
   major-version tags rather than commit SHAs on purpose: they're all GitHub's own, and SHA pins

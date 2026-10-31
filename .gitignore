@@ -13,3 +13,7 @@ Thumbs.db
 # 3) Private data, never publish these
 *.env
 *.key
+
+# 4) Local research notes and reports (not part of the site)
+/research_notes/
+/reports/

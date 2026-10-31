@@ -18,7 +18,12 @@
   {{- $style := index $accents.tags $slug | default "" -}}
   {{- if and (not $style) (index $accents.styles $slug) }}{{ $style = $slug }}{{ end -}}
   {{- with $style }}{{ if not (index $accents.styles .) }}{{ errorf "data/accents.yaml: tag %q maps to unknown style %q" $slug . }}{{ end }}{{ end }}
-  <li{{ with $style }} class="tag-{{ . }}"{{ end }}><a href="{{ .Permalink }}">{{ .LinkTitle }}{{ if $.counts }}<span class="tag-count">{{ len .Pages }}</span>{{ end }}</a></li>
+  {{- if $.counts }}
+  {{- $n := len .Pages }}
+  <li{{ with $style }} class="tag-{{ . }}"{{ end }}><a href="{{ .Permalink }}" aria-label="{{ .LinkTitle }}, {{ $n }} {{ cond (eq $n 1) "post" "posts" }}">{{ .LinkTitle }}<span class="tag-count" aria-hidden="true">{{ $n }}</span></a></li>
+  {{- else }}
+  <li{{ with $style }} class="tag-{{ . }}"{{ end }}><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+  {{- end }}
   {{- end }}
 </ul>
 {{- end }}

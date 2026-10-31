@@ -6,6 +6,9 @@ number = 3
 description = 'The security changes I made to this site, ordered by what they actually stop, from email spoofing down to certificate mis-issuance.'
 series = ['Building This Site']
 tags = ['Security', 'GitHub Actions', 'DNS', 'Web']
+summary = '''A static site on GitHub Pages doesn't have much to attack: no logins, no forms, no cookies, no
+database. But "not much" isn't nothing, so I went through the whole setup (the domain, the build
+pipeline and the browser side) and fixed what was worth fixing.'''
 +++
 
 A static site on GitHub Pages {=ward: doesn't have much to attack=}: no logins, no forms, no cookies, no

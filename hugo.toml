@@ -9,8 +9,12 @@ baseURL = 'https://erikfailing.com/'
 locale = 'en-us'
 title = 'Erik Failing'
 theme = 'PaperMod'
+# Top-level settings go above the first [table] header below; in TOML, any key placed after a
+# header belongs to that table.
 
-# Generate /robots.txt (PaperMod allows search engines only on the production build).
+# Generate /robots.txt from PaperMod's template: every crawler allowed on the production build
+# (including AI search and training crawlers, a deliberate choice since 2026-10-31; see the update
+# in the "How I Built This Site" post), everything disallowed on local previews.
 enableRobotsTXT = true
 
 # Read each page's last-modified date from its latest Git commit. It feeds the sitemap, the
@@ -21,6 +25,16 @@ enableGitInfo = true
 # Show posts with a future date or past expiryDate. Leave off so scheduled posts stay hidden.
 # buildFuture = false
 # buildExpired = false
+
+# Hugo's own least privilege: the build may only run git (for the last-modified dates) and may not
+# fetch anything from the network, so a compromised theme update can't shell out to other tools or
+# pull in remote content at build time. Hugo's defaults also allow sass, node, go and postcss and
+# any public URL.
+[security]
+  [security.exec]
+    allow = ['^git$']
+  [security.http]
+    urls = ['none']
 
 [pagination]
   pagerSize = 10        # posts per page on list pages
@@ -261,3 +275,11 @@ enableGitInfo = true
   codeFences = true
   lineNos = false
   # guessSyntax = true   # highlight fenced blocks that have no language tag
+
+# Keep the 404 page out of search results (GitHub Pages serves /404.html itself with a 200 if
+# someone links to it): PaperMod's robotsNoIndex makes its robots tag "noindex, nofollow".
+[[cascade]]
+  [cascade.params]
+    robotsNoIndex = true
+  [cascade.target]
+    path = '/404'

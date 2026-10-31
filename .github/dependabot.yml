@@ -8,6 +8,10 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Only propose releases at least a week old, so a hijacked or broken release has time to be
+    # noticed and pulled before it reaches this repo.
+    cooldown:
+      default-days: 7
     groups:
       actions:
         patterns:

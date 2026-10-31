@@ -6,6 +6,7 @@ hideMeta = true
 ShowToc = false
 ShowBreadCrumbs = false
 schemaType = 'ProfilePage'   # structured data: a profile page about me, not a blog post
+date = 2026-10-29T21:17:09-05:00   # first published; becomes dateCreated in the structured data
 +++
 
 **Security Software Engineer** · 5+ years · Pentesting, fuzzing & reverse engineering ·

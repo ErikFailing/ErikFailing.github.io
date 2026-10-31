@@ -1,8 +1,10 @@
-{{- /* Link render hook: renders links exactly like Hugo's default Markdown link. Its only extra job
-       is catching the old accent syntax, [text](=style), which would otherwise become a broken
-       link: accents are written {=style: text=} now (see "Accents" in STYLE.md). */ -}}
+{{- /* Link render hook: renders links like Hugo's default Markdown link. Its only extra job is
+       catching the old accent syntax, [text](=style), which would otherwise become a broken link:
+       accents are written {=style: text=} now (see "Accents" in STYLE.md). The destination is not
+       marked safeURL, so Go's template escaping still neutralizes javascript: and other unsafe URL
+       schemes (they render as #ZgotmplZ). */ -}}
 {{- if hasPrefix .Destination "=" -}}
   {{- errorf "%s: old accent syntax [%s](%s); write it as {=%s: %s=}" .Page.File.Path .PlainText .Destination (strings.TrimPrefix "=" .Destination) .PlainText -}}
 {{- end -}}
-<a href="{{ .Destination | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text }}</a>
+<a href="{{ .Destination }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text }}</a>
 {{- /* trims the trailing newline */ -}}
