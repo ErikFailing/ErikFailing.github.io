@@ -22,11 +22,18 @@ If the build fails, nothing is deployed, so the live site stays on the last good
 
 It is a copy of Hugo's official workflow from
 [Deploy to GitHub Pages](https://gohugo.io/host-and-deploy/deploy-to-github-pages/) (checked
-2026-10-29), with two changes:
+2026-10-29), with these changes:
 
 - `TZ: America/Chicago`, the build time zone, which affects dates Hugo prints.
 - `include-hidden-files: true` on the upload step, so `/.well-known/security.txt` is published.
   Without it, the upload skips every file or folder whose name starts with a dot.
+- **Removed the Go, Node.js and Dart Sass steps** (2026-10-30). The site uses none of them. Go
+  and Node were skipped at runtime anyway, but Dart Sass downloaded an unverified binary onto the
+  build's PATH on every run, which was attack surface for nothing.
+- **Hugo's download is checked against a pinned SHA-256** (`HUGO_SHA256`), taken from the
+  release's `hugo_<version>_checksums.txt`. If the tarball doesn't match, `sha256sum --check`
+  fails the build before Hugo is unpacked. The hash lives in the workflow, not fetched at build
+  time, so a tampered release can't supply a matching checksum file.
 
 Staying close to the official file makes future updates a simple compare-and-copy.
 
@@ -44,9 +51,6 @@ Before adding it we checked that:
   pull in `themes/PaperMod` at the commit this repo pins. Without it the build has no theme.
 - **Full history (`fetch-depth: 0`).** Lets Hugo read Git dates (for example, last-modified dates)
   if we turn that on later.
-- **Go, Node.js, Dart Sass.** Go and Node install only if `go.mod` or `package-lock.json` exist,
-  which they don't, so those steps skip. Dart Sass installs but PaperMod doesn't use it; it is
-  left in to match the official file and costs a few seconds.
 - **`baseURL`.** The build passes `--baseURL` from GitHub's own Pages setting, so the site works
   at `https://erikfailing.github.io/` now and switches to `https://erikfailing.com/` once the
   custom domain is set, with no workflow change.
@@ -82,8 +86,10 @@ GitHub Pages can't send custom response headers, so the site carries what it can
 
 Meta tags can't deliver HSTS, `X-Content-Type-Options`, `X-Frame-Options`/`frame-ancestors` or
 `Permissions-Policy`. For a static site with no cookies, forms or third-party content, only HSTS
-has real value; it was requested from GitHub Support (community reports say they'll enable it on
-request). Getting the rest would mean a proxy or a different host, which wasn't worth it here.
+has real value. Community reports say GitHub Support will enable it on request, but a ticket from
+this (free) account was closed without review in October 2026, since free plans only get
+self-service support. Getting HSTS or the other headers would mean a proxy (e.g. Cloudflare's free
+plan) or a different host, which wasn't worth the rework or risk for this site.
 
 **Keeping it working:**
 
@@ -93,7 +99,7 @@ request). Getting the rest would mean a proxy or a different host, which wasn't 
   inline `<script>`/`style=""` will be blocked. Check the browser console for "Refused to..."
   errors after changes.
 - Scan with [Mozilla HTTP Observatory](https://developer.mozilla.org/en-US/observatory). The
-  expected score is 55 (C), or 75 (B) once HSTS is enabled.
+  expected score is 55 (C), the ceiling for meta tags on GitHub Pages (scanned 2026-10-30).
 
 ## One-time GitHub setting
 
@@ -116,8 +122,10 @@ step links to it. Pages with `draft = true` are never published.
 
 1. Compare our workflow with the one on Hugo's
    [Deploy to GitHub Pages](https://gohugo.io/host-and-deploy/deploy-to-github-pages/) page and
-   copy over any changes, keeping `TZ: America/Chicago` and `include-hidden-files: true`.
-2. To bump only Hugo, change `HUGO_VERSION` and install the same version locally, so previews
+   copy over any changes, keeping the changes listed under "Where the workflow came from" (don't
+   re-add the Go, Node or Dart Sass steps unless the site starts using them).
+2. To bump only Hugo, change `HUGO_VERSION` **and** `HUGO_SHA256` (the `linux-amd64.tar.gz` line
+   from `hugo_<version>_checksums.txt` on the release page), and install the same version locally, so previews
    match the live build. Check the theme still supports it (`min_version` in
    `themes/PaperMod/theme.toml`).
 3. Run `hugo server` locally, then push and confirm the Actions run turns green.
