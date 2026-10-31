@@ -4,6 +4,7 @@ date = 2026-10-30
 draft = false
 description = 'Hugo, PaperMod, GitHub Actions and a custom domain, with an LLM helping along the way.'
 tags = ['hugo', 'github-actions', 'web', 'ai']
+colorKeywords = ['GitHub Actions', 'domain takeover', 'supply chain']
 +++
 
 This site is a static Hugo site using the PaperMod theme, built and deployed by GitHub Actions to

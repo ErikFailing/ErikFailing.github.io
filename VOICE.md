@@ -262,9 +262,9 @@ These are starting points, not forms to fill in. Drop sections that don't apply.
 - Use numbered points written as "1)", "2)" for steps or reasons inside a paragraph.
 - Use the occasional *italics* for emphasis on one word ("*insane* amounts of development time").
 - Mix short punchy sentences with longer run-on, comma-joined ones, the way people actually talk.
-- Just write terms like "fuzzing" or "World Anchor" normally. Keyword colors are added
-  automatically from `data/keywords.yaml` (see "Keyword colors" in STYLE.md), so never add color
-  markup or bold a term to make it pop.
+- Just write terms like "fuzzing" or "World Anchor" normally in the body, never with color markup
+  or bold to make them pop. Color comes from the post's `colorKeywords` front matter: pick a few
+  terms that carry the post's theme (see "Keyword colors" in STYLE.md).
 
 **Don't:**
 - **No em dashes (—). Ever.** I don't use them. Use a comma, a period, a colon, or parentheses instead. This is the single biggest tell that something wasn't written by me.
@@ -347,5 +347,7 @@ fix "fishing net," add the missing punctuation, and keep everything else.)
 - [ ] None of the banned words or LLM-isms above?
 - [ ] Typos, dictation errors and tool names fixed, but the casual voice left alone?
 - [ ] Is the humor light, self-deprecating, and something I'd actually say?
+- [ ] Does the front matter pick a few `colorKeywords` that carry the post's theme, balanced for its
+  length, and does the build show no "wasn't colored" warnings for this page?
 - [ ] Is this a resume edit? Then none of this voice applies: keep it professional. An About
   edit? Use the toned-down version described at the top.

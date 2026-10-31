@@ -5,7 +5,6 @@ draft = false
 hideMeta = true
 ShowToc = false
 ShowBreadCrumbs = false
-noKeywordColors = true   # keep the resume plain (see data/keywords.yaml)
 +++
 
 **Software & Security Engineer** · 5+ years in defense and aerospace · CISSP · Huntsville, AL

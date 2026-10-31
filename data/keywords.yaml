@@ -1,23 +1,28 @@
 # Keyword coloring, inspired by the color templates in Caves of Qud.
 #
-# Matching words in post and page content are wrapped at build time by
-# layouts/_partials/keyword_colors.html, so changes here apply to every existing and future page.
-# Colors and gradients are defined in assets/css/extended/keywords.css (one class per style).
+# Nothing here is colored on its own. Each page picks its own terms in front matter, so every page
+# can be balanced for its length and theme:
 #
-# Rules the partial enforces, to keep this tasteful:
-# - Only the first mention of each keyword per page is colored, and at most `limits.perParagraph`
-#   per paragraph and `limits.perPage` per page (earliest mentions win).
+#   colorKeywords = ["fuzzing", "supply chain"]     # terms from the library below (any form works)
+#   colorKeywordsCustom = { "AFL++" = "flood" }     # page-only terms: "text" = "style"
+#
+# The library keeps colors consistent: a term has the same color on every page that picks it.
+# layouts/_partials/keyword_colors.html does the coloring at build time; the colors and gradients
+# are in assets/css/extended/keywords.css (one class per style).
+#
+# Rules the partial enforces:
+# - Only the first mention of each picked term is colored, and at most `limits.perParagraph`
+#   per paragraph (earliest mentions win).
 # - Never inside code, links, headings, buttons or HTML attributes, and never in titles,
 #   summaries or the RSS feed (only the rendered page body is processed).
 # - Whole words only, any capitalization; the original capitalization is kept.
-# - Pages can opt out with `noKeywordColors = true` in front matter (the resume does).
+# - The build fails if a page picks a term that isn't in the library or a style that doesn't
+#   exist, and warns if a picked term never got colored.
 #
-# Adding a keyword: add an entry under `keywords` with one or more `match` forms (plural, hyphenated,
-# acronym, etc.) and a `style` from the list below. Keep the list short and the terms distinctive;
-# coloring common words makes everything look like a link.
+# Adding a library term: add an entry under `library` with one or more `match` forms (plural,
+# hyphenated, acronym, etc.) and the `style` whose vibe fits.
 
 limits:
-  perPage: 5
   perParagraph: 2
 
 styles:
@@ -38,7 +43,7 @@ styles:
   iron:    { type: gradient, colors: [steel, silver],   vibe: "Metal links: supply chain" }
   flow:    { type: gradient, colors: [lime, cyan],     vibe: "Things moving through pipes: CI/CD, infrastructure as code" }
 
-keywords:
+library:
   # Projects and games
   - { match: ["World Anchor"], style: anchor }
   - { match: ["Caves of Qud"], style: qud }
@@ -48,12 +53,16 @@ keywords:
   - { match: ["red team", "red teams", "red teaming"], style: crimson }
   - { match: ["remote code execution", "RCE"], style: blaze }
   - { match: ["exploit development"], style: blaze }
+  - { match: ["phishing"], style: crimson }
+  - { match: ["email spoofing", "spoofed email", "spoofed emails"], style: crimson }
+  - { match: ["domain takeover", "subdomain takeover"], style: crimson }
   - { match: ["zero-day", "zero-days", "0-day"], style: glitch }
   - { match: ["privilege escalation"], style: ascend }
 
   # Bug classes
   - { match: ["buffer overflow", "buffer overflows"], style: flood }
   - { match: ["use-after-free"], style: ghostly }
+  - { match: ["clickjacking"], style: ghostly }
 
   # Research and testing
   - { match: ["fuzzing", "fuzzer", "fuzzers", "fuzzed"], style: static }
@@ -66,8 +75,11 @@ keywords:
   - { match: ["least privilege"], style: ward }
   - { match: ["threat modeling", "threat model", "threat models"], style: ward }
   - { match: ["memory safety", "memory-safe"], style: ward }
+  - { match: ["Content-Security-Policy", "CSP"], style: ward }
+  - { match: ["HSTS"], style: ward }
 
   # Engineering
   - { match: ["supply chain", "supply-chain"], style: iron }
   - { match: ["CI/CD"], style: flow }
+  - { match: ["GitHub Actions"], style: flow }
   - { match: ["infrastructure as code", "infrastructure-as-code"], style: flow }

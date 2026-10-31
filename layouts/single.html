@@ -1,6 +1,7 @@
-{{- /* Override of themes/PaperMod/layouts/single.html. Only change: the post body is passed through
-       layouts/_partials/keyword_colors.html (see data/keywords.yaml) unless the page sets
-       noKeywordColors = true. When updating PaperMod, diff this file against the theme's. */ -}}
+{{- /* Override of themes/PaperMod/layouts/single.html. Only change: if the page picks color keywords
+       (colorKeywords / colorKeywordsCustom in front matter), the post body is passed through
+       layouts/_partials/keyword_colors.html (see data/keywords.yaml). When updating PaperMod, diff
+       this file against the theme's. */ -}}
 {{- define "main" }}
 
 <article class="post-single">
@@ -39,8 +40,8 @@
 
   {{- if .Content }}
   {{- $content := .Content }}
-  {{- if not (.Param "noKeywordColors") }}
-  {{- $content = partial "keyword_colors.html" $content }}
+  {{- if or (.Param "colorKeywords") (.Param "colorKeywordsCustom") }}
+  {{- $content = partial "keyword_colors.html" (dict "page" . "content" $content) }}
   {{- end }}
   <div class="post-content md-content">
     {{- if not (.Param "disableAnchoredHeadings") }}

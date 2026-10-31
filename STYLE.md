@@ -116,39 +116,57 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 
 ## Keyword colors
 
-A nod to the colored keywords in text games like Caves of Qud: a short list of terms gets a
-signature color the first time it appears on a page. It's automatic and retroactive. The list
-lives in [`data/keywords.yaml`](data/keywords.yaml), and adding a term there colors it in every
-existing and future post.
+A nod to the colored keywords in text games like Caves of Qud: each page picks a few terms that
+fit its theme, and they get a signature color the first time they appear. Nothing is colored
+site-wide, so every page can be balanced for its own length and subject.
 
-Each style is colored to fit the term's vibe:
+**Picking terms for a page** (front matter):
 
-| Style | Look | Vibe | Terms |
+```toml
+colorKeywords = ['fuzzing', 'supply chain']    # terms from the library in data/keywords.yaml
+colorKeywordsCustom = { 'AFL++' = 'flood' }    # page-only terms: 'text' = 'style'
+```
+
+- Pick terms that carry the page's theme and keep it interesting, not every term that appears.
+  As a rough feel: a short page might have two or three, a long writeup a handful. There's no
+  fixed cap; judge the balance by reading the page.
+- Library terms keep colors consistent: "fuzzing" is the same color on every page that picks it.
+  Any form works (picking `'fuzzers'` colors whichever of fuzzing/fuzzer/fuzzers appears first).
+- A term the library doesn't have can go in `colorKeywordsCustom` for one page. If it starts
+  showing up on several pages, add it to the library instead.
+- The resume picks nothing and stays plain.
+
+**Styles**, each colored to fit a vibe (library terms in the last column):
+
+| Style | Look | Vibe | Library terms |
 |---|---|---|---|
 | `anchor` | blue → green | World Anchor's logo | World Anchor |
 | `qud` | Qud cyan → Qud gold | Caves of Qud's own palette | Caves of Qud |
-| `crimson` | solid red `#ff6b6b` | Attacking | pentesting, red team |
+| `crimson` | solid red `#ff6b6b` | Attacking | pentesting, red team, phishing, email spoofing, domain takeover |
 | `blaze` | red → orange | Something on fire | remote code execution / RCE, exploit development |
 | `glitch` | magenta → red | Unknown and dangerous | zero-day |
 | `ascend` | orange → gold | Climbing up | privilege escalation |
 | `flood` | blue → cyan | Water spilling over | buffer overflow |
-| `ghostly` | pale lavender → violet | Haunted memory | use-after-free |
+| `ghostly` | pale lavender → violet | Haunted, invisible | use-after-free, clickjacking |
 | `static` | cyan → magenta | Noise and chaos | fuzzing |
 | `arcane` | violet → blue | Digging into secrets | reverse engineering |
 | `trophy` | gold → orange | Winning | CTF / capture the flag, proof of concept |
-| `ward` | green → teal | Shields up | defense in depth, least privilege, threat modeling, memory safety |
+| `ward` | green → teal | Shields up | defense in depth, least privilege, threat modeling, memory safety, CSP, HSTS |
 | `iron` | steel blue → silver | Metal links | supply chain |
-| `flow` | lime → cyan | Moving through pipes | CI/CD, infrastructure as code |
+| `flow` | lime → cyan | Moving through pipes | CI/CD, infrastructure as code, GitHub Actions |
 
-When adding a term, pick the style whose vibe fits, or add a new style if none do.
+When adding a term to the library, pick the style whose vibe fits, or add a new style if none do.
 
-Rules (enforced by [`layouts/_partials/keyword_colors.html`](layouts/_partials/keyword_colors.html)):
+**Rules** (enforced by [`layouts/_partials/keyword_colors.html`](layouts/_partials/keyword_colors.html)):
 
-- **First mention only**, at most **2 per paragraph** and **5 per page** (earliest mentions win).
-  Limits are set in the data file.
+- **First mention only**, and at most **2 per paragraph** (earliest mentions win), so terms that sit
+  close together don't pile up.
 - **Never** inside code, links, headings, buttons or HTML attributes, and never in titles,
-  summaries or the RSS feed. Pages can opt out with `noKeywordColors = true` (the resume does).
+  summaries or the RSS feed.
 - **Whole words, any capitalization;** the text keeps its original capitalization.
+- **The build checks the picks:** it fails on a term that isn't in the library or a style that
+  doesn't exist, and warns when a picked term never got colored (a typo, a term that only appears
+  in code/links/headings, or one the paragraph limit skipped).
 - **Only solid and smooth-gradient styles.** A gradient is painted inside the letters of one
   element (`background-clip: text`), so screen readers and copy/paste see a normal word.
   Letter-by-letter effects would need one element per letter, which screen readers read badly.
@@ -156,11 +174,9 @@ Rules (enforced by [`layouts/_partials/keyword_colors.html`](layouts/_partials/k
 - **Every color and every point along each gradient passes 7:1** on the canvas (lowest: steel at
   7.07:1, red at 7.17:1). New styles must too, and need a matching `.kw-NAME` class in
   [`assets/css/extended/keywords.css`](assets/css/extended/keywords.css).
-- **Keep the list short and distinctive.** Coloring common words makes everything look clickable.
 
-For a one-off phrase that isn't in the list, use the shortcode in a post:
-`{{< kw tide >}}some phrase{{< /kw >}}`.
-Manual uses don't count toward the limits, so use them rarely.
+For a one-off phrase mid-sentence, the shortcode still works: `{{< kw arcane >}}some phrase{{< /kw >}}`.
+Front matter is usually cleaner, so use it rarely.
 
 ## Writing for skimmers
 

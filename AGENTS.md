@@ -13,9 +13,10 @@ read like Erik showing someone something cool, not like marketing.
 - **`content/resume.md`:** keep it strictly professional. Do not apply VOICE.md's voice to it.
 - **`content/about.md`:** mostly professional with a light conversational touch; follow the
   toned-down rules in VOICE.md's "Where This Voice Applies" section.
-- Keyword colors are automatic (see "Keyword colors" in STYLE.md). Don't add color markup or
-  `kw` shortcodes for terms already in `data/keywords.yaml`; to color a new recurring term, add it
-  there instead.
+- Keyword colors are picked per page in front matter (see "Keyword colors" in STYLE.md). When
+  drafting a post, propose a few `colorKeywords` that carry its theme (library terms from
+  `data/keywords.yaml`, or `colorKeywordsCustom` with a style whose vibe fits) for Erik to approve.
+  Don't add color markup or `kw` shortcodes in the body, and never add colorKeywords to the resume.
 - Never invent experiences, results, numbers, quotes or opinions. Work from Erik's notes and leave
   `TODO:` markers for anything missing.
 - Never add details about Erik's current or past employers' work beyond what's already on the

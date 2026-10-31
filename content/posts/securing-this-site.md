@@ -4,6 +4,7 @@ date = 2026-10-30
 draft = true
 description = 'The security changes I made to this site, ordered by what they actually stop, from email spoofing down to certificate mis-issuance.'
 tags = ['security', 'github-actions', 'dns', 'web']
+colorKeywords = ['supply chain', 'CSP', 'clickjacking', 'phishing']
 +++
 
 A static site on GitHub Pages doesn't have much to attack: no logins, no forms, no cookies, no

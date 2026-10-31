@@ -1,5 +1,9 @@
-{{- /* Keyword coloring (see data/keywords.yaml). Takes rendered page HTML, returns it with the first
-       mention of each keyword wrapped in <span class="kw kw-STYLE">.
+{{- /* Keyword coloring (see data/keywords.yaml). Called with (dict "page" . "content" .Content).
+       Each page picks its own terms in front matter:
+         colorKeywords = ["fuzzing", "supply chain"]          # looked up in the library
+         colorKeywordsCustom = { "AFL++" = "flood" }          # page-only term = style
+       Returns the content with the first mention of each picked term wrapped in
+       <span class="kw kw-STYLE">, and warns at build time about picked terms that never got colored.
 
        Regex over HTML is only safe if we never touch markup, so the HTML is split into tokens: tags,
        comments, and the plain text between them. Text is only edited when it isn't inside a
@@ -10,17 +14,37 @@
        Matches are first swapped for placeholders (U+E000 index U+E001, private-use characters that
        never appear in content) and only turned into spans at the end, so a later keyword can't match
        text inside an earlier keyword's span. Keywords are tried longest first. */ -}}
-{{- $html := string . -}}
+{{- $page := .page -}}
+{{- $html := string .content -}}
 {{- $data := hugo.Data.keywords -}}
 {{- $protected := slice "a" "code" "pre" "kbd" "samp" "h1" "h2" "h3" "h4" "h5" "h6" "script" "style" "svg" "button" "textarea" "select" "mark" -}}
 
-{{- /* Build one regex per keyword: any of its forms, whole words only, case-insensitive.
+{{- /* Collect this page's picks. Library terms are found by any of their forms, ignoring case, so
+       "fuzzers" picks the fuzzing entry with all its forms and its style. */ -}}
+{{- $picked := slice -}}
+{{- range $page.Param "colorKeywords" -}}
+  {{- $term := . -}}
+  {{- $hit := false -}}
+  {{- range $data.library -}}
+    {{- $entry := . -}}
+    {{- range .match }}{{ if eq (lower .) (lower $term) }}{{ $hit = $entry }}{{ end }}{{ end -}}
+  {{- end -}}
+  {{- if not $hit -}}
+    {{- errorf "%s: color keyword %q isn't in data/keywords.yaml. Add it to the library, or use colorKeywordsCustom = { %q = \"STYLE\" }." $page.File.Path $term $term -}}
+  {{- end -}}
+  {{- $picked = $picked | append (dict "name" $term "match" $hit.match "style" $hit.style) -}}
+{{- end -}}
+{{- range $term, $style := $page.Param "colorKeywordsCustom" -}}
+  {{- $picked = $picked | append (dict "name" $term "match" (slice $term) "style" $style) -}}
+{{- end -}}
+
+{{- /* Build one regex per term: any of its forms, whole words only, case-insensitive.
        Group 1 and 3 are the boundary characters, group 2 is the matched keyword. */ -}}
 {{- $entries := slice -}}
-{{- range $i, $k := $data.keywords -}}
+{{- range $i, $k := $picked -}}
   {{- $style := index $data.styles $k.style -}}
   {{- if not $style -}}
-    {{- errorf "data/keywords.yaml: keyword %v uses unknown style %q" $k.match $k.style -}}
+    {{- errorf "%s: color keyword %q uses unknown style %q (see styles in data/keywords.yaml)" $page.File.Path $k.name $k.style -}}
   {{- end -}}
   {{- $forms := slice -}}
   {{- range $k.match -}}
@@ -34,15 +58,15 @@
   {{- if eq $style.type "gradient" }}{{ $class = printf "%s kw-grad" $class }}{{ end -}}
   {{- $entries = $entries | append (dict
       "i" $i
+      "name" $k.name
       "len" (index $forms 0).len
       "class" $class
       "re" (printf `(?i)(^|[^\p{L}\p{N}_])((?:%s))([^\p{L}\p{N}_]|$)` (delimit $alternatives "|"))) -}}
 {{- end -}}
 {{- $entries = sort $entries "len" "desc" -}}
 
-{{- /* Limits, so a page never turns into a rainbow. A "block" is a paragraph, list item, quote or
-       table cell. */ -}}
-{{- $perPage := $data.limits.perPage | default 5 -}}
+{{- /* Paragraph limit, so a single paragraph never turns into a rainbow even if a page picks several
+       terms that sit close together. A "block" is a paragraph, list item, quote or table cell. */ -}}
 {{- $perBlock := $data.limits.perParagraph | default 2 -}}
 {{- $blockTags := slice "p" "li" "blockquote" "td" "th" "dd" "dt" "figcaption" -}}
 
@@ -52,7 +76,6 @@
 {{- $out := "" -}}
 {{- $protTag := "" -}}
 {{- $depth := 0 -}}
-{{- $total := 0 -}}
 {{- $inBlock := 0 -}}
 {{- range findRE `<!--[\s\S]*?-->|<[^>]*>|[^<]+` $html -}}
   {{- $tok := . -}}
@@ -72,10 +95,11 @@
       {{- if le $depth 0 }}{{ $protTag = "" }}{{ end -}}
     {{- end -}}
   {{- else if eq $protTag "" -}}
-    {{- /* Each pass colors the earliest unused keyword in this text, so limits keep the first
-           mentions in reading order. Ties go to the longer keyword ($entries is longest first). */ -}}
+    {{- /* Each pass colors the earliest unused keyword in this text, so the paragraph limit keeps
+           the first mentions in reading order. Ties go to the longer keyword ($entries is longest
+           first). */ -}}
     {{- range seq $perBlock -}}
-      {{- if and (lt $inBlock $perBlock) (lt $total $perPage) -}}
+      {{- if lt $inBlock $perBlock -}}
         {{- $best := false -}}
         {{- $bestPos := -1 -}}
         {{- $bestMatch := "" -}}
@@ -93,7 +117,6 @@
         {{- end -}}
         {{- with $best -}}
           {{- $e := . -}}
-          {{- $total = add $total 1 -}}
           {{- $inBlock = add $inBlock 1 -}}
           {{- $s.Set (printf "used%d" $e.i) true -}}
           {{- $s.Set (printf "word%d" $e.i) (replaceRE $e.re "$2" $bestMatch) -}}
@@ -105,8 +128,13 @@
   {{- $out = print $out $tok -}}
 {{- end -}}
 
-{{- /* Turn placeholders into spans. The matched text is already HTML-escaped page text. */ -}}
+{{- /* Turn placeholders into spans (the matched text is already HTML-escaped page text), and warn
+       about picks that never got colored: a typo, a term that only appears in code, links or
+       headings, or one the paragraph limit skipped. */ -}}
 {{- range $e := $entries -}}
+  {{- if not ($s.Get (printf "word%d" $e.i)) -}}
+    {{- warnf "%s: color keyword %q wasn't colored (not found in plain text, or skipped by the per-paragraph limit)" $page.File.Path $e.name -}}
+  {{- end -}}
   {{- with $s.Get (printf "word%d" $e.i) -}}
     {{- $out = replace $out (printf "%d" $e.i) (printf `<span class="%s">%s</span>` $e.class .) -}}
   {{- end -}}
