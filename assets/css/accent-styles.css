@@ -1,0 +1,16 @@
+{{- /* Generated: one class per accent style in data/accents.yaml (one color = solid, two = gradient).
+       Styles without colors (the key-point accent) are styled in assets/css/extended/accents.css.
+       Built and linked by layouts/_partials/extend_head.html. */ -}}
+/* Generated from data/accents.yaml by assets/css/accent-styles.css */
+{{ range $name, $s := hugo.Data.accents.styles -}}
+{{- with $s.colors -}}
+{{- range . }}{{ if not (findRE `^#[0-9a-fA-F]{6}$` .) }}{{ errorf "data/accents.yaml: style %q has invalid color %q (use #rrggbb)" $name . }}{{ end }}{{ end -}}
+{{- if eq (len .) 1 -}}
+.accent-{{ $name }} { color: {{ index . 0 }}; }
+{{ else if eq (len .) 2 -}}
+.accent-{{ $name }} { --accent-from: {{ index . 0 }}; --accent-to: {{ index . 1 }}; }
+{{ else -}}
+{{ errorf "data/accents.yaml: style %q needs one color (solid) or two (gradient)" $name }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -8,6 +8,6 @@
 {{- /* Start downloading Open Sans right away instead of after the stylesheet is parsed, so text
        renders in it from the first paint. crossorigin is required for font preloads. */ -}}
 <link rel="preload" href="{{ "fonts/open-sans-latin-wght-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
-{{- /* Keyword color classes, generated from data/keywords.yaml (see "Keyword colors" in STYLE.md). */ -}}
-{{- $kw := resources.Get "css/keyword-styles.css" | resources.ExecuteAsTemplate "assets/css/keyword-styles.css" . | minify | fingerprint }}
-<link rel="stylesheet" href="{{ $kw.RelPermalink }}" integrity="{{ $kw.Data.Integrity }}" crossorigin="anonymous">
+{{- /* Accent color classes, generated from data/accents.yaml (see "Accents" in STYLE.md). */ -}}
+{{- $accents := resources.Get "css/accent-styles.css" | resources.ExecuteAsTemplate "assets/css/accent-styles.css" . | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $accents.RelPermalink }}" integrity="{{ $accents.Data.Integrity }}" crossorigin="anonymous">

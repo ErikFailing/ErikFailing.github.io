@@ -121,95 +121,86 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   Resume) aren't numbered; any page can override with `numberHeadings = true` or `false` in front
   matter. `###` subsections stay unnumbered.
 
-## Keyword colors
+## Accents
 
-A nod to the colored keywords in text games like Caves of Qud: each page picks terms that fit its
-theme, and they get a signature color the first time they appear. Nothing is colored site-wide,
-so every page can be balanced for its own length and subject.
+Color draws the reader to the important points, a nod to the colored keywords in text games like
+Caves of Qud. Accents are written by hand (by me or an LLM) in the Markdown, so they go exactly on
+the words that matter.
 
-**Picking terms for a page** (front matter):
+**Syntax:** link syntax with `=` and a style name. It works on a word, a phrase or a whole
+sentence, and bold or `code` inside still works:
 
-```toml
-colorKeywords = ['fuzzing', 'supply chain']    # terms from the library in data/keywords.yaml
-colorKeywordsCustom = { 'AFL++' = 'flood' }    # page-only terms: 'text' = 'style'
+```markdown
+The [upload step](=flow) [skips anything starting with a dot](=glitch) by default.
+[If the build fails, nothing deploys](=point), so the live site stays on the last good version.
 ```
 
-- **About one colored term per paragraph, on average.** Some paragraphs have two, some have none;
-  skip a paragraph when nothing in it is worth pulling out.
-- **Color the main idea.** The term should be the most important thing in its paragraph or
-  sentence, so skimming the colors gives the gist of the page: the tool, technique, bug or
-  decision the paragraph is about. Brand names and specific techniques beat generic words.
-- **Only the first mention gets colored,** so watch intros and summaries: they mention many terms
-  early. Keep an intro to its one or two main ideas and let other terms color where they're the
-  point (a longer, distinctive phrase can target a later mention).
-- **Library terms keep colors consistent:** "fuzzing" or "Python" is the same color on every page
-  that picks it. Any form works (picking `'fuzzers'` colors whichever of fuzzing/fuzzer/fuzzers
-  appears first).
-- **Page-only terms** go in `colorKeywordsCustom` for ideas specific to one page (most main ideas
-  are). If a term starts showing up on several pages, add it to the library instead.
-- The resume picks nothing and stays plain.
+**Two tiers:**
 
-**Styles.** Colors live in [`data/keywords.yaml`](data/keywords.yaml) (one color = solid, two =
-a left-to-right gradient), and their CSS is generated from it, so the data file is the single
-source of truth.
+1. **Key point (`=point`):** the one takeaway of a section, the sentence or phrase a skimming
+   reader must not miss. Shown as the brightest text, a bit heavier, over a soft green
+   highlighter mark (no hue). **At most one per section**, and not every section needs one.
+2. **Colored accents (every other style):** a tool, company, person, place or idea that carries
+   a paragraph, in a color from the palette below.
 
-- **Mostly solid colors.** Gradients are reserved for signature terms (about 1 style in 5): World
-  Anchor, Caves of Qud, my name, Huntsville, Python's two-color logo, and a few vibes where the
-  shift *is* the meaning (fire, glitch, poison, ghostly, static). Everything else is one color.
-- **Brands** use their own colors: Claude terracotta, OpenAI green, Python blue-and-yellow, Rust
-  copper, JavaScript yellow, Hugo pink, Git orange-red, AWS orange, Hack The Box neon green,
-  Ghidra red, Burp orange, Boeing and Northrop Grumman blues, Docker/Kubernetes/Azure/VS Code
-  blues, and so on (about 45 tools, languages and companies). Brand colors too dark for the
-  background are lightened, keeping their hue, until they pass contrast. Black-and-white brands
-  (Unreal, Unity) use `iron`.
-- **Everything else uses a vibe:**
+**How to accent a page:**
 
-| Style | Look | Vibe | Examples |
-|---|---|---|---|
-| `crimson` | red | Attacking | pentesting, red team, phishing, domain takeover, attack surface |
-| `blaze` | red → orange gradient | Something on fire | RCE, exploit development |
-| `glitch` | magenta → red gradient | Unknown, corrupted | zero-day, memory corruption, dependency confusion |
-| `toxic` | lime → purple gradient | Poison slipped in | SQL injection, command injection, XSS |
-| `ascend` | orange | Climbing up or breaking out | privilege escalation, sandbox escape |
-| `flood` | sky blue | Water spilling over | buffer overflow, integer overflow |
-| `ghostly` | pale lavender → violet gradient | Haunted, invisible | use-after-free, clickjacking, CSRF, side-channel |
-| `static` | cyan → magenta gradient | Noise and chaos | fuzzing, AFL++, race condition, concurrency |
-| `arcane` | violet | Secrets, deep knowledge, AI | reverse engineering, cryptography, SHA-256, LLMs |
-| `trophy` | gold | Winning | CTF, proof of concept, bug bounty, game jam |
-| `ward` | green | Shields up | defense in depth, least privilege, threat modeling, CSP, HSTS, DMARC |
-| `iron` | steel gray-blue | Metal | supply chain, SBOM, Unreal Engine, Unity |
-| `flow` | cyan | Moving through pipes | CI/CD, GitHub Actions, GitHub Pages, Dependabot, unit tests |
-| `clarity` | pale gold | Light and legibility | WCAG, accessibility |
-| `boeing`, `northrop` | brand blues | Companies I've worked for | Boeing Intelligence & Analytics, Northrop Grumman |
-| `signature` | blue → violet gradient | Me | Erik Failing |
-| `rocket` | gold → red gradient | Rocket City launch flame | Huntsville, Alabama |
-| `anchor`, `qud` | own gradients | Projects | World Anchor, Caves of Qud |
+- **About one accent per paragraph, on average.** Some paragraphs get two, some get none; skip a
+  paragraph when nothing in it is worth pulling out.
+- **Accent the main idea.** Skimming only the colored text should give the gist of the page.
+  Accent the phrase that carries the point ("never lands on the live site by surprise"), not just
+  any noun that happens to be in the palette.
+- **Keep accents short:** usually 1 to 6 words. A whole sentence is for key points, and rare.
+- **Picking a style:** a named tool, language, company, person or place gets its own style
+  (`python`, `docker`, `boeing`, `rocket`). Otherwise pick the vibe that matches what the phrase
+  is about (attack, defense, danger, winning, flow, secrets...). The palette's `use` notes list
+  which style fits which tools and terms.
+- **Be consistent:** a tool gets the same style every time it's accented.
+- **Never** in headings, links, code or tables. The resume gets no accents; About gets them
+  sparingly.
 
-The full term list is the `library` in [`data/keywords.yaml`](data/keywords.yaml). When adding a
-term: a tool, language or company gets its brand color (add a style if it's new); anything else
-gets the vibe that fits.
+**The palette** lives in [`data/accents.yaml`](data/accents.yaml): every style's colors and a
+`use` note saying when to pick it, including suggested styles for tools and terms. The CSS is
+generated from it, and a misspelled style name fails the build. In short:
 
-**Rules** (enforced by [`layouts/_partials/keyword_colors.html`](layouts/_partials/keyword_colors.html)):
+| Style | Look | Use for |
+|---|---|---|
+| `point` | bright text + green highlighter mark | The key point of a section (tier 1) |
+| `crimson` | red | Attacks and offensive work: pentesting, red teaming, phishing, takeovers, attack surface |
+| `blaze` | red → orange gradient | Something on fire: RCE, exploit development |
+| `glitch` | magenta → red gradient | Unknown, corrupted or absurd: zero-days, memory corruption, surprising gotchas |
+| `toxic` | lime → purple gradient | Injection bugs: SQL injection, command injection, XSS |
+| `ascend` | orange | Climbing up or breaking out: privilege escalation, sandbox escapes |
+| `flood` | sky blue | Overflows: buffer and integer overflows |
+| `ghostly` | pale lavender → violet gradient | Haunted or invisible: use-after-free, clickjacking, CSRF, side channels |
+| `static` | cyan → magenta gradient | Noise and chaos: fuzzing, AFL++, race conditions, visual glitches |
+| `arcane` | violet | Secrets, deep knowledge, AI: reverse engineering, crypto, hashes, SRI, LLMs |
+| `trophy` | gold | Winning and proving it: CTFs, PoCs, bug bounties, awards, scores |
+| `ward` | green | Defenses: defense in depth, least privilege, threat modeling, CSP, HSTS, DNSSEC, SPF/DMARC, MFA |
+| `iron` | steel gray-blue | Machinery: supply chain, SBOMs, plumbing, black-and-white brands (Unreal, Unity, Squarespace) |
+| `flow` | cyan | Pipelines: CI/CD, GitHub Actions/Pages, Dependabot, build and deploy steps |
+| `clarity` | pale gold | Legibility: WCAG, accessibility, readability, fonts |
+| `signature` | blue → violet gradient | Me (Erik Failing) |
+| `rocket` | gold → red gradient | Huntsville, Alabama (the Rocket City) |
+| `anchor`, `qud` | own gradients | World Anchor, Caves of Qud |
+| Brand styles | brand colors | Companies (`boeing`, `northrop`), AI (`claude`, `openai`), languages (`python`, `rust`, `golang`, `javascript`, `typescript`, `cpp`, `csharp`, `dotnet`, `java`, `bash`, `powershell`, `zig`), security tools (`ghidra`, `burp`, `wireshark`, `metasploit`, `kali`, `htb`, `tryhackme`, `splunk`), dev tools (`git`, `docker`, `kubernetes`, `terraform`, `ansible`, `aws`, `azure`, `cloudflare`, `linux`, `hugo`, `vscode`, `vim`, `godot`, `steam`, `letsencrypt`) |
 
-- **First mention only.** There's no per-paragraph cap; balance comes from the picks.
-- **Never** inside code, links, headings, tables, buttons or HTML attributes, and never in titles,
-  summaries or the RSS feed. Tables are skipped because they're data, and a summary table near the
-  top would otherwise use up every term's first mention.
-- **Whole words, any capitalization;** the text keeps its original capitalization. Straight and
-  curly apostrophes, and `&`, both match. Avoid forms that are also everyday words ("Golang", not
-  "Go").
-- **The build checks the picks:** it fails on a term that isn't in the library, a style that
-  doesn't exist, or a malformed color, and warns when a picked term never got colored (a typo, or
-  a term that only appears in code, links, headings or tables).
-- **Only solid and smooth-gradient styles.** A gradient is painted inside the letters of one
-  element (`background-clip: text`), so screen readers and copy/paste see a normal word.
-- **Solid blues are fine:** links are always underlined and keywords never are, so they don't
-  get confused.
-- **Every color and every point along each gradient passes 7:1** on the canvas (lowest: 7.07:1).
-  Check new colors before adding them.
+**Adding a style:** add it to `data/accents.yaml` with one color (solid) or two (gradient) and a
+`use` note. Keep the palette mostly solid; gradients are for signature styles only (about 1 in 5).
+Brand colors use the brand's own color, lightened (keeping the hue) if needed to pass 7:1.
 
-For a one-off phrase mid-sentence, the shortcode still works: `{{< kw arcane >}}some phrase{{< /kw >}}`.
-Front matter is usually cleaner, so use it rarely.
+**How it's built:**
+
+- [`layouts/_markup/render-link.html`](layouts/_markup/render-link.html) turns `[text](=style)`
+  into `<span class="accent accent-STYLE">` and renders every other link exactly as before.
+- Each style's class is generated from the data file
+  ([`assets/css/accent-styles.css`](assets/css/accent-styles.css)); shared rules, the key-point
+  look, gradients and print/high-contrast fallbacks are in
+  [`assets/css/extended/accents.css`](assets/css/extended/accents.css).
+- A gradient is painted inside the letters of one element (`background-clip: text`), so screen
+  readers and copy/paste see normal text.
+- Every color and every point along each gradient passes 7:1 on the canvas. Solid blues are fine:
+  links are always underlined and accents never are.
 
 ## Writing for skimmers
 

@@ -1,0 +1,95 @@
+# Accent palette: the colors for highlighting the important parts of a page, inspired by the
+# colored keywords in Caves of Qud. See "Accents" in STYLE.md for how to choose and place them.
+#
+# In Markdown, accent a word, phrase or sentence with link syntax and = plus a style name:
+#
+#   [the build pipeline](=ward)       a colored accent (any style below)
+#   [this is the one point to keep](=point)   the key-point accent
+#
+# layouts/_markup/render-link.html turns these into <span class="accent accent-NAME"> (normal links
+# are untouched), and fails the build on a style that isn't listed here. The CSS for each style is
+# generated from this file by assets/css/accent-styles.css; shared rules are in
+# assets/css/extended/accents.css.
+#
+# `colors`: one hex color (solid) or two (a left-to-right gradient). Keep it mostly solid:
+# gradients are for signature styles only (about 1 in 5), so they stay special. Every color, and
+# every point along a gradient, must reach 7:1 contrast on the #08090c background; brand colors
+# that are too dark get lightened (keeping their hue) until they do. Solid blues are fine: links
+# are always underlined and accents never are.
+#
+# `use`: when to pick the style, including the tools and terms it's the right choice for.
+
+styles:
+  # ---- Tier 1: the key point ----
+  point:      { use: "The one takeaway of a section: the sentence or phrase a skimming reader must not miss. At most one per section. Bright text with a soft green highlighter mark, no hue." }
+
+  # ---- Tier 2: vibes (anything that isn't a named tool, company, person or place) ----
+  crimson:    { colors: ["#ff6b6b"], use: "Attacking and offensive work: pentesting, red teaming, phishing, email spoofing, domain or subdomain takeover, authentication bypass, SSRF, attack surface, a risk being exploited" }
+  blaze:      { colors: ["#ff6b6b", "#ff9f43"], use: "Something on fire, high impact: remote code execution (RCE), exploit development, a serious breach" }
+  glitch:     { colors: ["#ff6ad5", "#ff6b6b"], use: "Unknown, corrupted, dangerous or absurd: zero-days, memory corruption, dependency confusion, mistakes made with total confidence" }
+  toxic:      { colors: ["#a6e35b", "#d279eb"], use: "Poison slipped in: SQL injection, command injection, cross-site scripting (XSS)" }
+  ascend:     { colors: ["#ff9f43"], use: "Climbing up or breaking out: privilege escalation, sandbox escapes" }
+  flood:      { colors: ["#5cc8ff"], use: "Water spilling over: buffer and integer overflows" }
+  ghostly:    { colors: ["#e4e2f5", "#b69cff"], use: "Haunted or invisible: use-after-free, clickjacking, CSRF, side-channel attacks" }
+  static:     { colors: ["#4fd8e0", "#ff6ad5"], use: "Noise and chaos: fuzzing, fuzzers, AFL++, libFuzzer, race conditions, concurrency, visual glitches like a font swap" }
+  arcane:     { colors: ["#b69cff"], use: "Secrets, deep knowledge and AI: reverse engineering, static analysis, cryptography and encryption, post-quantum crypto, SHA-256 and checksums, subresource integrity, LLMs, local LLMs, Ollama" }
+  trophy:     { colors: ["#ffd166"], use: "Winning and proving it: CTFs, capture the flag, proofs of concept, bug bounties, game jams, hackathons, scores and grades" }
+  ward:       { colors: ["#3fd68a"], use: "Shields up, defenses: defense in depth, least privilege, threat modeling, memory safety, secure code review, CSP, HSTS, DNSSEC, SPF and DMARC, zero trust, MFA and passkeys, secrets management, coordinated disclosure, vulnerability reporting" }
+  iron:       { colors: ["#a9b8cc"], use: "Metal and machinery: supply chain, SBOMs, the plumbing of a system, black-and-white brands (Unreal Engine, Unity, Squarespace, GitHub)" }
+  flow:       { colors: ["#4fd8e0"], use: "Things moving through pipes: CI/CD, GitHub Actions, GitHub Pages, Dependabot, infrastructure as code, build and deploy steps, unit tests, REST APIs" }
+  clarity:    { colors: ["#ffe08a"], use: "Light and legibility: WCAG, accessibility, readability, typography and fonts" }
+
+  # ---- Tier 2: me, places and projects ----
+  signature:  { colors: ["#4db8ff", "#b69cff"], use: "Me: Erik Failing" }
+  rocket:     { colors: ["#ffd166", "#ff6b6b"], use: "Huntsville, Alabama (the Rocket City)" }
+  anchor:     { colors: ["#4db8ff", "#3fd68a"], use: "World Anchor, my game studio" }
+  qud:        { colors: ["#77bfcf", "#cfc041"], use: "Caves of Qud" }
+
+  # ---- Tier 2: companies ----
+  boeing:     { colors: ["#6699fe"], use: "Boeing, Boeing Intelligence & Analytics" }
+  northrop:   { colors: ["#699edc"], use: "Northrop Grumman" }
+
+  # ---- Tier 2: AI ----
+  claude:     { colors: ["#e38060"], use: "Claude, Claude Code, Anthropic" }
+  openai:     { colors: ["#2ab08b"], use: "ChatGPT, OpenAI" }
+
+  # ---- Tier 2: languages ----
+  python:     { colors: ["#62a1d9", "#ffd43b"], use: "Python" }
+  rust:       { colors: ["#dea584"], use: "Rust" }
+  golang:     { colors: ["#00add8"], use: "Go (Golang)" }
+  javascript: { colors: ["#f7df1e"], use: "JavaScript" }
+  typescript: { colors: ["#589ff0"], use: "TypeScript" }
+  cpp:        { colors: ["#58a1e9"], use: "C++" }
+  csharp:     { colors: ["#d279eb"], use: "C#" }
+  dotnet:     { colors: ["#928fff"], use: ".NET" }
+  java:       { colors: ["#f89820"], use: "Java" }
+  bash:       { colors: ["#54b02e"], use: "Bash, shell scripting" }
+  powershell: { colors: ["#609aff"], use: "PowerShell" }
+  zig:        { colors: ["#f7a41d"], use: "Zig" }
+
+  # ---- Tier 2: security tools ----
+  ghidra:     { colors: ["#fd6f66"], use: "Ghidra" }
+  burp:       { colors: ["#fe7145"], use: "Burp Suite" }
+  wireshark:  { colors: ["#4ca4d4"], use: "Wireshark" }
+  metasploit: { colors: ["#3aa6de"], use: "Metasploit" }
+  kali:       { colors: ["#5f9aff"], use: "Kali Linux" }
+  htb:        { colors: ["#9fef00"], use: "Hack The Box" }
+  tryhackme:  { colors: ["#fe7061"], use: "TryHackMe" }
+  splunk:     { colors: ["#6bac3e"], use: "Splunk" }
+
+  # ---- Tier 2: dev and infrastructure tools ----
+  git:        { colors: ["#fe7155"], use: "Git, Git submodules" }
+  docker:     { colors: ["#34a1f9"], use: "Docker" }
+  kubernetes: { colors: ["#689bfd"], use: "Kubernetes (k8s)" }
+  terraform:  { colors: ["#b883f3"], use: "Terraform" }
+  ansible:    { colors: ["#fe6d5c"], use: "Ansible" }
+  aws:        { colors: ["#ff9900"], use: "AWS" }
+  azure:      { colors: ["#32a2f1"], use: "Azure" }
+  cloudflare: { colors: ["#f38020"], use: "Cloudflare" }
+  linux:      { colors: ["#fcc624"], use: "Linux" }
+  hugo:       { colors: ["#ff6596"], use: "Hugo" }
+  vscode:     { colors: ["#40a1f6"], use: "VS Code" }
+  vim:        { colors: ["#36b24e"], use: "Vim, Neovim" }
+  godot:      { colors: ["#5da2d6"], use: "Godot" }
+  steam:      { colors: ["#66c0f4"], use: "Steam" }
+  letsencrypt: { colors: ["#f9a11b"], use: "Let's Encrypt" }

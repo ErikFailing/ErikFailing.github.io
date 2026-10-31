@@ -1,0 +1,45 @@
+/* Accents: shared rules. In Markdown, [some phrase](=style) becomes
+   <span class="accent accent-STYLE"> (layouts/_markup/render-link.html). Each color style's class
+   is generated from data/accents.yaml by assets/css/accent-styles.css, which loads after this file.
+   See "Accents" in STYLE.md. */
+
+.accent { font-weight: 600; }
+
+/* Fallback: browsers without clip-to-text show the first stop as a flat color. */
+.accent-grad { color: var(--accent-from); }
+
+/* The gradient is painted inside the glyphs of a single element, so the text stays one text node
+   (screen readers and copy/paste see normal text). clone keeps the full gradient on each line if
+   the accent wraps. */
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .accent-grad {
+    background-image: linear-gradient(90deg, var(--accent-from), var(--accent-to));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+}
+
+/* Selected text: show it solid so it stays readable on the selection color. */
+.accent-grad::selection { color: var(--primary); }
+
+/* Tier 1, the key point: no hue, just the brightest text color, a bit heavier, over a soft green
+   highlighter mark on the lower part of the line. Reads as "this is the point", not decoration. */
+.accent-point {
+  color: var(--primary);
+  font-weight: 650;
+  background-image: linear-gradient(transparent 58%, rgba(63, 214, 138, 0.22) 58%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-inline: 0.1em;
+}
+
+/* Windows High Contrast and print: plain text. `.accent.accent` outranks the generated classes. */
+@media (forced-colors: active) {
+  .accent.accent { color: CanvasText; background: none; }
+}
+@media print {
+  .accent.accent { color: inherit; background: none; font-weight: inherit; }
+}

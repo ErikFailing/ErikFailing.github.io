@@ -1,10 +1,8 @@
-{{- /* Override of themes/PaperMod/layouts/single.html. Three changes; when updating PaperMod, diff
+{{- /* Override of themes/PaperMod/layouts/single.html. Two changes; when updating PaperMod, diff
        this file against the theme's:
-       1. If the page picks color keywords (colorKeywords / colorKeywordsCustom in front matter), the
-          post body is passed through layouts/_partials/keyword_colors.html (see data/keywords.yaml).
-       2. Posts get the numbered-headings class, which numbers their section headings and table of
+       1. Posts get the numbered-headings class, which numbers their section headings and table of
           contents with CSS counters (theme.css). A page can override with numberHeadings = true/false.
-       3. Tags show at the top of the post (under the date line) as well as the bottom, both through
+       2. Tags show at the top of the post (under the date line) as well as the bottom, both through
           layouts/_partials/post_tags.html. */ -}}
 {{- define "main" }}
 
@@ -46,14 +44,10 @@
   {{- end }}
 
   {{- if .Content }}
-  {{- $content := .Content }}
-  {{- if or (.Param "colorKeywords") (.Param "colorKeywordsCustom") }}
-  {{- $content = partial "keyword_colors.html" (dict "page" . "content" $content) }}
-  {{- end }}
   <div class="post-content md-content">
     {{- if not (.Param "disableAnchoredHeadings") }}
-    {{- partial "anchored_headings.html" $content -}}
-    {{- else }}{{ $content }}{{ end }}
+    {{- partial "anchored_headings.html" .Content -}}
+    {{- else }}{{ .Content }}{{ end }}
   </div>
   {{- end }}
 

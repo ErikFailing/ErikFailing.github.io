@@ -13,13 +13,12 @@ read like Erik showing someone something cool, not like marketing.
 - **`content/resume.md`:** keep it strictly professional. Do not apply VOICE.md's voice to it.
 - **`content/about.md`:** mostly professional with a light conversational touch; follow the
   toned-down rules in VOICE.md's "Where This Voice Applies" section.
-- Keyword colors are picked per page in front matter (see "Keyword colors" in STYLE.md). When
-  drafting a post, propose `colorKeywords` for Erik to approve: about one colored term per paragraph
-  on average (skip paragraphs with nothing worth pulling out), each the main idea of its paragraph
-  or sentence (library terms from
-  `data/keywords.yaml`, or `colorKeywordsCustom` with a style whose vibe fits). Tools and languages
-  new to the library get their brand colors (lightened to pass 7:1 contrast).
-  Don't add color markup or `kw` shortcodes in the body, and never add colorKeywords to the resume.
+- **Accents** (see "Accents" in STYLE.md): after drafting a post, do an accent pass. Mark the
+  phrase that carries each paragraph's main idea with `[phrase](=style)`, about one per paragraph
+  on average (skip paragraphs with nothing worth pulling out), picking the style from
+  `data/accents.yaml` (a named tool, company, person or place gets its own style; otherwise the
+  vibe that fits). Mark at most one key point per section with `=point`. Never accent headings,
+  links, code, tables or the resume. New tools get a brand-colored style (lightened to pass 7:1).
 - Post section headings (`##`) are numbered automatically by CSS (see "Numbered sections" in
   STYLE.md). Write them without numbers.
 - Never invent experiences, results, numbers, quotes or opinions. Work from Erik's notes and leave

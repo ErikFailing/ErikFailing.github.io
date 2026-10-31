@@ -106,7 +106,7 @@ plan) or a different host, which wasn't worth the rework or risk for this site.
 
 - After updating PaperMod, diff `themes/PaperMod/layouts/_partials/footer.html` against the
   override and `site.js`, and `themes/PaperMod/layouts/single.html` and `list.html` against the overrides in `layouts/`
-  (keyword colors, numbered headings, tags), and copy over any changes.
+  (numbered headings, tags), and copy over any changes.
 - Adding anything from another domain (analytics, embeds, a CDN font) needs a CSP change, and
   inline `<script>`/`style=""` will be blocked. Check the browser console for "Refused to..."
   errors after changes.
