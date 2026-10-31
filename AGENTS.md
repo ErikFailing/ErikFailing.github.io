@@ -14,10 +14,10 @@ read like Erik showing someone something cool, not like marketing.
 - **`content/about.md`:** mostly professional with a light conversational touch; follow the
   toned-down rules in VOICE.md's "Where This Voice Applies" section.
 - **Accents** (see "Accents" in STYLE.md): after drafting a post, do an accent pass. Mark the
-  phrase that carries each paragraph's main idea with `[phrase](=style)`, about one per paragraph
+  phrase that carries each paragraph's main idea with `{=style: phrase=}`, about one per paragraph
   on average (skip paragraphs with nothing worth pulling out), picking the style from
   `data/accents.yaml` (a named tool, company, person or place gets its own style; otherwise the
-  vibe that fits). Mark at most one key point per section with `=point`. Never accent headings,
+  vibe that fits). Mark at most one key point per section with `{=point: ...=}`. Never accent headings,
   links, code, tables or the resume. New tools get a brand-colored style (lightened to pass 7:1).
 - Post section headings (`##`) are numbered automatically by CSS (see "Numbered sections" in
   STYLE.md). Write them without numbers.

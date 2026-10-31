@@ -127,19 +127,19 @@ Color draws the reader to the important points, a nod to the colored keywords in
 Caves of Qud. Accents are written by hand (by me or an LLM) in the Markdown, so they go exactly on
 the words that matter.
 
-**Syntax:** link syntax with `=` and a style name. It works on a word, a phrase or a whole
-sentence, and bold or `code` inside still works:
+**Syntax:** `{=style: text=}`. It works on a word, a phrase or a whole sentence (even across a
+line break), bold or `code` inside still works, and GitHub's file view shows it as plain text:
 
 ```markdown
-The [upload step](=flow) [skips anything starting with a dot](=glitch) by default.
-[If the build fails, nothing deploys](=point), so the live site stays on the last good version.
+The {=flow: upload step=} {=glitch: skips anything starting with a dot=} by default.
+{=point: If the build fails, nothing deploys=}, so the live site stays on the last good version.
 ```
 
 **Two tiers:**
 
-1. **Key point (`=point`):** the one takeaway of a section, the sentence or phrase a skimming
-   reader must not miss. Shown as the brightest text, a bit heavier, over a soft green
-   highlighter mark (no hue). **At most one per section**, and not every section needs one.
+1. **Key point (`{=point: ...=}`):** the one takeaway of a section, the phrase a skimming reader
+   must not miss. Shown as the brightest text, a bit heavier, on a soft full-height green pill
+   (no hue). **At most one per section**, and not every section needs one.
 2. **Colored accents (every other style):** a tool, company, person, place or idea that carries
    a paragraph, in a color from the palette below.
 
@@ -150,7 +150,9 @@ The [upload step](=flow) [skips anything starting with a dot](=glitch) by defaul
 - **Accent the main idea.** Skimming only the colored text should give the gist of the page.
   Accent the phrase that carries the point ("never lands on the live site by surprise"), not just
   any noun that happens to be in the palette.
-- **Keep accents short:** usually 1 to 6 words. A whole sentence is for key points, and rare.
+- **Keep accents short:** usually 1 to 6 words, and key points around 10 words at most. Highlight
+  the core of the idea, not the whole sentence or bullet ("so {=point: the live site stays on the
+  last good version=}", not the full bullet); long highlights get heavy, especially when they wrap.
 - **Picking a style:** a named tool, language, company, person or place gets its own style
   (`python`, `docker`, `boeing`, `rocket`). Otherwise pick the vibe that matches what the phrase
   is about (attack, defense, danger, winning, flow, secrets...). The palette's `use` notes list
@@ -165,7 +167,7 @@ generated from it, and a misspelled style name fails the build. In short:
 
 | Style | Look | Use for |
 |---|---|---|
-| `point` | bright text + green highlighter mark | The key point of a section (tier 1) |
+| `point` | bright text on a soft green pill | The key point of a section (tier 1) |
 | `crimson` | red | Attacks and offensive work: pentesting, red teaming, phishing, takeovers, attack surface |
 | `blaze` | red → orange gradient | Something on fire: RCE, exploit development |
 | `glitch` | magenta → red gradient | Unknown, corrupted or absurd: zero-days, memory corruption, surprising gotchas |
@@ -191,8 +193,12 @@ Brand colors use the brand's own color, lightened (keeping the hue) if needed to
 
 **How it's built:**
 
-- [`layouts/_markup/render-link.html`](layouts/_markup/render-link.html) turns `[text](=style)`
-  into `<span class="accent accent-STYLE">` and renders every other link exactly as before.
+- `{=` and `=}` are Goldmark passthrough delimiters (`hugo.toml`), so Markdown hands the text
+  untouched to [`layouts/_markup/render-passthrough.html`](layouts/_markup/render-passthrough.html),
+  which renders it as inline Markdown inside `<span class="accent accent-STYLE">`. Code spans are
+  never touched. A malformed accent or unknown style fails the build, and
+  [`layouts/_markup/render-link.html`](layouts/_markup/render-link.html) fails it on the old
+  `[text](=style)` syntax (otherwise it renders links exactly like Hugo's default).
 - Each style's class is generated from the data file
   ([`assets/css/accent-styles.css`](assets/css/accent-styles.css)); shared rules, the key-point
   look, gradients and print/high-contrast fallbacks are in

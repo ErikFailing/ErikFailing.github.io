@@ -264,8 +264,8 @@ These are starting points, not forms to fill in. Drop sections that don't apply.
 - Use the occasional *italics* for emphasis on one word ("*insane* amounts of development time").
 - Mix short punchy sentences with longer run-on, comma-joined ones, the way people actually talk.
 - Don't bold things to make them pop. After the draft is written, do an accent pass instead (see
-  "Accents" in STYLE.md): mark each paragraph's main idea with `[phrase](=style)`, about one per
-  paragraph on average, and at most one `=point` key point per section.
+  "Accents" in STYLE.md): mark each paragraph's main idea with `{=style: phrase=}`, about one per
+  paragraph on average, and at most one `{=point: ...=}` key point per section.
 
 **Don't:**
 - **No em dashes (—). Ever.** I don't use them. Use a comma, a period, a colon, or parentheses instead. This is the single biggest tell that something wasn't written by me.
@@ -349,6 +349,6 @@ fix "fishing net," add the missing punctuation, and keep everything else.)
 - [ ] Typos, dictation errors and tool names fixed, but the casual voice left alone?
 - [ ] Is the humor light, self-deprecating, and something I'd actually say?
 - [ ] Accent pass done: about one accent per paragraph on its main idea, styles from the palette,
-  at most one `=point` per section, none in headings, links or code?
+  at most one `{=point: ...=}` per section, none in headings, links or code?
 - [ ] Is this a resume edit? Then none of this voice applies: keep it professional. An About
   edit? Use the toned-down version described at the top.

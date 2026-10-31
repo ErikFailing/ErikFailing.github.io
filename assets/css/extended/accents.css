@@ -25,15 +25,17 @@
 /* Selected text: show it solid so it stays readable on the selection color. */
 .accent-grad::selection { color: var(--primary); }
 
-/* Tier 1, the key point: no hue, just the brightest text color, a bit heavier, over a soft green
-   highlighter mark on the lower part of the line. Reads as "this is the point", not decoration. */
+/* Tier 1, the key point: no hue, just the brightest text color, a bit heavier, on a soft
+   full-height green pill. Reads as "this is the point", not decoration. clone gives each wrapped
+   line its own rounded pill. */
 .accent-point {
   color: var(--primary);
   font-weight: 650;
-  background-image: linear-gradient(transparent 58%, rgba(63, 214, 138, 0.22) 58%);
+  background: rgba(63, 214, 138, 0.13);
+  border-radius: 4px;
+  padding: 0.05em 0.3em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  padding-inline: 0.1em;
 }
 
 /* Windows High Contrast and print: plain text. `.accent.accent` outranks the generated classes. */

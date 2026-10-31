@@ -1,0 +1,23 @@
+{{- /* Accents: {=style: some phrase=} renders as <span class="accent accent-STYLE">, with STYLE from
+       data/accents.yaml (see "Accents" in STYLE.md). The {= =} delimiters are Goldmark passthrough
+       delimiters (hugo.toml), so GitHub's file view shows them as plain text, and Markdown leaves
+       them alone inside code. The phrase arrives raw, so it's rendered as inline Markdown here
+       (bold and `code` inside an accent still work). A malformed accent or unknown style fails
+       the build. */ -}}
+{{- if ne .Type "inline" -}}
+  {{- errorf "%s: block passthrough isn't used on this site (accents are inline: {=style: text=})" .Position -}}
+{{- end -}}
+{{- $parts := findRESubmatch `(?s)^\s*([a-z0-9-]+):\s*(.+?)\s*$` .Inner 1 -}}
+{{- if not $parts -}}
+  {{- errorf "%s: malformed accent {=%s=}; use {=style: text=}" .Position .Inner -}}
+{{- end -}}
+{{- $name := index $parts 0 1 -}}
+{{- $text := index $parts 0 2 -}}
+{{- $style := index hugo.Data.accents.styles $name -}}
+{{- if not $style -}}
+  {{- errorf "%s: accent style %q isn't in data/accents.yaml" .Position $name -}}
+{{- end -}}
+<span class="accent accent-{{ $name }}{{ if gt (len ($style.colors | default slice)) 1 }} accent-grad{{ end }}">
+  {{- .Page.RenderString (dict "display" "inline") $text -}}
+</span>
+{{- /* trims the trailing newline */ -}}

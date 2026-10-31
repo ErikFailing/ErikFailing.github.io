@@ -208,6 +208,15 @@ enableRobotsTXT = true
   # [params.analytics.bing]
   #   SiteVerificationTag = ''
 
+# Accents: {=style: some phrase=} in Markdown is passed through untouched to
+# layouts/_markup/render-passthrough.html, which turns it into a colored span (see "Accents" in
+# STYLE.md). Using passthrough delimiters means GitHub's file view shows accents as plain text.
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    inline = [['{=', '=}']]
+    block = []
+
 # Syntax highlighting for code blocks. github-dark's token colors pass 7:1 on the code background
 # except comments (6:1). theme.css sets the block background and border.
 # Styles: https://xyproto.github.io/splash/docs/

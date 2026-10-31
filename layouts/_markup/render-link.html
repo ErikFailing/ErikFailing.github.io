@@ -1,16 +1,8 @@
-{{- /* Link render hook. Two jobs:
-       1. Accents: [some phrase](=style) renders the phrase as <span class="accent accent-STYLE">
-          instead of a link, with STYLE from data/accents.yaml (see "Accents" in STYLE.md). An
-          unknown style fails the build.
-       2. Every other link renders exactly like Hugo's default Markdown link. */ -}}
-{{- $dest := .Destination -}}
-{{- if hasPrefix $dest "=" -}}
-  {{- $name := strings.TrimPrefix "=" $dest -}}
-  {{- $style := index hugo.Data.accents.styles $name -}}
-  {{- if not $style -}}
-    {{- errorf "%s: accent style %q (on %q) isn't in data/accents.yaml" .Page.File.Path $name .PlainText -}}
-  {{- end -}}
-  <span class="accent accent-{{ $name }}{{ if gt (len ($style.colors | default slice)) 1 }} accent-grad{{ end }}">{{ .Text }}</span>
-{{- else -}}
-  <a href="{{ $dest | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text }}</a>
+{{- /* Link render hook: renders links exactly like Hugo's default Markdown link. Its only extra job
+       is catching the old accent syntax, [text](=style), which would otherwise become a broken
+       link: accents are written {=style: text=} now (see "Accents" in STYLE.md). */ -}}
+{{- if hasPrefix .Destination "=" -}}
+  {{- errorf "%s: old accent syntax [%s](%s); write it as {=%s: %s=}" .Page.File.Path .PlainText .Destination (strings.TrimPrefix "=" .Destination) .PlainText -}}
 {{- end -}}
+<a href="{{ .Destination | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text }}</a>
+{{- /* trims the trailing newline */ -}}

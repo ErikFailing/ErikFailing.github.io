@@ -1,13 +1,14 @@
 # Accent palette: the colors for highlighting the important parts of a page, inspired by the
 # colored keywords in Caves of Qud. See "Accents" in STYLE.md for how to choose and place them.
 #
-# In Markdown, accent a word, phrase or sentence with link syntax and = plus a style name:
+# In Markdown, accent a word, phrase or sentence like this:
 #
-#   [the build pipeline](=ward)       a colored accent (any style below)
-#   [this is the one point to keep](=point)   the key-point accent
+#   {=ward: the build pipeline=}              a colored accent (any style below)
+#   {=point: this is the one point to keep=}  the key-point accent
 #
-# layouts/_markup/render-link.html turns these into <span class="accent accent-NAME"> (normal links
-# are untouched), and fails the build on a style that isn't listed here. The CSS for each style is
+# {= =} are passthrough delimiters (hugo.toml), so GitHub shows accents as plain text.
+# layouts/_markup/render-passthrough.html turns them into <span class="accent accent-NAME">, and
+# fails the build on a malformed accent or a style that isn't listed here. The CSS for each style is
 # generated from this file by assets/css/accent-styles.css; shared rules are in
 # assets/css/extended/accents.css.
 #
@@ -21,7 +22,7 @@
 
 styles:
   # ---- Tier 1: the key point ----
-  point:      { use: "The one takeaway of a section: the sentence or phrase a skimming reader must not miss. At most one per section. Bright text with a soft green highlighter mark, no hue." }
+  point:      { use: "The one takeaway of a section: the sentence or phrase a skimming reader must not miss. At most one per section. Keep it to the core phrase (about 10 words at most). Bright text on a soft green pill, no hue." }
 
   # ---- Tier 2: vibes (anything that isn't a named tool, company, person or place) ----
   crimson:    { colors: ["#ff6b6b"], use: "Attacking and offensive work: pentesting, red teaming, phishing, email spoofing, domain or subdomain takeover, authentication bypass, SSRF, attack surface, a risk being exploited" }
