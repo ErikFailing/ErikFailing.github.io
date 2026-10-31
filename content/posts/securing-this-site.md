@@ -3,7 +3,7 @@ title = 'Securing a Static Site'
 date = 2026-10-30
 draft = true
 description = 'The security changes I made to this site, ordered by what they actually stop, from email spoofing down to certificate mis-issuance.'
-tags = ['security', 'github-actions', 'dns', 'web']
+tags = ['Security', 'GitHub Actions', 'DNS', 'Web']
 +++
 
 A static site on GitHub Pages {=ward: doesn't have much to attack=}: no logins, no forms, no cookies, no

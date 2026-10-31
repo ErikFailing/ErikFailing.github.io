@@ -12,5 +12,10 @@
 {{ else -}}
 {{ errorf "data/accents.yaml: style %q needs one color (solid) or two (gradient)" $name }}
 {{- end -}}
-{{- end -}}
+{{- /* Tag pill in this style's (first) color: colored text, faint tinted border and fill.
+       Outranks the default green .post-tags a rule. */ -}}
+{{- $c := index . 0 }}
+.post-tags .tag-{{ $name }} a { color: {{ $c }}; border-color: color-mix(in srgb, {{ $c }} 35%, transparent); background: color-mix(in srgb, {{ $c }} 10%, transparent); }
+.post-tags .tag-{{ $name }} a:hover { color: {{ $c }}; border-color: {{ $c }}; background: color-mix(in srgb, {{ $c }} 16%, transparent); }
+{{ end -}}
 {{- end -}}

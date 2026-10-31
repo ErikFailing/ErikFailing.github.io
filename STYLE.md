@@ -106,7 +106,11 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   border and light-blue text.
 - **Social icons:** muted gray at rest, blue on hover.
 - **Cards:** `--entry` fill and `--border` edge; the edge turns dark blue on hover.
-- **Tags:** green pills (tint fill, green edge and text); brighter on hover. Posts show them at
+- **Tags:** pills (tint fill, edge and text) in the matching accent style's color: a tag named like a
+  style (`hugo`) uses it automatically, others are mapped in the `tags` list in
+  `data/accents.yaml`, and unmatched tags stay green. Brighter on hover. Write tags in front matter
+  the way they should display (`tags = ['GitHub Actions', 'AI']`); Hugo still makes lowercase URLs
+  (`/tags/github-actions/`), and the color mapping uses those slugs. Posts show them at
   the top (under the date line, slightly smaller) and at the bottom, and every card in a post list
   shows its post's tags, all through `layouts/_partials/post_tags.html`.
 - **Code blocks:** Hugo's `github-dark` highlighting on `#111318` with a `--border` edge; long

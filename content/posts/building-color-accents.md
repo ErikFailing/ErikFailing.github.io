@@ -3,7 +3,7 @@ title = 'Building the Color Accents on This Site'
 date = 2026-10-31
 draft = false
 description = 'Three versions of a text-coloring system, from automatic keyword matching to hand-placed accents, and what each one taught me.'
-tags = ['hugo', 'design', 'web']
+tags = ['Hugo', 'Design', 'Web']
 +++
 
 The colored words on this site went through three versions before they actually did their job.

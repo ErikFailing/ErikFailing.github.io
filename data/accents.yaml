@@ -94,3 +94,14 @@ styles:
   godot:      { colors: ["#5da2d6"], use: "Godot" }
   steam:      { colors: ["#66c0f4"], use: "Steam" }
   letsencrypt: { colors: ["#f9a11b"], use: "Let's Encrypt" }
+
+# Tag colors: a post's tag pills use an accent style's color. A tag named exactly like a style
+# (hugo, python, docker...) uses that style automatically; other tags are mapped here (tag slug:
+# style). Unmatched tags stay the default green.
+tags:
+  github-actions: flow
+  ai: arcane
+  security: ward
+  dns: iron
+  web: flood
+  design: clarity

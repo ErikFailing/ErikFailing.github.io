@@ -1,12 +1,19 @@
 {{- /* A page's tags as a row of pills. Called with (dict "page" . "class" "extra-class").
        Used at the top and bottom of posts (layouts/single.html) and on each entry in post lists
-       (layouts/list.html). Renders nothing if the page has no tags. */ -}}
+       (layouts/list.html). Renders nothing if the page has no tags.
+       Each tag takes an accent style's color when one matches: a style with the tag's exact name,
+       or the `tags` map in data/accents.yaml. Others keep the default green. */ -}}
 {{- $page := .page -}}
+{{- $accents := hugo.Data.accents -}}
 {{- $taxonomy := $page.Language.Params.Taxonomies.tag | default "tags" -}}
 {{- with $page.GetTerms $taxonomy }}
 <ul class="post-tags{{ with $.class }} {{ . }}{{ end }}" aria-label="Tags">
   {{- range . }}
-  <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+  {{- $slug := path.Base .RelPermalink -}}
+  {{- $style := index $accents.tags $slug | default "" -}}
+  {{- if and (not $style) (index $accents.styles $slug) }}{{ $style = $slug }}{{ end -}}
+  {{- with $style }}{{ if not (index $accents.styles .) }}{{ errorf "data/accents.yaml: tag %q maps to unknown style %q" $slug . }}{{ end }}{{ end }}
+  <li{{ with $style }} class="tag-{{ . }}"{{ end }}><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
   {{- end }}
 </ul>
 {{- end }}
