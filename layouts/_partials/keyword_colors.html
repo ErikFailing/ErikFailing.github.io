@@ -17,7 +17,9 @@
 {{- $page := .page -}}
 {{- $html := string .content -}}
 {{- $data := hugo.Data.keywords -}}
-{{- $protected := slice "a" "code" "pre" "kbd" "samp" "h1" "h2" "h3" "h4" "h5" "h6" "script" "style" "svg" "button" "textarea" "select" "mark" -}}
+{{- /* Never colored inside these. Tables are data (and a summary table near the top would otherwise
+       use up the first mention of every term before the prose gets to it). */ -}}
+{{- $protected := slice "a" "code" "pre" "kbd" "samp" "h1" "h2" "h3" "h4" "h5" "h6" "table" "script" "style" "svg" "button" "textarea" "select" "mark" -}}
 
 {{- /* Collect this page's picks. Library terms are found by any of their forms, ignoring case, so
        "fuzzers" picks the fuzzing entry with all its forms and its style. */ -}}
@@ -49,13 +51,16 @@
   {{- $forms := slice -}}
   {{- range $k.match -}}
     {{- $escaped := replaceRE `([.+*?()\[\]{}|^$\\])` `\$1` . -}}
-    {{- $forms = $forms | append (dict "len" (len .) "re" (replaceRE `\s+` `\s+` $escaped)) -}}
+    {{- /* Spaces match any whitespace (Markdown can wrap a phrase across lines), and an apostrophe
+           matches the curly ’ / &rsquo; that Hugo's typographer turns it into. */ -}}
+    {{- $re := replace (replaceRE `\s+` `\s+` $escaped) "'" "(?:'|’|&rsquo;|&#39;)" -}}
+    {{- $forms = $forms | append (dict "len" (len .) "re" $re) -}}
   {{- end -}}
   {{- $forms = sort $forms "len" "desc" -}}
   {{- $alternatives := slice -}}
   {{- range $forms }}{{ $alternatives = $alternatives | append .re }}{{ end -}}
   {{- $class := printf "kw kw-%s" $k.style -}}
-  {{- if eq $style.type "gradient" }}{{ $class = printf "%s kw-grad" $class }}{{ end -}}
+  {{- if gt (len $style.colors) 1 }}{{ $class = printf "%s kw-grad" $class }}{{ end -}}
   {{- $entries = $entries | append (dict
       "i" $i
       "name" $k.name

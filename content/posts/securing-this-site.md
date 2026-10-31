@@ -4,7 +4,8 @@ date = 2026-10-30
 draft = true
 description = 'The security changes I made to this site, ordered by what they actually stop, from email spoofing down to certificate mis-issuance.'
 tags = ['security', 'github-actions', 'dns', 'web']
-colorKeywords = ['supply chain', 'CSP', 'clickjacking', 'phishing']
+colorKeywords = ['GitHub Pages', 'DMARC', 'supply chain', 'GitHub Actions', 'attack surface', 'SHA-256', 'CSP', 'XSS', 'clickjacking', 'subresource integrity', 'defense in depth', 'HSTS', 'phishing', "Let's Encrypt", 'Cloudflare', 'DNSSEC']
+colorKeywordsCustom = { 'commit SHAs' = 'iron' }
 +++
 
 A static site on GitHub Pages doesn't have much to attack: no logins, no forms, no cookies, no
@@ -20,7 +21,7 @@ order, what attack each one stops, and the couple of things I decided weren't wo
 | 4 | HSTS | First-visit interception on hostile Wi-Fi | Low (**TBD**) |
 | 5 | CAA records | A certificate for my domain issued by the wrong authority | Low |
 
-## 1) Email Spoofing: SPF And DMARC
+## Email Spoofing: SPF And DMARC
 
 This was the biggest open gap, and honestly not one I expected going in. I don't send any email
 from erikfailing.com, so I never thought about it, but that's exactly the problem. With no email
@@ -42,7 +43,7 @@ this domain, there's nothing for these records to break. Gmail already spam-fold
 unauthenticated mail on its own, but that's Gmail's call; these records make it my explicit
 policy everywhere.
 
-## 2) The Build Pipeline
+## The Build Pipeline
 
 I think this is the most interesting one, because it's the only path to something actually bad.
 Anyone who can change what the build produces controls the live site, and no browser header can
@@ -75,7 +76,7 @@ echo "${HUGO_SHA256}  ${{ runner.temp }}/hugo_${HUGO_VERSION}_linux-amd64.tar.gz
 I didn't pin actions to commit SHAs. All of them are GitHub's own, and pinning would mean an
 update pull request for every minor release. That's a trade-off I'm fine with for now.
 
-## 3) Content-Security-Policy
+## Content-Security-Policy
 
 A CSP tells the browser where scripts, styles, fonts and images are allowed to come from. Mine
 only allows the site itself:
@@ -103,7 +104,7 @@ so the CSP is defense in depth, not a wall. I tested it by loading every page in
 with zero violations, and with a positive control page to make sure violations were actually
 being caught.
 
-## 4) HSTS (TBD)
+## HSTS (TBD)
 
 HSTS tells browsers "only ever use HTTPS for this domain." Without it, the very first request to
 `http://erikfailing.com` (say, someone typing the address on hotel Wi-Fi) goes out unencrypted
@@ -118,7 +119,7 @@ Pro and reopened it lol.
 
 **TBD:** waiting on GitHub Support.
 
-## 5) CAA Records
+## CAA Records
 
 Any of the hundreds of certificate authorities browsers trust can issue an HTTPS certificate for
 any domain, as long as the requester passes that authority's check. A CAA record limits it to the

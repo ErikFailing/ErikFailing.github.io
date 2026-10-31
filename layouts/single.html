@@ -1,10 +1,14 @@
-{{- /* Override of themes/PaperMod/layouts/single.html. Only change: if the page picks color keywords
-       (colorKeywords / colorKeywordsCustom in front matter), the post body is passed through
-       layouts/_partials/keyword_colors.html (see data/keywords.yaml). When updating PaperMod, diff
-       this file against the theme's. */ -}}
+{{- /* Override of themes/PaperMod/layouts/single.html. Two changes; when updating PaperMod, diff this
+       file against the theme's:
+       1. If the page picks color keywords (colorKeywords / colorKeywordsCustom in front matter), the
+          post body is passed through layouts/_partials/keyword_colors.html (see data/keywords.yaml).
+       2. Posts get the numbered-headings class, which numbers their section headings and table of
+          contents with CSS counters (theme.css). A page can override with numberHeadings = true/false. */ -}}
 {{- define "main" }}
 
-<article class="post-single">
+{{- $numbered := eq .Section "posts" }}
+{{- if isset .Params "numberheadings" }}{{ $numbered = .Params.numberheadings }}{{ end }}
+<article class="post-single{{ if $numbered }} numbered-headings{{ end }}">
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
     <h1 class="post-title entry-hint-parent">

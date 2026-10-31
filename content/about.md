@@ -5,7 +5,8 @@ draft = false
 hideMeta = true
 ShowToc = false
 ShowBreadCrumbs = false
-colorKeywords = ['pentest', 'fuzzing', 'World Anchor', 'CI/CD', 'CTF']
+colorKeywords = ['Huntsville', 'pentest', 'fuzzing', 'World Anchor', 'CI/CD', 'game jam', 'CTF']
+colorKeywordsCustom = { 'software assurance' = 'ward' }
 +++
 
 I'm a software and security engineer in Huntsville, Alabama, with 5+ years in defense and

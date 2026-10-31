@@ -113,12 +113,17 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 - **Blockquotes:** 3px green bar, upright body text.
 - **Tables:** horizontal rules only, surface-2 header row, scroll sideways on phones.
 - **Images:** 1px `--border` so dark screenshots don't blend into the page.
+- **Numbered sections (posts only):** each `##` section heading is numbered "1.", "2.", ... with
+  the number in green, and the table of contents shows the same numbers. It's generated with CSS
+  counters, so headings are written plainly in Markdown, never numbered by hand. Pages (About,
+  Resume) aren't numbered; any page can override with `numberHeadings = true` or `false` in front
+  matter. `###` subsections stay unnumbered.
 
 ## Keyword colors
 
-A nod to the colored keywords in text games like Caves of Qud: each page picks a few terms that
-fit its theme, and they get a signature color the first time they appear. Nothing is colored
-site-wide, so every page can be balanced for its own length and subject.
+A nod to the colored keywords in text games like Caves of Qud: each page picks terms that fit its
+theme, and they get a signature color the first time they appear. Nothing is colored site-wide,
+so every page can be balanced for its own length and subject.
 
 **Picking terms for a page** (front matter):
 
@@ -127,53 +132,71 @@ colorKeywords = ['fuzzing', 'supply chain']    # terms from the library in data/
 colorKeywordsCustom = { 'AFL++' = 'flood' }    # page-only terms: 'text' = 'style'
 ```
 
-- Pick terms that carry the page's theme and keep it interesting, not every term that appears.
-  As a rough feel: a short page might have two or three, a long writeup a handful. There's no
-  fixed cap; judge the balance by reading the page.
-- Library terms keep colors consistent: "fuzzing" is the same color on every page that picks it.
-  Any form works (picking `'fuzzers'` colors whichever of fuzzing/fuzzer/fuzzers appears first).
-- A term the library doesn't have can go in `colorKeywordsCustom` for one page. If it starts
-  showing up on several pages, add it to the library instead.
+- **Rule of thumb: a colored keyword every paragraph or two.** Enough that the page feels alive
+  throughout, never several crowded into one spot. There's no fixed cap, since pages differ in
+  length; judge the rhythm by reading the page.
+- **Pick terms that carry the theme of that part of the page:** the tool, technique, bug or idea
+  the paragraph is about. Brand names and specific techniques make better keywords than generic
+  words.
+- **Library terms keep colors consistent:** "fuzzing" or "Python" is the same color on every page
+  that picks it. Any form works (picking `'fuzzers'` colors whichever of fuzzing/fuzzer/fuzzers
+  appears first).
+- **Page-only terms** go in `colorKeywordsCustom` when the library has nothing that fits a stretch
+  of the page. If a term starts showing up on several pages, add it to the library instead.
 - The resume picks nothing and stays plain.
 
-**Styles**, each colored to fit a vibe (library terms in the last column):
+**Styles.** Colors live in [`data/keywords.yaml`](data/keywords.yaml) (one color = solid, two =
+a left-to-right gradient), and their CSS is generated from it, so the data file is the single
+source of truth.
 
-| Style | Look | Vibe | Library terms |
+- **Brands** use their own colors: Claude terracotta, OpenAI green, Python blue-and-yellow, Rust
+  copper, JavaScript yellow, Hugo pink, Git orange-red, AWS orange, Hack The Box neon green,
+  Ghidra red, Burp orange, Docker/Kubernetes/Azure/VS Code blues, and so on (about 40 tools and
+  languages). Brand colors too dark for the background are lightened, keeping their hue, until
+  they pass contrast. Black-and-white brands (Unreal, Unity) use `iron`.
+- **Everything else uses a vibe:**
+
+| Style | Look | Vibe | Examples |
 |---|---|---|---|
-| `anchor` | blue → green | World Anchor's logo | World Anchor |
-| `qud` | Qud cyan → Qud gold | Caves of Qud's own palette | Caves of Qud |
-| `crimson` | solid red `#ff6b6b` | Attacking | pentesting, red team, phishing, email spoofing, domain takeover |
-| `blaze` | red → orange | Something on fire | remote code execution / RCE, exploit development |
-| `glitch` | magenta → red | Unknown and dangerous | zero-day |
-| `ascend` | orange → gold | Climbing up | privilege escalation |
-| `flood` | blue → cyan | Water spilling over | buffer overflow |
-| `ghostly` | pale lavender → violet | Haunted, invisible | use-after-free, clickjacking |
-| `static` | cyan → magenta | Noise and chaos | fuzzing |
-| `arcane` | violet → blue | Digging into secrets | reverse engineering |
-| `trophy` | gold → orange | Winning | CTF / capture the flag, proof of concept |
-| `ward` | green → teal | Shields up | defense in depth, least privilege, threat modeling, memory safety, CSP, HSTS |
-| `iron` | steel blue → silver | Metal links | supply chain |
-| `flow` | lime → cyan | Moving through pipes | CI/CD, infrastructure as code, GitHub Actions |
+| `crimson` | solid red | Attacking | pentesting, red team, phishing, domain takeover, attack surface |
+| `blaze` | red → orange | Something on fire | RCE, exploit development |
+| `glitch` | magenta → red | Unknown, corrupted | zero-day, memory corruption, dependency confusion |
+| `toxic` | lime → purple | Poison slipped in | SQL injection, command injection, XSS |
+| `ascend` | orange → gold | Climbing up or breaking out | privilege escalation, sandbox escape |
+| `flood` | blue → cyan | Water spilling over | buffer overflow, integer overflow |
+| `ghostly` | pale lavender → violet | Haunted, invisible | use-after-free, clickjacking, CSRF, side-channel |
+| `static` | cyan → magenta | Noise and chaos | fuzzing, AFL++, race condition, concurrency |
+| `arcane` | violet → blue | Secrets, deep knowledge, AI | reverse engineering, cryptography, SHA-256, LLMs |
+| `trophy` | gold → orange | Winning | CTF, proof of concept, bug bounty, game jam |
+| `ward` | green → teal | Shields up | defense in depth, least privilege, threat modeling, CSP, HSTS, DMARC |
+| `iron` | steel blue → silver | Metal | supply chain, SBOM, Unreal Engine, Unity |
+| `flow` | lime → cyan | Moving through pipes | CI/CD, GitHub Actions, GitHub Pages, unit tests |
+| `clarity` | gold → pale lavender | Light and legibility | WCAG, accessibility |
+| `signature` | blue → violet | Me | Erik Failing |
+| `rocket` | gold → red | Rocket City launch flame | Huntsville, Alabama |
+| `anchor`, `qud` | own palettes | Projects | World Anchor, Caves of Qud |
 
-When adding a term to the library, pick the style whose vibe fits, or add a new style if none do.
+The full term list is the `library` in [`data/keywords.yaml`](data/keywords.yaml). When adding a
+term: a tool or language gets its brand colors (add a style if it's new); anything else gets the
+vibe that fits.
 
 **Rules** (enforced by [`layouts/_partials/keyword_colors.html`](layouts/_partials/keyword_colors.html)):
 
-- **First mention only**, and at most **2 per paragraph** (earliest mentions win), so terms that sit
-  close together don't pile up.
-- **Never** inside code, links, headings, buttons or HTML attributes, and never in titles,
-  summaries or the RSS feed.
-- **Whole words, any capitalization;** the text keeps its original capitalization.
-- **The build checks the picks:** it fails on a term that isn't in the library or a style that
-  doesn't exist, and warns when a picked term never got colored (a typo, a term that only appears
-  in code/links/headings, or one the paragraph limit skipped).
+- **First mention only**, and at most **2 per paragraph** (earliest mentions win).
+- **Never** inside code, links, headings, tables, buttons or HTML attributes, and never in titles,
+  summaries or the RSS feed. Tables are skipped because they're data, and a summary table near the
+  top would otherwise use up every term's first mention.
+- **Whole words, any capitalization;** the text keeps its original capitalization. Straight and
+  curly apostrophes both match. Avoid forms that are also everyday words ("Golang", not "Go").
+- **The build checks the picks:** it fails on a term that isn't in the library, a style that
+  doesn't exist, or a malformed color, and warns when a picked term never got colored (a typo, a
+  term that only appears in code/links/headings/tables, or one the paragraph limit skipped).
 - **Only solid and smooth-gradient styles.** A gradient is painted inside the letters of one
   element (`background-clip: text`), so screen readers and copy/paste see a normal word.
-  Letter-by-letter effects would need one element per letter, which screen readers read badly.
-- **No solid-blue style,** so a keyword never looks like a link.
+- **No solid-blue style,** so a keyword never looks like a link (blue brands get a lighter second
+  stop).
 - **Every color and every point along each gradient passes 7:1** on the canvas (lowest: steel at
-  7.07:1, red at 7.17:1). New styles must too, and need a matching `.kw-NAME` class in
-  [`assets/css/extended/keywords.css`](assets/css/extended/keywords.css).
+  7.07:1). Check new colors before adding them.
 
 For a one-off phrase mid-sentence, the shortcode still works: `{{< kw arcane >}}some phrase{{< /kw >}}`.
 Front matter is usually cleaner, so use it rarely.

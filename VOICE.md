@@ -193,7 +193,8 @@ When I'm working through a bigger idea, my posts tend to go like this:
 5. **Say what it means in practice.** What I'm actually going to do, and what it costs.
 6. **Wrap up briefly.** "In conclusion, I think..." is fine. Restate where I landed, admit what's still open, maybe one last joke.
 
-I like section headers that are plain and a little personal, like "My Personal Game Preference,"
+Section headers are numbered automatically on posts ("1. The Setup In One Picture"), so write
+them without numbers. I like section headers that are plain and a little personal, like "My Personal Game Preference,"
 "Why My Game Pref Is An Issue," "Conclusion." Not clever, not clickbait.
 
 Every post also opens with a one-to-three-sentence summary of what it covers and what I found, so
@@ -263,8 +264,9 @@ These are starting points, not forms to fill in. Drop sections that don't apply.
 - Use the occasional *italics* for emphasis on one word ("*insane* amounts of development time").
 - Mix short punchy sentences with longer run-on, comma-joined ones, the way people actually talk.
 - Just write terms like "fuzzing" or "World Anchor" normally in the body, never with color markup
-  or bold to make them pop. Color comes from the post's `colorKeywords` front matter: pick a few
-  terms that carry the post's theme (see "Keyword colors" in STYLE.md).
+  or bold to make them pop. Color comes from the post's `colorKeywords` front matter: roughly one
+  term every paragraph or two, each carrying the theme of its part of the post (see "Keyword
+  colors" in STYLE.md).
 
 **Don't:**
 - **No em dashes (—). Ever.** I don't use them. Use a comma, a period, a colon, or parentheses instead. This is the single biggest tell that something wasn't written by me.
@@ -347,7 +349,7 @@ fix "fishing net," add the missing punctuation, and keep everything else.)
 - [ ] None of the banned words or LLM-isms above?
 - [ ] Typos, dictation errors and tool names fixed, but the casual voice left alone?
 - [ ] Is the humor light, self-deprecating, and something I'd actually say?
-- [ ] Does the front matter pick a few `colorKeywords` that carry the post's theme, balanced for its
-  length, and does the build show no "wasn't colored" warnings for this page?
+- [ ] Does the front matter pick `colorKeywords` so there's a colored term every paragraph or two,
+  each fitting its part of the post, and does the build show no "wasn't colored" warnings for it?
 - [ ] Is this a resume edit? Then none of this voice applies: keep it professional. An About
   edit? Use the toned-down version described at the top.

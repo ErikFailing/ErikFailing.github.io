@@ -7,79 +7,212 @@
 #   colorKeywordsCustom = { "AFL++" = "flood" }     # page-only terms: "text" = "style"
 #
 # The library keeps colors consistent: a term has the same color on every page that picks it.
-# layouts/_partials/keyword_colors.html does the coloring at build time; the colors and gradients
-# are in assets/css/extended/keywords.css (one class per style).
+# layouts/_partials/keyword_colors.html does the coloring at build time, and the CSS for every
+# style is generated from `styles` below by assets/css/keyword-styles.css. The shared rules
+# (gradient painting, fallbacks) are in assets/css/extended/keywords.css.
 #
 # Rules the partial enforces:
 # - Only the first mention of each picked term is colored, and at most `limits.perParagraph`
 #   per paragraph (earliest mentions win).
-# - Never inside code, links, headings, buttons or HTML attributes, and never in titles,
+# - Never inside code, links, headings, tables, buttons or HTML attributes, and never in titles,
 #   summaries or the RSS feed (only the rendered page body is processed).
-# - Whole words only, any capitalization; the original capitalization is kept.
+# - Whole words only, any capitalization; the original capitalization is kept. So avoid forms that
+#   are also everyday words (e.g. "Go" for the language: use "Golang").
 # - The build fails if a page picks a term that isn't in the library or a style that doesn't
 #   exist, and warns if a picked term never got colored.
 #
-# Adding a library term: add an entry under `library` with one or more `match` forms (plural,
-# hyphenated, acronym, etc.) and the `style` whose vibe fits.
+# Adding a style: `colors` is one hex color (solid) or two (a left-to-right gradient). Every color,
+# and every point along a gradient, must reach 7:1 contrast on the #08090c page background; brand
+# colors that are too dark get lightened (keeping their hue) until they do. No solid blue, so a
+# keyword never looks like a link (blue brands get a lighter second stop instead).
+#
+# Adding a library term: an entry with one or more `match` forms (plural, hyphenated, acronym, etc.)
+# and the `style` that fits: the brand's colors for a tool or language, otherwise the closest vibe.
 
 limits:
   perParagraph: 2
 
 styles:
-  # Each style matches a vibe, Qud-style. name: type (solid or gradient), colors (for reference;
-  # the real values are in keywords.css), and the vibe it's going for.
-  anchor:  { type: gradient, colors: [blue, green],     vibe: "World Anchor's logo: sky and land" }
-  qud:     { type: gradient, colors: [qud-cyan, qud-gold], vibe: "Caves of Qud's own palette" }
-  crimson: { type: solid,    colors: [red],             vibe: "Attacking: pentests, red teams" }
-  blaze:   { type: gradient, colors: [red, orange],     vibe: "Something on fire: exploits, RCE" }
-  glitch:  { type: gradient, colors: [magenta, red],    vibe: "Unknown and dangerous: zero-days" }
-  ascend:  { type: gradient, colors: [orange, gold],    vibe: "Climbing up: privilege escalation" }
-  flood:   { type: gradient, colors: [blue, cyan],      vibe: "Water spilling over: buffer overflows" }
-  ghostly: { type: gradient, colors: [ghost, violet],   vibe: "Haunted memory: use-after-free" }
-  static:  { type: gradient, colors: [cyan, magenta],   vibe: "Noise and chaos: fuzzing" }
-  arcane:  { type: gradient, colors: [violet, blue],    vibe: "Digging into secrets: reverse engineering" }
-  trophy:  { type: gradient, colors: [gold, orange],    vibe: "Winning: CTFs, a working proof of concept" }
-  ward:    { type: gradient, colors: [green, teal],     vibe: "Shields up: defensive practices" }
-  iron:    { type: gradient, colors: [steel, silver],   vibe: "Metal links: supply chain" }
-  flow:    { type: gradient, colors: [lime, cyan],     vibe: "Things moving through pipes: CI/CD, infrastructure as code" }
+  # ---- Vibes ----
+  anchor:     { colors: ["#4db8ff", "#3fd68a"], vibe: "World Anchor's logo: sky and land" }
+  qud:        { colors: ["#77bfcf", "#cfc041"], vibe: "Caves of Qud's own palette" }
+  crimson:    { colors: ["#ff6b6b"], vibe: "Attacking" }
+  blaze:      { colors: ["#ff6b6b", "#ff9f43"], vibe: "Something on fire" }
+  glitch:     { colors: ["#ff6ad5", "#ff6b6b"], vibe: "Unknown, corrupted, dangerous" }
+  toxic:      { colors: ["#a6e35b", "#d279eb"], vibe: "Poison slipped in: injection bugs" }
+  ascend:     { colors: ["#ff9f43", "#ffd166"], vibe: "Climbing up or breaking out" }
+  flood:      { colors: ["#4db8ff", "#4fd8e0"], vibe: "Water spilling over" }
+  ghostly:    { colors: ["#e4e2f5", "#b69cff"], vibe: "Haunted, invisible" }
+  static:     { colors: ["#4fd8e0", "#ff6ad5"], vibe: "Noise and chaos" }
+  arcane:     { colors: ["#b69cff", "#4db8ff"], vibe: "Secrets, deep knowledge, AI" }
+  trophy:     { colors: ["#ffd166", "#ff9f43"], vibe: "Winning" }
+  ward:       { colors: ["#3fd68a", "#2ec4b6"], vibe: "Shields up" }
+  iron:       { colors: ["#7f9cc4", "#e2e8f0"], vibe: "Metal: chains, engines, black-and-white brands" }
+  flow:       { colors: ["#a6e35b", "#4fd8e0"], vibe: "Moving through pipes" }
+  clarity:    { colors: ["#ffd166", "#e4e2f5"], vibe: "Light and legibility: accessibility, type" }
+  signature:  { colors: ["#4db8ff", "#b69cff"], vibe: "Me: the site's blue fading into violet" }
+  rocket:     { colors: ["#ffd166", "#ff6b6b"], vibe: "Rocket City launch flame: Huntsville" }
+
+  # ---- Brands (official colors, lightened only where needed for contrast) ----
+  claude:     { colors: ["#e38060"], vibe: "Claude / Anthropic terracotta" }
+  openai:     { colors: ["#2ab08b"], vibe: "OpenAI / ChatGPT green" }
+  python:     { colors: ["#62a1d9", "#ffd43b"], vibe: "Python's blue and yellow snakes" }
+  rust:       { colors: ["#fe6f55", "#dea584"], vibe: "Rust orange to copper" }
+  golang:     { colors: ["#00add8"], vibe: "Go gopher cyan" }
+  javascript: { colors: ["#f7df1e"], vibe: "JavaScript yellow" }
+  typescript: { colors: ["#589ff0", "#b3d4ff"], vibe: "TypeScript blue" }
+  cpp:        { colors: ["#58a1e9", "#a8c4e6"], vibe: "C++ logo blues" }
+  csharp:     { colors: ["#d279eb"], vibe: "C# purple" }
+  dotnet:     { colors: ["#928fff"], vibe: ".NET purple" }
+  java:       { colors: ["#f89820", "#72a2c2"], vibe: "Java's orange steam and blue cup" }
+  bash:       { colors: ["#54b02e", "#a6e35b"], vibe: "Terminal green" }
+  powershell: { colors: ["#609aff", "#b8d0ff"], vibe: "PowerShell blue" }
+  zig:        { colors: ["#f7a41d"], vibe: "Zig orange" }
+  ghidra:     { colors: ["#fd6f66"], vibe: "Ghidra's red dragon" }
+  burp:       { colors: ["#fe7145"], vibe: "Burp Suite orange" }
+  wireshark:  { colors: ["#4ca4d4", "#9fd0ea"], vibe: "Wireshark fin blue" }
+  metasploit: { colors: ["#3aa6de", "#a9d8f2"], vibe: "Metasploit blue" }
+  kali:       { colors: ["#5f9aff", "#a3c3ff"], vibe: "Kali Linux dragon blue" }
+  htb:        { colors: ["#9fef00"], vibe: "Hack The Box neon green" }
+  tryhackme:  { colors: ["#fe7061"], vibe: "TryHackMe red" }
+  splunk:     { colors: ["#6bac3e", "#a6e35b"], vibe: "Splunk green" }
+  git:        { colors: ["#fe7155"], vibe: "Git orange-red" }
+  docker:     { colors: ["#34a1f9", "#9fd3ff"], vibe: "Docker whale blue" }
+  kubernetes: { colors: ["#689bfd", "#b9cdff"], vibe: "Kubernetes helm blue" }
+  terraform:  { colors: ["#b883f3"], vibe: "Terraform purple" }
+  ansible:    { colors: ["#fe6d5c"], vibe: "Ansible red" }
+  aws:        { colors: ["#ff9900"], vibe: "AWS smile orange" }
+  azure:      { colors: ["#32a2f1", "#9fd3ff"], vibe: "Azure blue" }
+  cloudflare: { colors: ["#f38020", "#fbad41"], vibe: "Cloudflare orange cloud" }
+  linux:      { colors: ["#fcc624"], vibe: "Tux yellow" }
+  hugo:       { colors: ["#ff6596"], vibe: "Hugo pink" }
+  vscode:     { colors: ["#40a1f6", "#a4d2fb"], vibe: "VS Code blue" }
+  vim:        { colors: ["#36b24e"], vibe: "Vim green" }
+  godot:      { colors: ["#5da2d6", "#a9d1ef"], vibe: "Godot blue" }
+  steam:      { colors: ["#66c0f4", "#c7e6fb"], vibe: "Steam light blue" }
+  letsencrypt: { colors: ["#f9a11b"], vibe: "Let's Encrypt amber" }
 
 library:
-  # Projects and games
+  # ---- Me, home, projects and games ----
+  - { match: ["Erik Failing"], style: signature }
+  - { match: ["Huntsville, Alabama", "Huntsville, AL", "Huntsville", "Rocket City"], style: rocket }
   - { match: ["World Anchor"], style: anchor }
   - { match: ["Caves of Qud"], style: qud }
+  - { match: ["game jam", "game jams"], style: trophy }
+  - { match: ["hackathon", "hackathons"], style: trophy }
 
-  # Offense
+  # ---- Offense ----
   - { match: ["penetration testing", "pentesting", "pentests", "pentest"], style: crimson }
   - { match: ["red team", "red teams", "red teaming"], style: crimson }
-  - { match: ["remote code execution", "RCE"], style: blaze }
-  - { match: ["exploit development"], style: blaze }
   - { match: ["phishing"], style: crimson }
   - { match: ["email spoofing", "spoofed email", "spoofed emails"], style: crimson }
   - { match: ["domain takeover", "subdomain takeover"], style: crimson }
+  - { match: ["authentication bypass", "auth bypass"], style: crimson }
+  - { match: ["attack surface"], style: crimson }
+  - { match: ["server-side request forgery", "SSRF"], style: crimson }
+  - { match: ["remote code execution", "RCE"], style: blaze }
+  - { match: ["exploit development"], style: blaze }
   - { match: ["zero-day", "zero-days", "0-day"], style: glitch }
+  - { match: ["memory corruption"], style: glitch }
+  - { match: ["dependency confusion"], style: glitch }
   - { match: ["privilege escalation"], style: ascend }
+  - { match: ["sandbox escape", "sandbox escapes"], style: ascend }
 
-  # Bug classes
+  # ---- Bug classes ----
+  - { match: ["SQL injection", "SQLi"], style: toxic }
+  - { match: ["command injection"], style: toxic }
+  - { match: ["cross-site scripting", "XSS"], style: toxic }
   - { match: ["buffer overflow", "buffer overflows"], style: flood }
+  - { match: ["integer overflow", "integer overflows"], style: flood }
   - { match: ["use-after-free"], style: ghostly }
   - { match: ["clickjacking"], style: ghostly }
+  - { match: ["cross-site request forgery", "CSRF"], style: ghostly }
+  - { match: ["side-channel", "side-channel attack", "side-channel attacks"], style: ghostly }
+  - { match: ["race condition", "race conditions"], style: static }
 
-  # Research and testing
+  # ---- Research and testing ----
   - { match: ["fuzzing", "fuzzer", "fuzzers", "fuzzed"], style: static }
+  - { match: ["AFL++", "libFuzzer"], style: static }
   - { match: ["reverse engineering", "reverse engineered", "reverse engineer"], style: arcane }
+  - { match: ["static analysis"], style: arcane }
+  - { match: ["cryptography", "post-quantum cryptography", "encryption"], style: arcane }
+  - { match: ["SHA-256", "checksums", "checksum"], style: arcane }
+  - { match: ["subresource integrity", "SRI"], style: arcane }
   - { match: ["capture the flag", "CTFs", "CTF"], style: trophy }
   - { match: ["proof of concept", "proofs of concept"], style: trophy }
+  - { match: ["bug bounty", "bug bounties"], style: trophy }
 
-  # Defense
+  # ---- Defense ----
   - { match: ["defense in depth", "defense-in-depth"], style: ward }
   - { match: ["least privilege"], style: ward }
   - { match: ["threat modeling", "threat model", "threat models"], style: ward }
   - { match: ["memory safety", "memory-safe"], style: ward }
+  - { match: ["secure code review", "code review"], style: ward }
   - { match: ["Content-Security-Policy", "CSP"], style: ward }
   - { match: ["HSTS"], style: ward }
+  - { match: ["DNSSEC"], style: ward }
+  - { match: ["Let's Encrypt"], style: letsencrypt }
+  - { match: ["DMARC", "SPF"], style: ward }
+  - { match: ["zero trust"], style: ward }
+  - { match: ["multi-factor authentication", "MFA", "two-factor authentication", "passkeys", "passkey"], style: ward }
+  - { match: ["secrets management"], style: ward }
+  - { match: ["coordinated disclosure", "responsible disclosure", "vulnerability disclosure", "private vulnerability reporting", "vulnerability reporting"], style: ward }
 
-  # Engineering
+  # ---- Engineering ----
   - { match: ["supply chain", "supply-chain"], style: iron }
+  - { match: ["SBOM", "SBOMs"], style: iron }
   - { match: ["CI/CD"], style: flow }
-  - { match: ["GitHub Actions"], style: flow }
   - { match: ["infrastructure as code", "infrastructure-as-code"], style: flow }
+  - { match: ["GitHub Actions"], style: flow }
+  - { match: ["GitHub Pages"], style: flow }
+  - { match: ["unit testing", "unit tests"], style: flow }
+  - { match: ["REST API", "REST APIs"], style: flow }
+  - { match: ["concurrency"], style: static }
+  - { match: ["WCAG", "accessibility"], style: clarity }
+
+  # ---- AI ----
+  - { match: ["Claude Code", "Claude", "Anthropic"], style: claude }
+  - { match: ["ChatGPT", "OpenAI"], style: openai }
+  - { match: ["local LLMs", "local LLM", "LLMs", "LLM", "Ollama"], style: arcane }
+
+  # ---- Languages ----
+  - { match: ["Python"], style: python }
+  - { match: ["Rust"], style: rust }
+  - { match: ["Golang"], style: golang }
+  - { match: ["JavaScript"], style: javascript }
+  - { match: ["TypeScript"], style: typescript }
+  - { match: ["C++"], style: cpp }
+  - { match: ["C#"], style: csharp }
+  - { match: [".NET"], style: dotnet }
+  - { match: ["Java"], style: java }
+  - { match: ["Bash"], style: bash }
+  - { match: ["PowerShell"], style: powershell }
+  - { match: ["Zig"], style: zig }
+
+  # ---- Security tools ----
+  - { match: ["Ghidra"], style: ghidra }
+  - { match: ["Burp Suite", "Burp"], style: burp }
+  - { match: ["Wireshark"], style: wireshark }
+  - { match: ["Metasploit"], style: metasploit }
+  - { match: ["Kali Linux", "Kali"], style: kali }
+  - { match: ["Hack The Box", "HackTheBox"], style: htb }
+  - { match: ["TryHackMe"], style: tryhackme }
+  - { match: ["Splunk"], style: splunk }
+
+  # ---- Dev and infrastructure tools ----
+  - { match: ["Git"], style: git }
+  - { match: ["Docker"], style: docker }
+  - { match: ["Kubernetes", "k8s"], style: kubernetes }
+  - { match: ["Terraform"], style: terraform }
+  - { match: ["Ansible"], style: ansible }
+  - { match: ["AWS"], style: aws }
+  - { match: ["Azure"], style: azure }
+  - { match: ["Cloudflare"], style: cloudflare }
+  - { match: ["Linux"], style: linux }
+  - { match: ["Hugo"], style: hugo }
+  - { match: ["VS Code", "Visual Studio Code"], style: vscode }
+  - { match: ["Neovim", "Vim"], style: vim }
+  - { match: ["Unreal Engine", "Unreal"], style: iron }
+  - { match: ["Unity"], style: iron }
+  - { match: ["Godot"], style: godot }
+  - { match: ["Steam"], style: steam }

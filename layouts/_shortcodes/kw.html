@@ -6,5 +6,5 @@
 {{- if not $def -}}
   {{- errorf "kw shortcode: unknown style %q at %s (see data/keywords.yaml)" $style .Position -}}
 {{- end -}}
-<span class="kw kw-{{ $style }}{{ if eq $def.type "gradient" }} kw-grad{{ end }}">{{ .Inner }}</span>
+<span class="kw kw-{{ $style }}{{ if gt (len $def.colors) 1 }} kw-grad{{ end }}">{{ .Inner }}</span>
 {{- /* trims the file's trailing newline, which would otherwise add a space before punctuation */ -}}
