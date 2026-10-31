@@ -159,9 +159,6 @@ And reading everything mattered. A few examples:
   in instead, but it's exactly the kind of thing you only catch by actually reading the command.
 - The font flicker above was something I noticed clicking around the site myself. The first font
   setup it gave me "worked," it just wasn't right.
-- When I uploaded my resume to draft the resume page, I had to make sure work-specific details
-  stayed off the public site. It was good at flagging candidates, but deciding what's okay to
-  publish is {=ward: my call, not a model's=}.
 
 So overall, {=point: I think it saved me a lot of time on the tedious parts=} (looking up DNS records,
 reading theme source to find the right CSS selectors, etc...), and it left me more time for the
