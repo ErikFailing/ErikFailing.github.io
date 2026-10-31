@@ -57,8 +57,19 @@ Before adding it we checked that:
 - **Image cache.** `hugo.toml` sets `[caches.images] dir = ':cacheDir/images'` (step 3 of Hugo's
   guide), so processed images are kept in the cache the workflow saves and restores between runs,
   making later builds faster.
-- **Permissions.** The workflow can only read the repo (`contents: read`) and publish to Pages
-  (`pages: write`, `id-token: write`). It cannot push commits.
+- **Permissions, per job.** The workflow grants nothing by default (`permissions: {}`). The build
+  job, which runs Hugo and the theme's code, can only read the repo and the Pages settings
+  (`contents: read`, `pages: read`). Only the deploy job, which runs GitHub's own deploy action,
+  can publish (`pages: write`, `id-token: write`). Neither can push commits. Checkout uses
+  `persist-credentials: false`, so the job's token isn't left on disk for later steps.
+- **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)) checks monthly for new
+  major versions of the actions (one grouped pull request) and for PaperMod updates. Nothing
+  changes until a pull request is merged. Before merging a PaperMod update, review its changes and
+  diff its `footer.html` against the override (see "Security headers" below). Actions use
+  major-version tags rather than commit SHAs on purpose: they're all GitHub's own, and SHA pins
+  would mean an update pull request for every minor release.
+- **Branch ruleset.** `main` blocks force pushes and deletion (Settings > Rules > Rulesets). Normal
+  pushes are unaffected.
 - **Concurrency.** `group: pages` with `cancel-in-progress: false` means two quick pushes deploy
   one after the other instead of interrupting each other.
 

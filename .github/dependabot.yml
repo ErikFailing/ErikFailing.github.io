@@ -1,0 +1,22 @@
+# Dependabot opens a pull request when something below has an update. Nothing changes until the
+# pull request is reviewed and merged (merging deploys the site, like any push to main).
+version: 2
+updates:
+  # Actions used by .github/workflows/hugo.yaml. Pinned to major-version tags (e.g. @v7), so
+  # this only fires for new major versions. All updates arrive together in one pull request.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # The PaperMod theme submodule (themes/PaperMod). Before merging, review the theme's changes,
+  # and diff its layouts/_partials/footer.html against this repo's footer override and
+  # assets/js/site.js (see "Security headers" in DEPLOY.md).
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: monthly
