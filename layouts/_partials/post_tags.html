@@ -1,19 +1,24 @@
-{{- /* A page's tags as a row of pills. Called with (dict "page" . "class" "extra-class").
-       Used at the top and bottom of posts (layouts/single.html) and on each entry in post lists
-       (layouts/list.html). Renders nothing if the page has no tags.
+{{- /* Tags as a row of pills. Called with (dict "page" . "class" "extra-class") for a page's own tags,
+       or (dict "terms" $tagPages ...) for a given list of tag pages, plus "counts" true to show each
+       tag's post count. Used at the top and bottom of posts (layouts/single.html), on each entry in
+       post lists (layouts/list.html), for a series' combined tags (layouts/_partials/series_tags.html)
+       and on the Tags page (layouts/tags/taxonomy.html). Renders nothing if there are no tags.
        Each tag takes an accent style's color when one matches: a style with the tag's exact name,
        or the `tags` map in data/accents.yaml. Others keep the default green. */ -}}
-{{- $page := .page -}}
 {{- $accents := hugo.Data.accents -}}
-{{- $taxonomy := $page.Language.Params.Taxonomies.tag | default "tags" -}}
-{{- with $page.GetTerms $taxonomy }}
+{{- $terms := .terms -}}
+{{- with .page }}
+  {{- $taxonomy := .Language.Params.Taxonomies.tag | default "tags" -}}
+  {{- $terms = .GetTerms $taxonomy -}}
+{{- end }}
+{{- with $terms }}
 <ul class="post-tags{{ with $.class }} {{ . }}{{ end }}" aria-label="Tags">
   {{- range . }}
   {{- $slug := path.Base .RelPermalink -}}
   {{- $style := index $accents.tags $slug | default "" -}}
   {{- if and (not $style) (index $accents.styles $slug) }}{{ $style = $slug }}{{ end -}}
   {{- with $style }}{{ if not (index $accents.styles .) }}{{ errorf "data/accents.yaml: tag %q maps to unknown style %q" $slug . }}{{ end }}{{ end }}
-  <li{{ with $style }} class="tag-{{ . }}"{{ end }}><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+  <li{{ with $style }} class="tag-{{ . }}"{{ end }}><a href="{{ .Permalink }}">{{ .LinkTitle }}{{ if $.counts }}<span class="tag-count">{{ len .Pages }}</span>{{ end }}</a></li>
   {{- end }}
 </ul>
 {{- end }}

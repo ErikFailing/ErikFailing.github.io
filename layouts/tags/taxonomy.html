@@ -1,0 +1,18 @@
+{{- /* The Tags page (/tags/): the blog tabs, then every tag as a pill in its accent color with its post
+       count, most used first. Replaces the theme's taxonomy.html (plain pills) for tags only. Each
+       tag's own page (/tags/<name>/) is layouts/list.html. */ -}}
+{{- define "main" }}
+{{- partial "blog_nav.html" . }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}
+  <div class="post-description">
+    {{ . | markdownify }}
+  </div>
+  {{- end }}
+</header>
+{{- $tags := slice }}
+{{- range .Data.Terms.ByCount }}{{ $tags = $tags | append .Page }}{{ end }}
+{{- partial "post_tags.html" (dict "terms" $tags "class" "terms-list" "counts" true) }}
+{{- end }}{{/* end main */ -}}

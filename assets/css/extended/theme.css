@@ -81,14 +81,14 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 /* 3. Links, focus, selection. Blue means "you can act here". In-text links keep an underline because
    blue vs body text is only 1.62:1, so color alone can't mark them (WCAG 1.4.1). The series box and
    the 404 page sit outside .md-content but get the same in-text link style. */
-:is(.md-content, .series-box, .not-found-text) a:not(.anchor) {
+:is(.md-content, .series-box, .series-entry-list, .not-found-text) a:not(.anchor) {
   color: var(--blue);
   text-decoration-line: underline;
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, var(--blue) 60%, transparent);
 }
-:is(.md-content, .series-box, .not-found-text) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+:is(.md-content, .series-box, .series-entry-list, .not-found-text) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 .menu a:hover, .breadcrumbs a:hover, .post-meta a:hover, .toc a:hover, .footer a:hover, .top-link:hover { color: var(--blue); }
 .menu .active { text-decoration-color: var(--blue); }
 .md-content :is(h1, h2, h3, h4, h5, h6) .anchor:hover { color: var(--blue); }
@@ -117,8 +117,18 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .post-tags a:hover, .terms-tags a:hover { background: var(--green-tint); border-color: var(--green); color: var(--green-hover); }
 /* Tags at the top of a post (under the date line) and on post-list cards: same pills, a bit smaller. */
 .post-tags-top { margin-top: 0.75rem; }
-.post-tags-top, .entry-tags { gap: 8px; }
-.post-tags-top a, .entry-tags a { font-size: 0.8125rem; line-height: 26px; padding: 0 11px; }
+.post-tags-top, .entry-tags, .series-tags { gap: 8px; }
+.post-tags-top a, .entry-tags a, .series-tags a { font-size: 0.8125rem; line-height: 26px; padding: 0 11px; }
+/* A series' tags (its posts' tags combined): on its Series page card and under its own page's title. */
+.series-tags { margin-top: 0.75rem; }
+/* Tags page: each pill shows how many posts use it. */
+.tag-count { margin-inline-start: 0.4em; font-weight: 400; opacity: 0.8; }
+/* Blog tabs (layouts/_partials/blog_nav.html): All posts, Series, Tags across the top of those pages.
+   Muted at rest, blue on hover, and the current tab in --primary with a blue underline. */
+.blog-nav { display: flex; flex-wrap: wrap; column-gap: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+.blog-nav a { margin-bottom: -1px; padding: 0.5rem 0; font-weight: 600; color: var(--secondary); border-bottom: 2px solid transparent; }
+.blog-nav a:hover { color: var(--blue); }
+.blog-nav a.active { color: var(--primary); border-bottom-color: var(--blue); }
 /* On cards the whole card is one link (.entry-link, stretched over it); lift the tags above it so
    clicking a tag opens the tag page instead of the post. */
 .entry-tags { position: relative; z-index: 1; margin-top: 0.6rem; }
@@ -152,9 +162,18 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .series-box li::marker { color: var(--green); font-weight: 600; }
 .series-box [aria-current] { color: var(--primary); font-weight: 650; }
 .series-box .series-here { color: var(--secondary); font-size: 0.9375rem; }
+/* Series page (layouts/series/taxonomy.html): one card per series, with its posts in order. */
+.series-entry { margin-bottom: var(--gap); padding: 1.25rem 1.5rem; background: var(--entry); border: 1px solid var(--border); border-radius: var(--radius); }
+.series-entry-title { font-size: var(--step-1); font-weight: 600; line-height: 1.3; }
+.series-entry-title a:hover { color: var(--blue); }
+.series-entry-description { margin-top: 0.4rem; color: var(--content); }
+.series-entry-meta { margin-top: 0.25rem; font-size: 0.9375rem; color: var(--secondary); }
+.series-entry-list { margin: 0.75rem 0 0; padding-inline-start: 1.5rem; }
+.series-entry-list li { margin: 0.25rem 0; padding-inline-start: 0.25rem; }
+.series-entry-list li::marker { color: var(--green); font-weight: 600; }
 
 /* 7. User preferences */
 @media (prefers-contrast: more) {
   :root, :root[data-theme="dark"] { --secondary: var(--content); --border: var(--border-control); --border-strong: var(--border-control); }
-  :is(.md-content, .series-box, .not-found-text) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+  :is(.md-content, .series-box, .series-entry-list, .not-found-text) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 }

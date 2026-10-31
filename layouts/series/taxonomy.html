@@ -1,0 +1,39 @@
+{{- /* The Series page (/series/): the blog tabs, then every series as a card, newest first, with its
+       description, post count and dates, its combined tags and its posts in reading order. Replaces the theme's taxonomy.html (a list of
+       pills, which the Tags page still uses) for series only. Each series' own page
+       (/series/<name>/) is layouts/list.html. See "Series" in STYLE.md. */ -}}
+{{- define "main" }}
+{{- partial "blog_nav.html" . }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}
+  <div class="post-description">
+    {{ . | markdownify }}
+  </div>
+  {{- end }}
+</header>
+
+{{- $dateFormat := default ":date_long" site.Params.DateFormat }}
+{{- range .Pages.ByDate.Reverse }}
+{{- $posts := .Pages.ByDate }}
+{{- $first := (index $posts 0).Date | time.Format $dateFormat }}
+{{- $last := (index $posts.Reverse 0).Date | time.Format $dateFormat }}
+<section class="series-entry">
+  <h2 class="series-entry-title"><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+  {{- with .Description }}
+  <p class="series-entry-description">{{ . }}</p>
+  {{- end }}
+  <p class="series-entry-meta">
+    {{- len $posts }} {{ cond (eq (len $posts) 1) "post" "posts" }} · {{ $first }}{{ if ne $first $last }} – {{ $last }}{{ end -}}
+  </p>
+  {{- partial "post_tags.html" (dict "terms" (partial "series_tags.html" .) "class" "series-tags") }}
+  <ol class="series-entry-list">
+    {{- range $posts }}
+    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+    {{- end }}
+  </ol>
+</section>
+{{- end }}
+
+{{- end }}{{/* end main */ -}}

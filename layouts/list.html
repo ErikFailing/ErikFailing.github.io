@@ -1,11 +1,21 @@
-{{- /* Override of themes/PaperMod/layouts/list.html. Only change: each entry in a post list shows
-       its tags (layouts/_partials/post_tags.html), placed above the card's full-size link so the tags
-       stay clickable. When updating PaperMod, diff this file against the theme's. */ -}}
+{{- /* Override of themes/PaperMod/layouts/list.html. Changes; when updating PaperMod, diff this file
+       against the theme's:
+       1. Each entry in a post list shows its tags (layouts/_partials/post_tags.html), placed above the
+          card's full-size link so the tags stay clickable.
+       2. A series' page (/series/<name>/) lists its posts oldest first, in reading order, and shows
+          the series' combined tags under its title (layouts/_partials/series_tags.html).
+       3. The Blog page and each series' and tag's page start with the blog tabs
+          (layouts/_partials/blog_nav.html). */ -}}
 {{- define "main" }}
 
 {{- if (and site.Params.profileMode.enabled .IsHome) }}
 {{- partial "index_profile.html" . }}
 {{- else }} {{/* if not profileMode */}}
+
+{{- $isSeries := and (eq .Kind "term") (eq .Data.Plural "series") }}
+{{- if or (and (eq .Kind "section") (eq .Section "posts")) (eq .Kind "term") }}
+{{- partial "blog_nav.html" . }}
+{{- end }}
 
 {{- if not .IsHome | and .Title }}
 <header class="page-header">
@@ -30,6 +40,9 @@
     {{ .Description | markdownify }}
   </div>
   {{- end }}
+  {{- if $isSeries }}
+  {{- partial "post_tags.html" (dict "terms" (partial "series_tags.html" .) "class" "series-tags") }}
+  {{- end }}
 </header>
 {{- end }}
 
@@ -42,6 +55,9 @@
 {{- end }}
 
 {{- $pages := union .RegularPages .Sections }}
+{{- if $isSeries }}
+{{- $pages = $pages.ByDate }}
+{{- end }}
 
 {{- if .IsHome }}
 {{- $pages = where site.RegularPages "Type" "in" site.Params.mainSections }}

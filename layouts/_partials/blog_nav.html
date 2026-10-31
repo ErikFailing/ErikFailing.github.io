@@ -1,0 +1,16 @@
+{{- /* Blog tabs: All posts, Series, Tags (the "blog" menu in hugo.toml), across the top of the Blog
+       page, the Series and Tags pages, and each series' and tag's own page. A tab is current when the
+       page is it or under it (a series' page marks Series). See "Blog tabs" in STYLE.md. */ -}}
+{{- $page := . }}
+<nav class="blog-nav" aria-label="Blog">
+  {{- range site.Menus.blog }}
+  {{- $url := .URL | relLangURL }}
+  {{- if eq $url $page.RelPermalink }}
+  <a class="active" href="{{ $url }}" aria-current="page">{{ .Name }}</a>
+  {{- else if hasPrefix $page.RelPermalink $url }}
+  <a class="active" href="{{ $url }}" aria-current="true">{{ .Name }}</a>
+  {{- else }}
+  <a href="{{ $url }}">{{ .Name }}</a>
+  {{- end }}
+  {{- end }}
+</nav>

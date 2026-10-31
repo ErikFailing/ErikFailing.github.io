@@ -1,0 +1,20 @@
+{{- /* A series' tags: every tag used by its posts, most used first (ties alphabetical). Called with
+       the series' term page; returns a slice of tag pages for layouts/_partials/post_tags.html. */ -}}
+{{- $counts := dict }}
+{{- $tags := dict }}
+{{- range .Pages }}
+  {{- range .GetTerms "tags" }}
+    {{- $slug := path.Base .RelPermalink }}
+    {{- $counts = merge $counts (dict $slug (add (index $counts $slug | default 0) 1)) }}
+    {{- $tags = merge $tags (dict $slug .) }}
+  {{- end }}
+{{- end }}
+{{- /* Sort key: 999 minus the count (so higher counts sort first), then the name. */ -}}
+{{- $keyed := slice }}
+{{- range $slug, $count := $counts }}
+  {{- $tag := index $tags $slug }}
+  {{- $keyed = $keyed | append (dict "key" (printf "%03d %s" (sub 999 $count) (lower $tag.LinkTitle)) "page" $tag) }}
+{{- end }}
+{{- $sorted := slice }}
+{{- range sort $keyed "key" }}{{ $sorted = $sorted | append .page }}{{ end }}
+{{- return $sorted }}

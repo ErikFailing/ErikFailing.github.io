@@ -70,13 +70,9 @@ enableGitInfo = true
   pageRef = '/resume'
   weight = 30
 [[menu.main]]
-  name = 'Writing'
+  name = 'Blog'
   pageRef = '/posts'
   weight = 40
-# [[menu.main]]
-#   name = 'Tags'
-#   pageRef = '/tags'
-#   weight = 50
 # [[menu.main]]
 #   name = 'Archive'      # needs content/archives.md with  layout = "archives"
 #   pageRef = '/archives'
@@ -85,6 +81,21 @@ enableGitInfo = true
 #   name = 'Search'       # see the search steps above
 #   pageRef = '/search'
 #   weight = 70
+
+# Blog tabs: the row of links across the top of the Blog, Series and Tags pages (and each series'
+# and tag's own page), from layouts/_partials/blog_nav.html. Lower weight = further left.
+[[menu.blog]]
+  name = 'All posts'
+  pageRef = '/posts'
+  weight = 10
+[[menu.blog]]
+  name = 'Series'
+  pageRef = '/series'
+  weight = 20
+[[menu.blog]]
+  name = 'Tags'
+  pageRef = '/tags'
+  weight = 30
 
 # ---------------------------------------------------------------------------------------------
 # PaperMod settings
@@ -155,7 +166,7 @@ enableGitInfo = true
       name = 'Resume'
       url = '/resume/'
     [[params.profileMode.buttons]]
-      name = 'Writing'
+      name = 'Blog'
       url = '/posts/'
 
   # Home page, option B: a short intro box above your latest posts. To use it, set

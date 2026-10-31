@@ -107,8 +107,25 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   label linking to the series page, green list numbers, the other posts as underlined links and the
   current post in bold `--primary` with "(this post)". Built by
   `layouts/_partials/extend_post_content.html`. Name a series in title case and reuse it exactly.
+- **Series pages:** `/series/` shows every series as the same kind of card, newest first: the
+  series name as a heading link, its description, a muted "3 posts · date" line, its tags, and its
+  posts in reading order as a green-numbered list of underlined links
+  (`layouts/series/taxonomy.html`). A series' tags are its posts' tags combined, most used first,
+  as small pills (`layouts/_partials/series_tags.html`); nothing to maintain by hand. Each
+  series' own page (`/series/<name>/`) is the normal post list, oldest first, with the same tags
+  under its title. A new series
+  gets its description from `content/series/<name>/_index.md` (`title` and `description`); without
+  one, the card just has no description line.
+- **Blog tabs:** "All posts · Series · Tags" across the top of the Blog page, the Series and Tags
+  pages, and each series' and tag's own page, so readers can switch between them in one click.
+  Tabs are 600-weight `--secondary` text on a `--border` rule; hover turns blue, and the current
+  tab (or the parent tab, on a series' or tag's page) is `--primary` with a 2px blue underline. The
+  tabs are the `blog` menu in `hugo.toml`, rendered by `layouts/_partials/blog_nav.html`. Blog in
+  the top menu links straight to all posts.
+- **Tags page:** every tag as its colored pill with its post count (the count in regular weight),
+  most used first (`layouts/tags/taxonomy.html`).
 - **404 page:** the big "404" in `--primary`, then two centered lines of body text (an
-  encouraging line, then links to the home page, writing and resume), balanced across lines. Keep
+  encouraging line, then links to the home page, blog and resume), balanced across lines. Keep
   the tone warm, not snarky. Links are underlined like in-text links (`layouts/404.html`).
 - **Home page tagline:** `params.tagline`, one line under the green subtitle in body-text color
   (`--content`, 20px, regular); one line on desktop, balanced across two lines on phones.
