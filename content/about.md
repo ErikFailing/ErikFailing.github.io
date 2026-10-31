@@ -57,5 +57,6 @@ write up.
 
 - [GitHub](https://github.com/ErikFailing)
 - [LinkedIn](https://www.linkedin.com/in/erikfailing), the best way to reach me
+- Email: [erikfailing@gmail.com](mailto:erikfailing@gmail.com)
 - [itch.io](https://erikfailing.itch.io/)
 - [Resume](/resume/) ([PDF](/Erik-Failing-Resume.pdf))

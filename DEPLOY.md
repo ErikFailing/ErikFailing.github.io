@@ -117,10 +117,10 @@ different host, which wasn't worth the rework or risk for this site.
 **Keeping it working:**
 
 - After updating PaperMod, diff `themes/PaperMod/layouts/_partials/footer.html` against the
-  override and `site.js`, and `themes/PaperMod/layouts/single.html`, `list.html`,
+  override and `site.js`, and `themes/PaperMod/layouts/single.html`, `list.html`, `404.html`,
   `_partials/post_meta.html`, `_partials/index_profile.html`, `_partials/templates/schema_json.html` and
   `_partials/templates/_funcs/get-page-images.html` against the overrides in `layouts/`
-  (numbered headings, tags, post numbers, home page tagline, structured data, social cards), and copy over any
+  (numbered headings, tags, post numbers, 404 page, home page tagline, structured data, social cards), and copy over any
   changes. `layouts/_partials/_funcs/get-page-images.html` overrides a template built into Hugo
   itself (PaperMod's `opengraph.html` calls it); it only forwards to the PaperMod override, so it
   needs no diffing.

@@ -79,15 +79,16 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .footer { font-size: 0.875rem; }
 
 /* 3. Links, focus, selection. Blue means "you can act here". In-text links keep an underline because
-   blue vs body text is only 1.62:1, so color alone can't mark them (WCAG 1.4.1). */
-.md-content a:not(.anchor) {
+   blue vs body text is only 1.62:1, so color alone can't mark them (WCAG 1.4.1). The series box and
+   the 404 page sit outside .md-content but get the same in-text link style. */
+:is(.md-content, .series-box, .not-found-text) a:not(.anchor) {
   color: var(--blue);
   text-decoration-line: underline;
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, var(--blue) 60%, transparent);
 }
-.md-content a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+:is(.md-content, .series-box, .not-found-text) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 .menu a:hover, .breadcrumbs a:hover, .post-meta a:hover, .toc a:hover, .footer a:hover, .top-link:hover { color: var(--blue); }
 .menu .active { text-decoration-color: var(--blue); }
 .md-content :is(h1, h2, h3, h4, h5, h6) .anchor:hover { color: var(--blue); }
@@ -137,9 +138,23 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
   border: 0; border-bottom: 1px solid var(--border); padding: 0.5em 0.75em; }
 .md-content table th { background: var(--code-bg); color: var(--primary); font-weight: 600; }
 .md-content img { border: 1px solid var(--border); }
+/* 404 page (layouts/404.html): the theme centers one huge "404"; ours stacks it over two lines of text. */
+.not-found { flex-direction: column; gap: 0.75rem; padding: 0 var(--gap); text-align: center; }
+.not-found-code { font-size: clamp(6rem, 4rem + 10vw, 10rem); font-weight: 700; line-height: 1; color: var(--primary); }
+.not-found-text { max-width: 40ch; font-size: 1.125rem; font-weight: 400; line-height: 1.6; color: var(--content); text-wrap: balance; }
+/* Series box under a post (layouts/_partials/extend_post_content.html): a card listing the series'
+   posts in order, the current one in bold with no link. */
+.series-box { margin: 3rem 0 1rem; padding: 1rem 1.25rem; background: var(--entry); border: 1px solid var(--border); border-radius: var(--radius); }
+.series-label { margin-bottom: 0.5rem; font-size: 0.9375rem; color: var(--secondary); }
+.series-label a { font-weight: 600; }
+.series-box ol { margin: 0; padding-inline-start: 1.5rem; }
+.series-box li { margin: 0.25rem 0; padding-inline-start: 0.25rem; }
+.series-box li::marker { color: var(--green); font-weight: 600; }
+.series-box [aria-current] { color: var(--primary); font-weight: 650; }
+.series-box .series-here { color: var(--secondary); font-size: 0.9375rem; }
 
 /* 7. User preferences */
 @media (prefers-contrast: more) {
   :root, :root[data-theme="dark"] { --secondary: var(--content); --border: var(--border-control); --border-strong: var(--border-control); }
-  .md-content a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+  :is(.md-content, .series-box, .not-found-text) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 }

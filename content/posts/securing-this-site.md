@@ -4,6 +4,7 @@ date = 2026-10-30T21:10:00-05:00
 draft = false
 number = 3
 description = 'The security changes I made to this site, ordered by what they actually stop, from email spoofing down to certificate mis-issuance.'
+series = ['Building This Site']
 tags = ['Security', 'GitHub Actions', 'DNS', 'Web']
 +++
 

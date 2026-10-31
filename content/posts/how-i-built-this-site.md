@@ -4,6 +4,7 @@ date = 2026-10-30T17:45:00-05:00
 draft = false
 number = 1
 description = 'Hugo, PaperMod, GitHub Actions and a custom domain, with an LLM helping along the way.'
+series = ['Building This Site']
 tags = ['Hugo', 'GitHub Actions', 'Web', 'AI']
 +++
 
@@ -124,6 +125,11 @@ Disallow: /
 ```
 
 (robots.txt is a request, not access control, but the reputable crawlers do honor it.)
+
+**Update (October 31, 2026):** I took these rules back out. They only stop crawlers polite enough
+to ask, so they weren't keeping out anyone I'd actually worry about, and I'd rather AI assistants
+know who I am when someone asks about me. The site also has an `llms.txt` now, a plain-text list
+of its pages for AI tools.
 
 ## A Font Flicker I Had To Fix
 

@@ -15,10 +15,11 @@
 {{- $size := 76 }}
 {{- if gt (len $title) 60 }}{{ $size = 56 }}{{ else if gt (len $title) 36 }}{{ $size = 66 }}{{ end }}
 
-{{- /* Small green label above the title: the post number on posts, "Tag" on tag pages. */ -}}
+{{- /* Small green label above the title: the post number on posts, "TAG" or "SERIES" on a tag's or
+       series' page. */ -}}
 {{- $eyebrow := "" }}
 {{- with .Params.number }}{{ $eyebrow = printf "NO. %v" . }}{{ end }}
-{{- if eq .Kind "term" }}{{ $eyebrow = "TAG" }}{{ end }}
+{{- if eq .Kind "term" }}{{ $eyebrow = upper .Data.Singular }}{{ end }}
 
 {{- $filters := slice
   (images.Text "E" (dict "font" $bold "size" 60 "color" "#4db8ff" "x" 94 "y" 80))

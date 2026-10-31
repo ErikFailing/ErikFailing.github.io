@@ -28,19 +28,30 @@ enableGitInfo = true
 [caches.images]
   dir = ':cacheDir/images'   # keeps processed images in the cache the GitHub workflow saves
 
-# Search needs a JSON index of the site. To turn on search:
-#   1. uncomment [outputs] below,
+# Extra files built from the home page. LLMS is /llms.txt, a plain-text list of the site's pages
+# for AI assistants (template: themes/PaperMod/layouts/llms.txt).
+# Search also needs a JSON index of the site. To turn on search:
+#   1. add 'JSON' to home below,
 #   2. create content/search.md with front matter:  title = "Search"  and  layout = "search",
 #   3. uncomment the Search menu entry further down.
-# [outputs]
-#   home = ['HTML', 'RSS', 'JSON']
+[outputs]
+  home = ['HTML', 'RSS', 'LLMS']
 
-# Tag pages. Hugo also makes category pages by default; they're left out because no post uses
-# categories (it was an empty page). Add one back here if needed (for example  series = 'series').
+[outputFormats.LLMS]
+  mediaType = 'text/plain'
+  baseName = 'llms'
+  isPlainText = true
+  root = true
+  notAlternative = true   # no <link rel="alternate"> to it in every page's head
+
+# Tag and series pages. A series groups posts that belong together ( series = ['Building This Site']
+# in front matter); each post in one gets a box listing the others (layouts/_partials/
+# extend_post_content.html). Hugo also makes category pages by default; they're left out because
+# no post uses categories (it was an empty page).
 [taxonomies]
   tag = 'tags'
+  series = 'series'
   # category = 'categories'
-  # series = 'series'
 
 # ---------------------------------------------------------------------------------------------
 # Top navigation. Each entry needs its page to exist first (for example content/about.md for
@@ -164,6 +175,10 @@ enableGitInfo = true
     name = 'linkedin'
     url = 'https://www.linkedin.com/in/erikfailing'
   [[params.socialIcons]]
+    name = 'email'
+    title = 'Email'
+    url = 'mailto:erikfailing@gmail.com'
+  [[params.socialIcons]]
     name = 'cv'
     title = 'Resume (PDF)'
     url = '/Erik-Failing-Resume.pdf'   # file is static/Erik-Failing-Resume.pdf
@@ -171,9 +186,6 @@ enableGitInfo = true
     name = 'itchio'
     title = 'itch.io'
     url = 'https://erikfailing.itch.io/'
-  # [[params.socialIcons]]
-  #   name = 'email'
-  #   url = 'mailto:you@example.com'
   # [[params.socialIcons]]
   #   name = 'rss'
   #   url = '/index.xml'

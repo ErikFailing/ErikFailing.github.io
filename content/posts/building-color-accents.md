@@ -4,6 +4,7 @@ date = 2026-10-30T19:30:00-05:00
 draft = false
 number = 2
 description = 'Three versions of a text-coloring system, from automatic keyword matching to hand-placed accents, and what each one taught me.'
+series = ['Building This Site']
 tags = ['Hugo', 'Design', 'Web']
 +++
 

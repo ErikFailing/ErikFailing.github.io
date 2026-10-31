@@ -32,7 +32,7 @@ read like Erik showing someone something cool, not like marketing.
 
 - Colors, typography and components follow [STYLE.md](STYLE.md); CSS lives in
   `assets/css/extended/`. Never edit files under `themes/PaperMod/` (a Git submodule). Theme
-  templates overridden in `layouts/` (`single.html`, `list.html`, `_partials/footer.html`,
+  templates overridden in `layouts/` (`single.html`, `list.html`, `404.html`, `_partials/footer.html`,
   `_partials/post_meta.html`, `_partials/index_profile.html`, `_partials/templates/schema_json.html`,
   `_partials/templates/_funcs/get-page-images.html`) must be diffed against the theme's versions
   when PaperMod updates.

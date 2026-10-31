@@ -102,6 +102,14 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 
 ## Components
 
+- **Series box:** a post with `series = ['Building This Site']` in front matter ends with an
+  `--entry` card (`--border` edge) listing every post in that series in publishing order: a muted
+  label linking to the series page, green list numbers, the other posts as underlined links and the
+  current post in bold `--primary` with "(this post)". Built by
+  `layouts/_partials/extend_post_content.html`. Name a series in title case and reuse it exactly.
+- **404 page:** the big "404" in `--primary`, then two centered lines of body text (an
+  encouraging line, then links to the home page, writing and resume), balanced across lines. Keep
+  the tone warm, not snarky. Links are underlined like in-text links (`layouts/404.html`).
 - **Home page tagline:** `params.tagline`, one line under the green subtitle in body-text color
   (`--content`, 20px, regular); one line on desktop, balanced across two lines on phones.
 - **Profile buttons:** surface-2 fill, `--border-strong` outline, 600 weight; on hover a blue

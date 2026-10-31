@@ -1,6 +1,6 @@
 +++
 title = 'Resume'
-description = 'Resume of Erik Failing, software and security engineer.'
+description = 'Resume of Erik Failing, security software engineer.'
 draft = false
 hideMeta = true
 ShowToc = false
@@ -8,9 +8,11 @@ ShowBreadCrumbs = false
 schemaType = 'ProfilePage'   # structured data: a profile page about me, not a blog post
 +++
 
-**Software & Security Engineer** · 5+ years in defense and aerospace · CISSP · Huntsville, AL
+**Security Software Engineer** · 5+ years · Pentesting, fuzzing & reverse engineering ·
+Huntsville, AL
 
 [Download PDF](/Erik-Failing-Resume.pdf) ·
+[erikfailing@gmail.com](mailto:erikfailing@gmail.com) ·
 [LinkedIn](https://www.linkedin.com/in/erikfailing) ·
 [GitHub](https://github.com/ErikFailing) ·
 [itch.io](https://erikfailing.itch.io/)
@@ -21,40 +23,42 @@ schemaType = 'ProfilePage'   # structured data: a profile page about me, not a b
 
 **Product Security Engineer III** · Apr 2025 – Present
 
-- Pentest and assess the security of DoD systems as a member of a cyber test team.
-- Find novel vulnerabilities in custom systems; write proofs of concept and verify fixes.
-- Lead week-long cyber test cycles end to end, turning test objectives into attack cases.
-- Build Python fuzzers and reverse engineer custom binaries and protocols to find vulnerabilities.
-- Serve as a trusted agent between external red and blue teams and program security leadership.
-- Use local LLMs to speed up code review, log triage, and reporting.
-- Mentor engineers across teams in Python and pentesting; lead approvals for security and
-  development tools.
+- Pentested and assessed DoD system security as a cyber test team member.
+- Found novel vulnerabilities in custom systems; wrote proofs of concept and verified fixes.
+- Led week-long cyber test cycles end to end, turning test objectives into attack cases.
+- Built Python fuzzers and reverse engineered custom binaries and protocols to find
+  vulnerabilities.
+- Bridged red and blue teams and information system security managers (ISSMs) as a trusted
+  agent, keeping major cyber tests on objective.
+- Used local LLMs (Ollama) to speed up code review, log triage, and reporting.
+- Mentored engineers across teams in Python and pentesting; led security and development tool
+  approvals.
 
 **Product Security Engineer II** · Aug 2023 – Mar 2025
 
-- Built a Python message analyzer on my own that enabled new types of testing; won a program
-  innovation award.
+- Solo-built a Python message analyzer that enabled new test types; won a program innovation
+  award.
 - Used source code and software assurance results to focus pentests on the riskiest components.
 - Gave subject-matter input on threat modeling and risk scoring; led cyber tabletop exercises
   that set test objectives.
 - Drove team-wide Git adoption, centralizing exploits, scripts, and test data in a shared
   repository.
-- Served as Scrum Master for multiple security teams and briefed leadership at quarterly
-  planning events.
+- Scrum Master for multiple security teams; briefed leadership at quarterly Program Increment
+  (PI) planning events.
 
 ### World Anchor LLC
 
 **Software Engineer & Founder** · Jul 2022 – Aug 2023
 
-*Full-time between Northrop Grumman and Boeing; part-time outside these dates.*
+*Full-time between Northrop Grumman and Boeing; includes part-time work outside these dates.*
 
 - Founded a software studio; designed and built 7+ C++ and C# projects end to end.
-- Built a Roslyn C# compiler plugin that replaced runtime reflection, cutting 10K+ lines of code.
+- Built a Roslyn C# compiler plugin replacing runtime reflection, cutting 10K+ lines of code.
 - Engineered client-server networking and state sync in C++ and C# with the Unreal and Steam SDKs.
-- Built a secrets-managed CI/CD pipeline that auto-releases Windows, Mac, and Linux builds,
-  saving about 5 hours a week.
-- Wrote infrastructure-as-code for cloud build servers, cutting recovery time from a day to
-  under an hour.
+- Built a secrets-managed CI/CD pipeline auto-releasing Windows, Mac, and Linux builds, saving
+  about 5 hours a week.
+- Wrote infrastructure-as-code for cloud build servers, cutting recovery from a day to under an
+  hour.
 
 ### Northrop Grumman
 
@@ -63,8 +67,7 @@ schemaType = 'ProfilePage'   # structured data: a profile page about me, not a b
 - Managed a software assurance platform; built Python and JavaScript change-approval pipelines.
 - Assessed 400+ software and hardware changes for security, advising the change control board on
   approvals and redesigns.
-- Wrote Python scans that removed controlled data from thousands of systems, shrinking
-  compliance scope.
+- Wrote Python scans purging controlled data from thousands of systems, cutting compliance scope.
 
 **Software Engineer Intern** · May 2020 – Aug 2020
 
@@ -73,17 +76,18 @@ schemaType = 'ProfilePage'   # structured data: a profile page about me, not a b
 
 ## Skills
 
-- **Languages:** Python, C, C++, C#, Java, Bash. Familiar with Go, Rust, JavaScript, PowerShell,
-  Ada.
-- **Application security:** OWASP Top 10, threat modeling, secure code review, fuzzing.
-- **Reverse engineering:** Ghidra, GDB, binary analysis, exploit development, memory safety.
-- **Software engineering:** networking, concurrency, REST APIs, SQL, unit testing, OOP,
-  debugging.
+- **Languages:** Python, C, C++, C#, Java, Bash. Familiar: Go, Rust, JavaScript, PowerShell, Ada.
 - **AI:** Claude, GPT, agentic coding, prompt engineering, local LLM deployment, model
   quantization.
+- **Application security:** OWASP Top 10, threat modeling, secure code review, fuzzing
+  (boofuzz), SAST, SCA.
+- **Software engineering:** networking, concurrency, REST APIs, SQL, .NET, unit testing, OOP,
+  debugging.
+- **Reverse engineering:** Ghidra, GDB, Scapy, binary analysis, exploit development, memory
+  safety.
 - **DevOps and cloud:** Git, GitHub Actions, CI/CD, infrastructure-as-code, VM provisioning, AWS.
-- **Tools:** Unreal Engine 5, Unity, .NET, Roslyn, Wireshark, Nmap, Nessus, Splunk, Black Duck,
-  SonarQube.
+- **Tools:** Kali Linux, Burp Suite, Metasploit, Wireshark, Nmap, Nessus, Splunk, SonarQube,
+  Black Duck.
 
 ## Education
 

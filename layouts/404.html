@@ -1,0 +1,11 @@
+{{- /* Override of themes/PaperMod/layouts/404.html. The theme shows only a big "404"; this adds a line of
+       personality and links back into the site. When updating PaperMod, diff this file against the
+       theme's. */ -}}
+{{- define "main" }}
+<div class="not-found">
+  <p class="not-found-code">404</p>
+  <p class="not-found-text">This page doesn't exist. If you were fuzzing my URLs, keep trying: every good find starts with a few dead ends.</p>
+  <p class="not-found-text">Try the <a href="{{ "" | relURL }}">home page</a>, my
+    <a href="{{ "posts/" | relURL }}">writing</a>, or my <a href="{{ "resume/" | relURL }}">resume</a>.</p>
+</div>
+{{- end }}{{/* end main */ -}}

@@ -19,8 +19,13 @@
 }}
 {{- with site.Params.keywords }}{{ $person = merge $person (dict "knowsAbout" .) }}{{ end }}
 {{- $sameAs := slice }}
-{{- /* Only other sites' profiles; on-site links like the resume PDF aren't "same as" me. */ -}}
-{{- range site.Params.socialIcons }}{{ if (urls.Parse .url).IsAbs }}{{ $sameAs = $sameAs | append .url }}{{ end }}{{ end }}
+{{- /* Only other sites' profiles go in sameAs; the email icon becomes "email", and on-site links like
+       the resume PDF are left out. */ -}}
+{{- range site.Params.socialIcons }}
+  {{- $scheme := (urls.Parse .url).Scheme }}
+  {{- if in (slice "http" "https") $scheme }}{{ $sameAs = $sameAs | append .url }}{{ end }}
+  {{- if eq $scheme "mailto" }}{{ $person = merge $person (dict "email" .url) }}{{ end }}
+{{- end }}
 {{- with $sameAs }}{{ $person = merge $person (dict "sameAs" .) }}{{ end }}
 {{- /* The profile photo, once profileMode.imageUrl is set. */ -}}
 {{- with site.Params.profileMode.imageUrl }}

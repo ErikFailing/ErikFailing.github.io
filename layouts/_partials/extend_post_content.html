@@ -1,0 +1,17 @@
+{{- /* Replaces PaperMod's empty extend_post_content.html hook (after the post body, before the footer).
+       A post in a series ( series = ['Building This Site'] in front matter) gets a box listing every
+       post in that series in publishing order, the current one marked. See "Series" in STYLE.md. */ -}}
+{{- range .GetTerms "series" }}
+<aside class="series-box" id="series" aria-label="Series">
+  <p class="series-label">This post is part of a series: <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></p>
+  <ol>
+    {{- range .Pages.ByDate }}
+    {{- if eq .RelPermalink $.RelPermalink }}
+    <li><span aria-current="page">{{ .LinkTitle }}</span> <span class="series-here">(this post)</span></li>
+    {{- else }}
+    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+    {{- end }}
+    {{- end }}
+  </ol>
+</aside>
+{{- end }}
