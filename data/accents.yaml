@@ -22,7 +22,7 @@
 
 styles:
   # ---- Tier 1: the key point ----
-  point:      { use: "The one takeaway of a section: the sentence or phrase a skimming reader must not miss. At most one per section. Keep it to the core phrase (about 10 words at most). Bright text on a soft green pill, no hue." }
+  point:      { use: "The one takeaway of a section: the sentence or phrase a skimming reader must not miss. At most one per section. Keep it to the core phrase (about 10 words at most). Bright italic at a medium weight, no hue." }
 
   # ---- Tier 2: vibes (anything that isn't a named tool, company, person or place) ----
   crimson:    { colors: ["#ff6b6b"], use: "Attacking and offensive work: pentesting, red teaming, phishing, email spoofing, domain or subdomain takeover, authentication bypass, SSRF, attack surface, a risk being exploited" }

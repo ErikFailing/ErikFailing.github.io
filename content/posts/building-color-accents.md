@@ -89,7 +89,7 @@ If the build fails, {=point: the live site stays on the last good version=}.
 
 There are two tiers. Colored accents mark the tool, company or idea a paragraph is about, picked
 from a palette where every style has a short note on when to use it. A key-point style (bright
-text on a soft green pill) marks the one takeaway of a section, at most once per section. The
+italics, no color) marks the one takeaway of a section, at most once per section. The
 guideline is about {=clarity: one accent per paragraph=}, on the phrase that carries the idea.
 
 The syntax took a couple of tries. My first version reused link syntax, `[phrase](=style)`, with a

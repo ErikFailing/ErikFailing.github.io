@@ -138,8 +138,9 @@ The {=flow: upload step=} {=glitch: skips anything starting with a dot=} by defa
 **Two tiers:**
 
 1. **Key point (`{=point: ...=}`):** the one takeaway of a section, the phrase a skimming reader
-   must not miss. Shown as the brightest text, a bit heavier, on a soft full-height green pill
-   (no hue). **At most one per section**, and not every section needs one.
+   must not miss. Shown in true italic, in the brightest text color, at a medium weight (560,
+   below the colored accents' 600). Italic is the conventional mark for stress, and it's the one
+   signal nothing else on the site uses. **At most one per section**, and not every section needs one.
 2. **Colored accents (every other style):** a tool, company, person, place or idea that carries
    a paragraph, in a color from the palette below.
 
@@ -152,7 +153,9 @@ The {=flow: upload step=} {=glitch: skips anything starting with a dot=} by defa
   any noun that happens to be in the palette.
 - **Keep accents short:** usually 1 to 6 words, and key points around 10 words at most. Highlight
   the core of the idea, not the whole sentence or bullet ("so {=point: the live site stays on the
-  last good version=}", not the full bullet); long highlights get heavy, especially when they wrap.
+  last good version=}", not the full bullet); long key points lose their punch.
+- **Save plain `*italics*` for titles, defined terms and single stressed words,** so they don't
+  compete with key points.
 - **Picking a style:** a named tool, language, company, person or place gets its own style
   (`python`, `docker`, `boeing`, `rocket`). Otherwise pick the vibe that matches what the phrase
   is about (attack, defense, danger, winning, flow, secrets...). The palette's `use` notes list
@@ -167,7 +170,7 @@ generated from it, and a misspelled style name fails the build. In short:
 
 | Style | Look | Use for |
 |---|---|---|
-| `point` | bright text on a soft green pill | The key point of a section (tier 1) |
+| `point` | bright italic, medium weight | The key point of a section (tier 1) |
 | `crimson` | red | Attacks and offensive work: pentesting, red teaming, phishing, takeovers, attack surface |
 | `blaze` | red → orange gradient | Something on fire: RCE, exploit development |
 | `glitch` | magenta → red gradient | Unknown, corrupted or absurd: zero-days, memory corruption, surprising gotchas |

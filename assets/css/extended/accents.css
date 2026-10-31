@@ -25,17 +25,16 @@
 /* Selected text: show it solid so it stays readable on the selection color. */
 .accent-grad::selection { color: var(--primary); }
 
-/* Tier 1, the key point: no hue, just the brightest text color, a bit heavier, on a soft
-   full-height green pill. Reads as "this is the point", not decoration. clone gives each wrapped
-   line its own rounded pill. */
+/* Tier 1, the key point: true italic in the brightest text color, at a medium weight. Italic is
+   the conventional mark for stress ("this is the point"), and it's the one signal nothing else on
+   the site uses: colored accents own color + weight 600, links own blue + underline. 560 stays
+   below the accents' 600 so the two never look like the same thing. Bold italic was too heavy on
+   the dark background, and the earlier green pill read like a UI badge. */
 .accent-point {
+  font-style: italic;
+  font-weight: 560;
   color: var(--primary);
-  font-weight: 650;
-  background: rgba(63, 214, 138, 0.13);
-  border-radius: 4px;
-  padding: 0.05em 0.3em;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  font-synthesis-style: none;   /* use the real italic file, never a faked slant */
 }
 
 /* Windows High Contrast and print: plain text. `.accent.accent` outranks the generated classes. */
