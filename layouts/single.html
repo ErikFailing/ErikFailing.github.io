@@ -1,9 +1,11 @@
-{{- /* Override of themes/PaperMod/layouts/single.html. Two changes; when updating PaperMod, diff this
-       file against the theme's:
+{{- /* Override of themes/PaperMod/layouts/single.html. Three changes; when updating PaperMod, diff
+       this file against the theme's:
        1. If the page picks color keywords (colorKeywords / colorKeywordsCustom in front matter), the
           post body is passed through layouts/_partials/keyword_colors.html (see data/keywords.yaml).
        2. Posts get the numbered-headings class, which numbers their section headings and table of
-          contents with CSS counters (theme.css). A page can override with numberHeadings = true/false. */ -}}
+          contents with CSS counters (theme.css). A page can override with numberHeadings = true/false.
+       3. Tags show at the top of the post (under the date line) as well as the bottom, both through
+          layouts/_partials/post_tags.html. */ -}}
 {{- define "main" }}
 
 {{- $numbered := eq .Section "posts" }}
@@ -35,6 +37,7 @@
       {{- partial "post_canonical.html" . -}}
     </div>
     {{- end }}
+    {{- partial "post_tags.html" (dict "page" . "class" "post-tags-top") }}
   </header>
   {{- $isHidden := (.Param "cover.hiddenInSingle") | default (.Param "cover.hidden") | default false }}
   {{- partial "cover.html" (dict "cxt" . "IsSingle" true "isHidden" $isHidden) }}
@@ -57,12 +60,7 @@
   {{- partial "extend_post_content.html" . }}
 
   <footer class="post-footer">
-    {{- $tags := .Language.Params.Taxonomies.tag | default "tags" }}
-    <ul class="post-tags">
-      {{- range ($.GetTerms $tags) }}
-      <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
-      {{- end }}
-    </ul>
+    {{- partial "post_tags.html" (dict "page" .) }}
     {{- if (.Param "ShowPostNavLinks") }}
     {{- partial "post_nav_links.html" . }}
     {{- end }}

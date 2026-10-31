@@ -91,8 +91,14 @@ styles:
   godot:      { colors: ["#5da2d6", "#a9d1ef"], vibe: "Godot blue" }
   steam:      { colors: ["#66c0f4", "#c7e6fb"], vibe: "Steam light blue" }
   letsencrypt: { colors: ["#f9a11b"], vibe: "Let's Encrypt amber" }
+  boeing:     { colors: ["#6699fe", "#a9c7ff"], vibe: "Boeing blue" }
+  northrop:   { colors: ["#699edc", "#c9d6e6"], vibe: "Northrop Grumman navy to silver" }
 
 library:
+  # ---- Companies I've worked for ----
+  - { match: ["Boeing Intelligence & Analytics", "Boeing Intelligence and Analytics", "Boeing I&A", "Boeing"], style: boeing }
+  - { match: ["Northrop Grumman", "Northrop"], style: northrop }
+
   # ---- Me, home, projects and games ----
   - { match: ["Erik Failing"], style: signature }
   - { match: ["Huntsville, Alabama", "Huntsville, AL", "Huntsville", "Rocket City"], style: rocket }

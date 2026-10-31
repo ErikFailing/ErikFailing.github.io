@@ -113,6 +113,13 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
   background: var(--green-tint); border: 1px solid var(--green-line); color: var(--green);
   border-radius: 999px; font-size: 0.9375rem; font-weight: 600; }
 .post-tags a:hover, .terms-tags a:hover { background: var(--green-tint); border-color: var(--green); color: var(--green-hover); }
+/* Tags at the top of a post (under the date line) and on post-list cards: same pills, a bit smaller. */
+.post-tags-top { margin-top: 0.75rem; }
+.post-tags-top, .entry-tags { gap: 8px; }
+.post-tags-top a, .entry-tags a { font-size: 0.8125rem; line-height: 26px; padding: 0 11px; }
+/* On cards the whole card is one link (.entry-link, stretched over it); lift the tags above it so
+   clicking a tag opens the tag page instead of the post. */
+.entry-tags { position: relative; z-index: 1; margin-top: 0.6rem; }
 .searchbox input { border-color: var(--border-control); }
 .searchbox input:focus { border-color: var(--blue); }
 

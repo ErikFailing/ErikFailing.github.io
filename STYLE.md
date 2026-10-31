@@ -106,7 +106,9 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   border and light-blue text.
 - **Social icons:** muted gray at rest, blue on hover.
 - **Cards:** `--entry` fill and `--border` edge; the edge turns dark blue on hover.
-- **Tags:** green pills (tint fill, green edge and text); brighter on hover.
+- **Tags:** green pills (tint fill, green edge and text); brighter on hover. Posts show them at
+  the top (under the date line, slightly smaller) and at the bottom, and every card in a post list
+  shows its post's tags, all through `layouts/_partials/post_tags.html`.
 - **Code blocks:** Hugo's `github-dark` highlighting on `#111318` with a `--border` edge; long
   lines scroll instead of wrapping mid-token. Comments are the lowest-contrast token at 6:1 (AA).
 - **Inline code:** surface-2 fill, thin border, 4px radius.
@@ -172,6 +174,7 @@ source of truth.
 | `iron` | steel blue → silver | Metal | supply chain, SBOM, Unreal Engine, Unity |
 | `flow` | lime → cyan | Moving through pipes | CI/CD, GitHub Actions, GitHub Pages, unit tests |
 | `clarity` | gold → pale lavender | Light and legibility | WCAG, accessibility |
+| `boeing`, `northrop` | brand blues | Companies I've worked for | Boeing Intelligence & Analytics, Northrop Grumman |
 | `signature` | blue → violet | Me | Erik Failing |
 | `rocket` | gold → red | Rocket City launch flame | Huntsville, Alabama |
 | `anchor`, `qud` | own palettes | Projects | World Anchor, Caves of Qud |

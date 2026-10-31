@@ -1,0 +1,12 @@
+{{- /* A page's tags as a row of pills. Called with (dict "page" . "class" "extra-class").
+       Used at the top and bottom of posts (layouts/single.html) and on each entry in post lists
+       (layouts/list.html). Renders nothing if the page has no tags. */ -}}
+{{- $page := .page -}}
+{{- $taxonomy := $page.Language.Params.Taxonomies.tag | default "tags" -}}
+{{- with $page.GetTerms $taxonomy }}
+<ul class="post-tags{{ with $.class }} {{ . }}{{ end }}" aria-label="Tags">
+  {{- range . }}
+  <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+  {{- end }}
+</ul>
+{{- end }}

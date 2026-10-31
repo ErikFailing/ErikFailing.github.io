@@ -51,9 +51,11 @@
   {{- $forms := slice -}}
   {{- range $k.match -}}
     {{- $escaped := replaceRE `([.+*?()\[\]{}|^$\\])` `\$1` . -}}
-    {{- /* Spaces match any whitespace (Markdown can wrap a phrase across lines), and an apostrophe
-           matches the curly ’ / &rsquo; that Hugo's typographer turns it into. */ -}}
-    {{- $re := replace (replaceRE `\s+` `\s+` $escaped) "'" "(?:'|’|&rsquo;|&#39;)" -}}
+    {{- /* Spaces match any whitespace (Markdown can wrap a phrase across lines), & matches the
+           &amp; it's escaped to in HTML, and an apostrophe matches the curly ’ / &rsquo; that Hugo's
+           typographer turns it into. (& first, since the apostrophe forms contain &.) */ -}}
+    {{- $re := replace (replaceRE `\s+` `\s+` $escaped) "&" "(?:&amp;|&)" -}}
+    {{- $re = replace $re "'" "(?:'|’|&rsquo;|&#39;)" -}}
     {{- $forms = $forms | append (dict "len" (len .) "re" $re) -}}
   {{- end -}}
   {{- $forms = sort $forms "len" "desc" -}}
