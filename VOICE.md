@@ -262,6 +262,9 @@ These are starting points, not forms to fill in. Drop sections that don't apply.
 - Use numbered points written as "1)", "2)" for steps or reasons inside a paragraph.
 - Use the occasional *italics* for emphasis on one word ("*insane* amounts of development time").
 - Mix short punchy sentences with longer run-on, comma-joined ones, the way people actually talk.
+- Just write terms like "fuzzing" or "World Anchor" normally. Keyword colors are added
+  automatically from `data/keywords.yaml` (see "Keyword colors" in STYLE.md), so never add color
+  markup or bold a term to make it pop.
 
 **Don't:**
 - **No em dashes (—). Ever.** I don't use them. Use a comma, a period, a colon, or parentheses instead. This is the single biggest tell that something wasn't written by me.

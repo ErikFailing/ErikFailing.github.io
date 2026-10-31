@@ -114,6 +114,54 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 - **Tables:** horizontal rules only, surface-2 header row, scroll sideways on phones.
 - **Images:** 1px `--border` so dark screenshots don't blend into the page.
 
+## Keyword colors
+
+A nod to the colored keywords in text games like Caves of Qud: a short list of terms gets a
+signature color the first time it appears on a page. It's automatic and retroactive. The list
+lives in [`data/keywords.yaml`](data/keywords.yaml), and adding a term there colors it in every
+existing and future post.
+
+Each style is colored to fit the term's vibe:
+
+| Style | Look | Vibe | Terms |
+|---|---|---|---|
+| `anchor` | blue → green | World Anchor's logo | World Anchor |
+| `qud` | Qud cyan → Qud gold | Caves of Qud's own palette | Caves of Qud |
+| `crimson` | solid red `#ff6b6b` | Attacking | pentesting, red team |
+| `blaze` | red → orange | Something on fire | remote code execution / RCE, exploit development |
+| `glitch` | magenta → red | Unknown and dangerous | zero-day |
+| `ascend` | orange → gold | Climbing up | privilege escalation |
+| `flood` | blue → cyan | Water spilling over | buffer overflow |
+| `ghostly` | pale lavender → violet | Haunted memory | use-after-free |
+| `static` | cyan → magenta | Noise and chaos | fuzzing |
+| `arcane` | violet → blue | Digging into secrets | reverse engineering |
+| `trophy` | gold → orange | Winning | CTF / capture the flag, proof of concept |
+| `ward` | green → teal | Shields up | defense in depth, least privilege, threat modeling, memory safety |
+| `iron` | steel blue → silver | Metal links | supply chain |
+| `flow` | lime → cyan | Moving through pipes | CI/CD, infrastructure as code |
+
+When adding a term, pick the style whose vibe fits, or add a new style if none do.
+
+Rules (enforced by [`layouts/_partials/keyword_colors.html`](layouts/_partials/keyword_colors.html)):
+
+- **First mention only**, at most **2 per paragraph** and **5 per page** (earliest mentions win).
+  Limits are set in the data file.
+- **Never** inside code, links, headings, buttons or HTML attributes, and never in titles,
+  summaries or the RSS feed. Pages can opt out with `noKeywordColors = true` (the resume does).
+- **Whole words, any capitalization;** the text keeps its original capitalization.
+- **Only solid and smooth-gradient styles.** A gradient is painted inside the letters of one
+  element (`background-clip: text`), so screen readers and copy/paste see a normal word.
+  Letter-by-letter effects would need one element per letter, which screen readers read badly.
+- **No solid-blue style,** so a keyword never looks like a link.
+- **Every color and every point along each gradient passes 7:1** on the canvas (lowest: steel at
+  7.07:1, red at 7.17:1). New styles must too, and need a matching `.kw-NAME` class in
+  [`assets/css/extended/keywords.css`](assets/css/extended/keywords.css).
+- **Keep the list short and distinctive.** Coloring common words makes everything look clickable.
+
+For a one-off phrase that isn't in the list, use the shortcode in a post:
+`{{< kw tide >}}some phrase{{< /kw >}}`.
+Manual uses don't count toward the limits, so use them rarely.
+
 ## Writing for skimmers
 
 Open each post with a one-to-three-sentence summary, use a descriptive h2 every few hundred words,

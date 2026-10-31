@@ -1,0 +1,72 @@
+/* Keyword coloring (Caves of Qud-style). Spans are added at build time by
+   layouts/_partials/keyword_colors.html from data/keywords.yaml, or by hand with the kw shortcode.
+   Each style in the data file needs a matching .kw-NAME class here, colored to fit its vibe.
+
+   Every color and every point along each gradient passes WCAG AAA (7:1) on the #08090c canvas
+   (lowest are steel at 7.07:1 and red at 7.17:1; check new colors before adding them). There's deliberately no
+   solid-blue style, so keywords never look like links (links are blue and underlined). */
+
+:root,
+:root[data-theme="dark"] {
+  --kw-red: #ff6b6b;
+  --kw-orange: #ff9f43;
+  --kw-gold: #ffd166;
+  --kw-magenta: #ff6ad5;
+  --kw-violet: #b69cff;
+  --kw-cyan: #4fd8e0;
+  --kw-teal: #2ec4b6;
+  --kw-ghost: #e4e2f5;
+  --kw-steel: #7f9cc4;
+  --kw-silver: #e2e8f0;
+  --kw-lime: #a6e35b;
+  --kw-qud-cyan: #77bfcf;   /* Caves of Qud's "C" color */
+  --kw-qud-gold: #cfc041;   /* Caves of Qud's "W" color */
+}
+
+.kw { font-weight: 600; }
+
+/* Solid styles */
+.kw-crimson { color: var(--kw-red); }
+
+/* Gradient styles: each sets its two stops. */
+.kw-anchor  { --kw-from: var(--blue);        --kw-to: var(--green); }
+.kw-qud     { --kw-from: var(--kw-qud-cyan); --kw-to: var(--kw-qud-gold); }
+.kw-blaze   { --kw-from: var(--kw-red);      --kw-to: var(--kw-orange); }
+.kw-glitch  { --kw-from: var(--kw-magenta);  --kw-to: var(--kw-red); }
+.kw-ascend  { --kw-from: var(--kw-orange);   --kw-to: var(--kw-gold); }
+.kw-flood   { --kw-from: var(--blue);        --kw-to: var(--kw-cyan); }
+.kw-ghostly { --kw-from: var(--kw-ghost);    --kw-to: var(--kw-violet); }
+.kw-static  { --kw-from: var(--kw-cyan);     --kw-to: var(--kw-magenta); }
+.kw-arcane  { --kw-from: var(--kw-violet);   --kw-to: var(--blue); }
+.kw-trophy  { --kw-from: var(--kw-gold);     --kw-to: var(--kw-orange); }
+.kw-ward    { --kw-from: var(--green);       --kw-to: var(--kw-teal); }
+.kw-iron    { --kw-from: var(--kw-steel);    --kw-to: var(--kw-silver); }
+.kw-flow    { --kw-from: var(--kw-lime);     --kw-to: var(--kw-cyan); }
+
+/* Fallback: browsers without clip-to-text show the first stop as a flat color. */
+.kw-grad { color: var(--kw-from); }
+
+/* The gradient is painted inside the glyphs of a single element, so the word stays one text node
+   (screen readers and copy/paste see a normal word). clone keeps the full gradient on each line
+   if a phrase wraps. */
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .kw-grad {
+    background-image: linear-gradient(90deg, var(--kw-from), var(--kw-to));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+}
+
+/* Selected text: show it solid so it stays readable on the selection color. */
+.kw-grad::selection { color: var(--primary); }
+
+/* Windows High Contrast and print: plain text. */
+@media (forced-colors: active) {
+  .kw { color: CanvasText; background: none; }
+}
+@media print {
+  .kw { color: inherit; background: none; font-weight: inherit; }
+}

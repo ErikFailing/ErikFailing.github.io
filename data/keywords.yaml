@@ -1,0 +1,73 @@
+# Keyword coloring, inspired by the color templates in Caves of Qud.
+#
+# Matching words in post and page content are wrapped at build time by
+# layouts/_partials/keyword_colors.html, so changes here apply to every existing and future page.
+# Colors and gradients are defined in assets/css/extended/keywords.css (one class per style).
+#
+# Rules the partial enforces, to keep this tasteful:
+# - Only the first mention of each keyword per page is colored, and at most `limits.perParagraph`
+#   per paragraph and `limits.perPage` per page (earliest mentions win).
+# - Never inside code, links, headings, buttons or HTML attributes, and never in titles,
+#   summaries or the RSS feed (only the rendered page body is processed).
+# - Whole words only, any capitalization; the original capitalization is kept.
+# - Pages can opt out with `noKeywordColors = true` in front matter (the resume does).
+#
+# Adding a keyword: add an entry under `keywords` with one or more `match` forms (plural, hyphenated,
+# acronym, etc.) and a `style` from the list below. Keep the list short and the terms distinctive;
+# coloring common words makes everything look like a link.
+
+limits:
+  perPage: 5
+  perParagraph: 2
+
+styles:
+  # Each style matches a vibe, Qud-style. name: type (solid or gradient), colors (for reference;
+  # the real values are in keywords.css), and the vibe it's going for.
+  anchor:  { type: gradient, colors: [blue, green],     vibe: "World Anchor's logo: sky and land" }
+  qud:     { type: gradient, colors: [qud-cyan, qud-gold], vibe: "Caves of Qud's own palette" }
+  crimson: { type: solid,    colors: [red],             vibe: "Attacking: pentests, red teams" }
+  blaze:   { type: gradient, colors: [red, orange],     vibe: "Something on fire: exploits, RCE" }
+  glitch:  { type: gradient, colors: [magenta, red],    vibe: "Unknown and dangerous: zero-days" }
+  ascend:  { type: gradient, colors: [orange, gold],    vibe: "Climbing up: privilege escalation" }
+  flood:   { type: gradient, colors: [blue, cyan],      vibe: "Water spilling over: buffer overflows" }
+  ghostly: { type: gradient, colors: [ghost, violet],   vibe: "Haunted memory: use-after-free" }
+  static:  { type: gradient, colors: [cyan, magenta],   vibe: "Noise and chaos: fuzzing" }
+  arcane:  { type: gradient, colors: [violet, blue],    vibe: "Digging into secrets: reverse engineering" }
+  trophy:  { type: gradient, colors: [gold, orange],    vibe: "Winning: CTFs, a working proof of concept" }
+  ward:    { type: gradient, colors: [green, teal],     vibe: "Shields up: defensive practices" }
+  iron:    { type: gradient, colors: [steel, silver],   vibe: "Metal links: supply chain" }
+  flow:    { type: gradient, colors: [lime, cyan],     vibe: "Things moving through pipes: CI/CD, infrastructure as code" }
+
+keywords:
+  # Projects and games
+  - { match: ["World Anchor"], style: anchor }
+  - { match: ["Caves of Qud"], style: qud }
+
+  # Offense
+  - { match: ["penetration testing", "pentesting", "pentests", "pentest"], style: crimson }
+  - { match: ["red team", "red teams", "red teaming"], style: crimson }
+  - { match: ["remote code execution", "RCE"], style: blaze }
+  - { match: ["exploit development"], style: blaze }
+  - { match: ["zero-day", "zero-days", "0-day"], style: glitch }
+  - { match: ["privilege escalation"], style: ascend }
+
+  # Bug classes
+  - { match: ["buffer overflow", "buffer overflows"], style: flood }
+  - { match: ["use-after-free"], style: ghostly }
+
+  # Research and testing
+  - { match: ["fuzzing", "fuzzer", "fuzzers", "fuzzed"], style: static }
+  - { match: ["reverse engineering", "reverse engineered", "reverse engineer"], style: arcane }
+  - { match: ["capture the flag", "CTFs", "CTF"], style: trophy }
+  - { match: ["proof of concept", "proofs of concept"], style: trophy }
+
+  # Defense
+  - { match: ["defense in depth", "defense-in-depth"], style: ward }
+  - { match: ["least privilege"], style: ward }
+  - { match: ["threat modeling", "threat model", "threat models"], style: ward }
+  - { match: ["memory safety", "memory-safe"], style: ward }
+
+  # Engineering
+  - { match: ["supply chain", "supply-chain"], style: iron }
+  - { match: ["CI/CD"], style: flow }
+  - { match: ["infrastructure as code", "infrastructure-as-code"], style: flow }

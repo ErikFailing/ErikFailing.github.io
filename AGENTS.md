@@ -13,6 +13,9 @@ read like Erik showing someone something cool, not like marketing.
 - **`content/resume.md`:** keep it strictly professional. Do not apply VOICE.md's voice to it.
 - **`content/about.md`:** mostly professional with a light conversational touch; follow the
   toned-down rules in VOICE.md's "Where This Voice Applies" section.
+- Keyword colors are automatic (see "Keyword colors" in STYLE.md). Don't add color markup or
+  `kw` shortcodes for terms already in `data/keywords.yaml`; to color a new recurring term, add it
+  there instead.
 - Never invent experiences, results, numbers, quotes or opinions. Work from Erik's notes and leave
   `TODO:` markers for anything missing.
 - Never add details about Erik's current or past employers' work beyond what's already on the
@@ -21,7 +24,9 @@ read like Erik showing someone something cool, not like marketing.
 ## Site changes
 
 - Colors, typography and components follow [STYLE.md](STYLE.md); CSS lives in
-  `assets/css/extended/`. Never edit files under `themes/PaperMod/` (a Git submodule).
+  `assets/css/extended/`. Never edit files under `themes/PaperMod/` (a Git submodule). Theme
+  templates overridden in `layouts/` (`single.html`, `_partials/footer.html`) must be diffed
+  against the theme's versions when PaperMod updates.
 - The site has a strict Content-Security-Policy (see "Security headers" in DEPLOY.md): no inline
   `<script>`, no `style=""` attributes, and no resources from other domains unless the CSP in
   `layouts/_partials/extend_head.html` is updated deliberately. Put JavaScript in `assets/js/site.js`.

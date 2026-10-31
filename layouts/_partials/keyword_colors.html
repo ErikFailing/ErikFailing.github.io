@@ -1,0 +1,114 @@
+{{- /* Keyword coloring (see data/keywords.yaml). Takes rendered page HTML, returns it with the first
+       mention of each keyword wrapped in <span class="kw kw-STYLE">.
+
+       Regex over HTML is only safe if we never touch markup, so the HTML is split into tokens: tags,
+       comments, and the plain text between them. Text is only edited when it isn't inside a
+       protected element (code, links, headings, ...), and tags themselves (including attributes like
+       href and alt) are never edited. Go's regex engine has no lookbehind, so this token walk is what
+       keeps matches out of protected regions.
+
+       Matches are first swapped for placeholders (U+E000 index U+E001, private-use characters that
+       never appear in content) and only turned into spans at the end, so a later keyword can't match
+       text inside an earlier keyword's span. Keywords are tried longest first. */ -}}
+{{- $html := string . -}}
+{{- $data := hugo.Data.keywords -}}
+{{- $protected := slice "a" "code" "pre" "kbd" "samp" "h1" "h2" "h3" "h4" "h5" "h6" "script" "style" "svg" "button" "textarea" "select" "mark" -}}
+
+{{- /* Build one regex per keyword: any of its forms, whole words only, case-insensitive.
+       Group 1 and 3 are the boundary characters, group 2 is the matched keyword. */ -}}
+{{- $entries := slice -}}
+{{- range $i, $k := $data.keywords -}}
+  {{- $style := index $data.styles $k.style -}}
+  {{- if not $style -}}
+    {{- errorf "data/keywords.yaml: keyword %v uses unknown style %q" $k.match $k.style -}}
+  {{- end -}}
+  {{- $forms := slice -}}
+  {{- range $k.match -}}
+    {{- $escaped := replaceRE `([.+*?()\[\]{}|^$\\])` `\$1` . -}}
+    {{- $forms = $forms | append (dict "len" (len .) "re" (replaceRE `\s+` `\s+` $escaped)) -}}
+  {{- end -}}
+  {{- $forms = sort $forms "len" "desc" -}}
+  {{- $alternatives := slice -}}
+  {{- range $forms }}{{ $alternatives = $alternatives | append .re }}{{ end -}}
+  {{- $class := printf "kw kw-%s" $k.style -}}
+  {{- if eq $style.type "gradient" }}{{ $class = printf "%s kw-grad" $class }}{{ end -}}
+  {{- $entries = $entries | append (dict
+      "i" $i
+      "len" (index $forms 0).len
+      "class" $class
+      "re" (printf `(?i)(^|[^\p{L}\p{N}_])((?:%s))([^\p{L}\p{N}_]|$)` (delimit $alternatives "|"))) -}}
+{{- end -}}
+{{- $entries = sort $entries "len" "desc" -}}
+
+{{- /* Limits, so a page never turns into a rainbow. A "block" is a paragraph, list item, quote or
+       table cell. */ -}}
+{{- $perPage := $data.limits.perPage | default 5 -}}
+{{- $perBlock := $data.limits.perParagraph | default 2 -}}
+{{- $blockTags := slice "p" "li" "blockquote" "td" "th" "dd" "dt" "figcaption" -}}
+
+{{- /* Walk the tokens. $protTag is the outermost protected element we're inside ("" if none);
+       $depth counts nested elements with that same name so we know when it really closes. */ -}}
+{{- $s := newScratch -}}
+{{- $out := "" -}}
+{{- $protTag := "" -}}
+{{- $depth := 0 -}}
+{{- $total := 0 -}}
+{{- $inBlock := 0 -}}
+{{- range findRE `<!--[\s\S]*?-->|<[^>]*>|[^<]+` $html -}}
+  {{- $tok := . -}}
+  {{- if hasPrefix $tok "<" -}}
+    {{- $isClose := hasPrefix $tok "</" -}}
+    {{- $isSelfClosing := hasSuffix $tok "/>" -}}
+    {{- $name := lower (replaceRE `^</?([A-Za-z][A-Za-z0-9-]*)[\s\S]*$` "$1" $tok) -}}
+    {{- if and (not $isClose) (in $blockTags $name) }}{{ $inBlock = 0 }}{{ end -}}
+    {{- if eq $protTag "" -}}
+      {{- $isKeywordSpan := and (eq $name "span") (findRE `class="[^"]*\bkw\b` $tok) -}}
+      {{- if and (not $isClose) (not $isSelfClosing) (or (in $protected $name) $isKeywordSpan) -}}
+        {{- $protTag = $name -}}
+        {{- $depth = 1 -}}
+      {{- end -}}
+    {{- else if eq $name $protTag -}}
+      {{- if $isClose }}{{ $depth = sub $depth 1 }}{{ else if not $isSelfClosing }}{{ $depth = add $depth 1 }}{{ end -}}
+      {{- if le $depth 0 }}{{ $protTag = "" }}{{ end -}}
+    {{- end -}}
+  {{- else if eq $protTag "" -}}
+    {{- /* Each pass colors the earliest unused keyword in this text, so limits keep the first
+           mentions in reading order. Ties go to the longer keyword ($entries is longest first). */ -}}
+    {{- range seq $perBlock -}}
+      {{- if and (lt $inBlock $perBlock) (lt $total $perPage) -}}
+        {{- $best := false -}}
+        {{- $bestPos := -1 -}}
+        {{- $bestMatch := "" -}}
+        {{- range $e := $entries -}}
+          {{- if not ($s.Get (printf "used%d" $e.i)) -}}
+            {{- with findRE $e.re $tok 1 -}}
+              {{- $pos := len (index (split $tok (index . 0)) 0) -}}
+              {{- if or (lt $bestPos 0) (lt $pos $bestPos) -}}
+                {{- $best = $e -}}
+                {{- $bestPos = $pos -}}
+                {{- $bestMatch = index . 0 -}}
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+        {{- with $best -}}
+          {{- $e := . -}}
+          {{- $total = add $total 1 -}}
+          {{- $inBlock = add $inBlock 1 -}}
+          {{- $s.Set (printf "used%d" $e.i) true -}}
+          {{- $s.Set (printf "word%d" $e.i) (replaceRE $e.re "$2" $bestMatch) -}}
+          {{- $tok = replaceRE $e.re (printf "${1}%d${3}" $e.i) $tok 1 -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $out = print $out $tok -}}
+{{- end -}}
+
+{{- /* Turn placeholders into spans. The matched text is already HTML-escaped page text. */ -}}
+{{- range $e := $entries -}}
+  {{- with $s.Get (printf "word%d" $e.i) -}}
+    {{- $out = replace $out (printf "%d" $e.i) (printf `<span class="%s">%s</span>` $e.class .) -}}
+  {{- end -}}
+{{- end -}}
+{{- return ($out | safeHTML) -}}
