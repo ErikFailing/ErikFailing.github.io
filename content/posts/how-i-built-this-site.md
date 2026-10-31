@@ -4,8 +4,8 @@ date = 2026-10-30
 draft = false
 description = 'Hugo, PaperMod, GitHub Actions and a custom domain, with an LLM helping along the way.'
 tags = ['hugo', 'github-actions', 'web', 'ai']
-colorKeywords = ['Hugo', 'GitHub Actions', 'GitHub Pages', 'attack surface', 'LLM', 'Git', 'domain takeover', 'vulnerability reporting', 'WCAG', 'Claude Code', 'supply chain']
-colorKeywordsCustom = { 'upload step' = 'flow', 'build job' = 'flow', 'Squarespace' = 'iron', 'Open Sans' = 'clarity', 'font swap' = 'static' }
+colorKeywords = ['Hugo', 'GitHub Actions', 'attack surface', 'domain takeover', 'vulnerability reporting', 'WCAG', 'Claude Code', 'supply chain']
+colorKeywordsCustom = { 'Markdown' = 'clarity', 'single binary' = 'iron', 'Blowfish' = 'flood', 'Readability' = 'clarity', 'Git submodule' = 'git', 'upload step' = 'flow', 'build job' = 'flow', 'Enforce HTTPS' = 'ward', 'wildcard records' = 'crimson', 'AI training' = 'arcane', 'access control' = 'ward', 'Open Sans' = 'clarity', 'font swap' = 'static', 'total confidence' = 'glitch' }
 +++
 
 This site is a static Hugo site using the PaperMod theme, built and deployed by GitHub Actions to

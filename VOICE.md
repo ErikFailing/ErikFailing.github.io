@@ -264,8 +264,8 @@ These are starting points, not forms to fill in. Drop sections that don't apply.
 - Use the occasional *italics* for emphasis on one word ("*insane* amounts of development time").
 - Mix short punchy sentences with longer run-on, comma-joined ones, the way people actually talk.
 - Just write terms like "fuzzing" or "World Anchor" normally in the body, never with color markup
-  or bold to make them pop. Color comes from the post's `colorKeywords` front matter: roughly one
-  term every paragraph or two, each carrying the theme of its part of the post (see "Keyword
+  or bold to make them pop. Color comes from the post's `colorKeywords` front matter: about one term
+  per paragraph on average, each the main idea of its paragraph or sentence (see "Keyword
   colors" in STYLE.md).
 
 **Don't:**
@@ -349,7 +349,7 @@ fix "fishing net," add the missing punctuation, and keep everything else.)
 - [ ] None of the banned words or LLM-isms above?
 - [ ] Typos, dictation errors and tool names fixed, but the casual voice left alone?
 - [ ] Is the humor light, self-deprecating, and something I'd actually say?
-- [ ] Does the front matter pick `colorKeywords` so there's a colored term every paragraph or two,
-  each fitting its part of the post, and does the build show no "wasn't colored" warnings for it?
+- [ ] Does the front matter pick `colorKeywords` for about one colored term per paragraph on
+  average, each the main idea of its paragraph, and does the build show no "wasn't colored" warnings for it?
 - [ ] Is this a resume edit? Then none of this voice applies: keep it professional. An About
   edit? Use the toned-down version described at the top.

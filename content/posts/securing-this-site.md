@@ -4,8 +4,8 @@ date = 2026-10-30
 draft = true
 description = 'The security changes I made to this site, ordered by what they actually stop, from email spoofing down to certificate mis-issuance.'
 tags = ['security', 'github-actions', 'dns', 'web']
-colorKeywords = ['GitHub Pages', 'DMARC', 'supply chain', 'GitHub Actions', 'attack surface', 'SHA-256', 'CSP', 'XSS', 'clickjacking', 'subresource integrity', 'defense in depth', 'HSTS', 'phishing', "Let's Encrypt", 'Cloudflare', 'DNSSEC']
-colorKeywordsCustom = { 'commit SHAs' = 'iron' }
+colorKeywords = ['GitHub Pages', 'DMARC', 'supply chain', 'GitHub Actions', 'attack surface', 'SHA-256', 'Dependabot', 'CSP', 'XSS', 'clickjacking', 'subresource integrity', 'defense in depth', 'HSTS', 'phishing', "Let's Encrypt", 'Cloudflare', 'DNSSEC']
+colorKeywordsCustom = { 'email records' = 'crimson', 'two DNS records' = 'ward', 'Split permissions' = 'ward', 'commit SHAs' = 'iron', 'auto-closed' = 'glitch', 'certificate authorities' = 'ward', 'wildcard certificates' = 'crimson', 'Mozilla HTTP Observatory' = 'trophy', 'browser headers' = 'iron' }
 +++
 
 A static site on GitHub Pages doesn't have much to attack: no logins, no forms, no cookies, no

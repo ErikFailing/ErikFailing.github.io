@@ -14,8 +14,9 @@ read like Erik showing someone something cool, not like marketing.
 - **`content/about.md`:** mostly professional with a light conversational touch; follow the
   toned-down rules in VOICE.md's "Where This Voice Applies" section.
 - Keyword colors are picked per page in front matter (see "Keyword colors" in STYLE.md). When
-  drafting a post, propose `colorKeywords` for Erik to approve: roughly one colored term every
-  paragraph or two, each carrying the theme of its part of the page (library terms from
+  drafting a post, propose `colorKeywords` for Erik to approve: about one colored term per paragraph
+  on average (skip paragraphs with nothing worth pulling out), each the main idea of its paragraph
+  or sentence (library terms from
   `data/keywords.yaml`, or `colorKeywordsCustom` with a style whose vibe fits). Tools and languages
   new to the library get their brand colors (lightened to pass 7:1 contrast).
   Don't add color markup or `kw` shortcodes in the body, and never add colorKeywords to the resume.

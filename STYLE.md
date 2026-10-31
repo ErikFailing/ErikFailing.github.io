@@ -134,72 +134,79 @@ colorKeywords = ['fuzzing', 'supply chain']    # terms from the library in data/
 colorKeywordsCustom = { 'AFL++' = 'flood' }    # page-only terms: 'text' = 'style'
 ```
 
-- **Rule of thumb: a colored keyword every paragraph or two.** Enough that the page feels alive
-  throughout, never several crowded into one spot. There's no fixed cap, since pages differ in
-  length; judge the rhythm by reading the page.
-- **Pick terms that carry the theme of that part of the page:** the tool, technique, bug or idea
-  the paragraph is about. Brand names and specific techniques make better keywords than generic
-  words.
+- **About one colored term per paragraph, on average.** Some paragraphs have two, some have none;
+  skip a paragraph when nothing in it is worth pulling out.
+- **Color the main idea.** The term should be the most important thing in its paragraph or
+  sentence, so skimming the colors gives the gist of the page: the tool, technique, bug or
+  decision the paragraph is about. Brand names and specific techniques beat generic words.
+- **Only the first mention gets colored,** so watch intros and summaries: they mention many terms
+  early. Keep an intro to its one or two main ideas and let other terms color where they're the
+  point (a longer, distinctive phrase can target a later mention).
 - **Library terms keep colors consistent:** "fuzzing" or "Python" is the same color on every page
   that picks it. Any form works (picking `'fuzzers'` colors whichever of fuzzing/fuzzer/fuzzers
   appears first).
-- **Page-only terms** go in `colorKeywordsCustom` when the library has nothing that fits a stretch
-  of the page. If a term starts showing up on several pages, add it to the library instead.
+- **Page-only terms** go in `colorKeywordsCustom` for ideas specific to one page (most main ideas
+  are). If a term starts showing up on several pages, add it to the library instead.
 - The resume picks nothing and stays plain.
 
 **Styles.** Colors live in [`data/keywords.yaml`](data/keywords.yaml) (one color = solid, two =
 a left-to-right gradient), and their CSS is generated from it, so the data file is the single
 source of truth.
 
+- **Mostly solid colors.** Gradients are reserved for signature terms (about 1 style in 5): World
+  Anchor, Caves of Qud, my name, Huntsville, Python's two-color logo, and a few vibes where the
+  shift *is* the meaning (fire, glitch, poison, ghostly, static). Everything else is one color.
 - **Brands** use their own colors: Claude terracotta, OpenAI green, Python blue-and-yellow, Rust
   copper, JavaScript yellow, Hugo pink, Git orange-red, AWS orange, Hack The Box neon green,
-  Ghidra red, Burp orange, Docker/Kubernetes/Azure/VS Code blues, and so on (about 40 tools and
-  languages). Brand colors too dark for the background are lightened, keeping their hue, until
-  they pass contrast. Black-and-white brands (Unreal, Unity) use `iron`.
+  Ghidra red, Burp orange, Boeing and Northrop Grumman blues, Docker/Kubernetes/Azure/VS Code
+  blues, and so on (about 45 tools, languages and companies). Brand colors too dark for the
+  background are lightened, keeping their hue, until they pass contrast. Black-and-white brands
+  (Unreal, Unity) use `iron`.
 - **Everything else uses a vibe:**
 
 | Style | Look | Vibe | Examples |
 |---|---|---|---|
-| `crimson` | solid red | Attacking | pentesting, red team, phishing, domain takeover, attack surface |
-| `blaze` | red → orange | Something on fire | RCE, exploit development |
-| `glitch` | magenta → red | Unknown, corrupted | zero-day, memory corruption, dependency confusion |
-| `toxic` | lime → purple | Poison slipped in | SQL injection, command injection, XSS |
-| `ascend` | orange → gold | Climbing up or breaking out | privilege escalation, sandbox escape |
-| `flood` | blue → cyan | Water spilling over | buffer overflow, integer overflow |
-| `ghostly` | pale lavender → violet | Haunted, invisible | use-after-free, clickjacking, CSRF, side-channel |
-| `static` | cyan → magenta | Noise and chaos | fuzzing, AFL++, race condition, concurrency |
-| `arcane` | violet → blue | Secrets, deep knowledge, AI | reverse engineering, cryptography, SHA-256, LLMs |
-| `trophy` | gold → orange | Winning | CTF, proof of concept, bug bounty, game jam |
-| `ward` | green → teal | Shields up | defense in depth, least privilege, threat modeling, CSP, HSTS, DMARC |
-| `iron` | steel blue → silver | Metal | supply chain, SBOM, Unreal Engine, Unity |
-| `flow` | lime → cyan | Moving through pipes | CI/CD, GitHub Actions, GitHub Pages, unit tests |
-| `clarity` | gold → pale lavender | Light and legibility | WCAG, accessibility |
+| `crimson` | red | Attacking | pentesting, red team, phishing, domain takeover, attack surface |
+| `blaze` | red → orange gradient | Something on fire | RCE, exploit development |
+| `glitch` | magenta → red gradient | Unknown, corrupted | zero-day, memory corruption, dependency confusion |
+| `toxic` | lime → purple gradient | Poison slipped in | SQL injection, command injection, XSS |
+| `ascend` | orange | Climbing up or breaking out | privilege escalation, sandbox escape |
+| `flood` | sky blue | Water spilling over | buffer overflow, integer overflow |
+| `ghostly` | pale lavender → violet gradient | Haunted, invisible | use-after-free, clickjacking, CSRF, side-channel |
+| `static` | cyan → magenta gradient | Noise and chaos | fuzzing, AFL++, race condition, concurrency |
+| `arcane` | violet | Secrets, deep knowledge, AI | reverse engineering, cryptography, SHA-256, LLMs |
+| `trophy` | gold | Winning | CTF, proof of concept, bug bounty, game jam |
+| `ward` | green | Shields up | defense in depth, least privilege, threat modeling, CSP, HSTS, DMARC |
+| `iron` | steel gray-blue | Metal | supply chain, SBOM, Unreal Engine, Unity |
+| `flow` | cyan | Moving through pipes | CI/CD, GitHub Actions, GitHub Pages, Dependabot, unit tests |
+| `clarity` | pale gold | Light and legibility | WCAG, accessibility |
 | `boeing`, `northrop` | brand blues | Companies I've worked for | Boeing Intelligence & Analytics, Northrop Grumman |
-| `signature` | blue → violet | Me | Erik Failing |
-| `rocket` | gold → red | Rocket City launch flame | Huntsville, Alabama |
-| `anchor`, `qud` | own palettes | Projects | World Anchor, Caves of Qud |
+| `signature` | blue → violet gradient | Me | Erik Failing |
+| `rocket` | gold → red gradient | Rocket City launch flame | Huntsville, Alabama |
+| `anchor`, `qud` | own gradients | Projects | World Anchor, Caves of Qud |
 
 The full term list is the `library` in [`data/keywords.yaml`](data/keywords.yaml). When adding a
-term: a tool or language gets its brand colors (add a style if it's new); anything else gets the
-vibe that fits.
+term: a tool, language or company gets its brand color (add a style if it's new); anything else
+gets the vibe that fits.
 
 **Rules** (enforced by [`layouts/_partials/keyword_colors.html`](layouts/_partials/keyword_colors.html)):
 
-- **First mention only**, and at most **2 per paragraph** (earliest mentions win).
+- **First mention only.** There's no per-paragraph cap; balance comes from the picks.
 - **Never** inside code, links, headings, tables, buttons or HTML attributes, and never in titles,
   summaries or the RSS feed. Tables are skipped because they're data, and a summary table near the
   top would otherwise use up every term's first mention.
 - **Whole words, any capitalization;** the text keeps its original capitalization. Straight and
-  curly apostrophes both match. Avoid forms that are also everyday words ("Golang", not "Go").
+  curly apostrophes, and `&`, both match. Avoid forms that are also everyday words ("Golang", not
+  "Go").
 - **The build checks the picks:** it fails on a term that isn't in the library, a style that
-  doesn't exist, or a malformed color, and warns when a picked term never got colored (a typo, a
-  term that only appears in code/links/headings/tables, or one the paragraph limit skipped).
+  doesn't exist, or a malformed color, and warns when a picked term never got colored (a typo, or
+  a term that only appears in code, links, headings or tables).
 - **Only solid and smooth-gradient styles.** A gradient is painted inside the letters of one
   element (`background-clip: text`), so screen readers and copy/paste see a normal word.
-- **No solid-blue style,** so a keyword never looks like a link (blue brands get a lighter second
-  stop).
-- **Every color and every point along each gradient passes 7:1** on the canvas (lowest: steel at
-  7.07:1). Check new colors before adding them.
+- **Solid blues are fine:** links are always underlined and keywords never are, so they don't
+  get confused.
+- **Every color and every point along each gradient passes 7:1** on the canvas (lowest: 7.07:1).
+  Check new colors before adding them.
 
 For a one-off phrase mid-sentence, the shortcode still works: `{{< kw arcane >}}some phrase{{< /kw >}}`.
 Front matter is usually cleaner, so use it rarely.

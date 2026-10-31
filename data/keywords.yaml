@@ -12,8 +12,7 @@
 # (gradient painting, fallbacks) are in assets/css/extended/keywords.css.
 #
 # Rules the partial enforces:
-# - Only the first mention of each picked term is colored, and at most `limits.perParagraph`
-#   per paragraph (earliest mentions win).
+# - Only the first mention of each picked term is colored.
 # - Never inside code, links, headings, tables, buttons or HTML attributes, and never in titles,
 #   summaries or the RSS feed (only the rendered page body is processed).
 # - Whole words only, any capitalization; the original capitalization is kept. So avoid forms that
@@ -21,16 +20,14 @@
 # - The build fails if a page picks a term that isn't in the library or a style that doesn't
 #   exist, and warns if a picked term never got colored.
 #
-# Adding a style: `colors` is one hex color (solid) or two (a left-to-right gradient). Every color,
-# and every point along a gradient, must reach 7:1 contrast on the #08090c page background; brand
-# colors that are too dark get lightened (keeping their hue) until they do. No solid blue, so a
-# keyword never looks like a link (blue brands get a lighter second stop instead).
+# Adding a style: `colors` is one hex color (solid) or two (a left-to-right gradient). Keep it
+# mostly solid: gradients are for signature terms only (about 1 style in 5), so they stay special.
+# Every color, and every point along a gradient, must reach 7:1 contrast on the #08090c page
+# background; brand colors that are too dark get lightened (keeping their hue) until they do.
+# Solid blues are fine: links are always underlined and keywords never are.
 #
 # Adding a library term: an entry with one or more `match` forms (plural, hyphenated, acronym, etc.)
 # and the `style` that fits: the brand's colors for a tool or language, otherwise the closest vibe.
-
-limits:
-  perParagraph: 2
 
 styles:
   # ---- Vibes ----
@@ -40,16 +37,16 @@ styles:
   blaze:      { colors: ["#ff6b6b", "#ff9f43"], vibe: "Something on fire" }
   glitch:     { colors: ["#ff6ad5", "#ff6b6b"], vibe: "Unknown, corrupted, dangerous" }
   toxic:      { colors: ["#a6e35b", "#d279eb"], vibe: "Poison slipped in: injection bugs" }
-  ascend:     { colors: ["#ff9f43", "#ffd166"], vibe: "Climbing up or breaking out" }
-  flood:      { colors: ["#4db8ff", "#4fd8e0"], vibe: "Water spilling over" }
+  ascend:     { colors: ["#ff9f43"], vibe: "Climbing up or breaking out" }
+  flood:      { colors: ["#5cc8ff"], vibe: "Water spilling over" }
   ghostly:    { colors: ["#e4e2f5", "#b69cff"], vibe: "Haunted, invisible" }
   static:     { colors: ["#4fd8e0", "#ff6ad5"], vibe: "Noise and chaos" }
-  arcane:     { colors: ["#b69cff", "#4db8ff"], vibe: "Secrets, deep knowledge, AI" }
-  trophy:     { colors: ["#ffd166", "#ff9f43"], vibe: "Winning" }
-  ward:       { colors: ["#3fd68a", "#2ec4b6"], vibe: "Shields up" }
-  iron:       { colors: ["#7f9cc4", "#e2e8f0"], vibe: "Metal: chains, engines, black-and-white brands" }
-  flow:       { colors: ["#a6e35b", "#4fd8e0"], vibe: "Moving through pipes" }
-  clarity:    { colors: ["#ffd166", "#e4e2f5"], vibe: "Light and legibility: accessibility, type" }
+  arcane:     { colors: ["#b69cff"], vibe: "Secrets, deep knowledge, AI" }
+  trophy:     { colors: ["#ffd166"], vibe: "Winning" }
+  ward:       { colors: ["#3fd68a"], vibe: "Shields up" }
+  iron:       { colors: ["#a9b8cc"], vibe: "Metal: chains, engines, black-and-white brands" }
+  flow:       { colors: ["#4fd8e0"], vibe: "Moving through pipes" }
+  clarity:    { colors: ["#ffe08a"], vibe: "Light and legibility: accessibility, type" }
   signature:  { colors: ["#4db8ff", "#b69cff"], vibe: "Me: the site's blue fading into violet" }
   rocket:     { colors: ["#ffd166", "#ff6b6b"], vibe: "Rocket City launch flame: Huntsville" }
 
@@ -57,42 +54,42 @@ styles:
   claude:     { colors: ["#e38060"], vibe: "Claude / Anthropic terracotta" }
   openai:     { colors: ["#2ab08b"], vibe: "OpenAI / ChatGPT green" }
   python:     { colors: ["#62a1d9", "#ffd43b"], vibe: "Python's blue and yellow snakes" }
-  rust:       { colors: ["#fe6f55", "#dea584"], vibe: "Rust orange to copper" }
+  rust:       { colors: ["#dea584"], vibe: "Rust orange to copper" }
   golang:     { colors: ["#00add8"], vibe: "Go gopher cyan" }
   javascript: { colors: ["#f7df1e"], vibe: "JavaScript yellow" }
-  typescript: { colors: ["#589ff0", "#b3d4ff"], vibe: "TypeScript blue" }
-  cpp:        { colors: ["#58a1e9", "#a8c4e6"], vibe: "C++ logo blues" }
+  typescript: { colors: ["#589ff0"], vibe: "TypeScript blue" }
+  cpp:        { colors: ["#58a1e9"], vibe: "C++ logo blues" }
   csharp:     { colors: ["#d279eb"], vibe: "C# purple" }
   dotnet:     { colors: ["#928fff"], vibe: ".NET purple" }
-  java:       { colors: ["#f89820", "#72a2c2"], vibe: "Java's orange steam and blue cup" }
-  bash:       { colors: ["#54b02e", "#a6e35b"], vibe: "Terminal green" }
-  powershell: { colors: ["#609aff", "#b8d0ff"], vibe: "PowerShell blue" }
+  java:       { colors: ["#f89820"], vibe: "Java's orange steam and blue cup" }
+  bash:       { colors: ["#54b02e"], vibe: "Terminal green" }
+  powershell: { colors: ["#609aff"], vibe: "PowerShell blue" }
   zig:        { colors: ["#f7a41d"], vibe: "Zig orange" }
   ghidra:     { colors: ["#fd6f66"], vibe: "Ghidra's red dragon" }
   burp:       { colors: ["#fe7145"], vibe: "Burp Suite orange" }
-  wireshark:  { colors: ["#4ca4d4", "#9fd0ea"], vibe: "Wireshark fin blue" }
-  metasploit: { colors: ["#3aa6de", "#a9d8f2"], vibe: "Metasploit blue" }
-  kali:       { colors: ["#5f9aff", "#a3c3ff"], vibe: "Kali Linux dragon blue" }
+  wireshark:  { colors: ["#4ca4d4"], vibe: "Wireshark fin blue" }
+  metasploit: { colors: ["#3aa6de"], vibe: "Metasploit blue" }
+  kali:       { colors: ["#5f9aff"], vibe: "Kali Linux dragon blue" }
   htb:        { colors: ["#9fef00"], vibe: "Hack The Box neon green" }
   tryhackme:  { colors: ["#fe7061"], vibe: "TryHackMe red" }
-  splunk:     { colors: ["#6bac3e", "#a6e35b"], vibe: "Splunk green" }
+  splunk:     { colors: ["#6bac3e"], vibe: "Splunk green" }
   git:        { colors: ["#fe7155"], vibe: "Git orange-red" }
-  docker:     { colors: ["#34a1f9", "#9fd3ff"], vibe: "Docker whale blue" }
-  kubernetes: { colors: ["#689bfd", "#b9cdff"], vibe: "Kubernetes helm blue" }
+  docker:     { colors: ["#34a1f9"], vibe: "Docker whale blue" }
+  kubernetes: { colors: ["#689bfd"], vibe: "Kubernetes helm blue" }
   terraform:  { colors: ["#b883f3"], vibe: "Terraform purple" }
   ansible:    { colors: ["#fe6d5c"], vibe: "Ansible red" }
   aws:        { colors: ["#ff9900"], vibe: "AWS smile orange" }
-  azure:      { colors: ["#32a2f1", "#9fd3ff"], vibe: "Azure blue" }
-  cloudflare: { colors: ["#f38020", "#fbad41"], vibe: "Cloudflare orange cloud" }
+  azure:      { colors: ["#32a2f1"], vibe: "Azure blue" }
+  cloudflare: { colors: ["#f38020"], vibe: "Cloudflare orange cloud" }
   linux:      { colors: ["#fcc624"], vibe: "Tux yellow" }
   hugo:       { colors: ["#ff6596"], vibe: "Hugo pink" }
-  vscode:     { colors: ["#40a1f6", "#a4d2fb"], vibe: "VS Code blue" }
+  vscode:     { colors: ["#40a1f6"], vibe: "VS Code blue" }
   vim:        { colors: ["#36b24e"], vibe: "Vim green" }
-  godot:      { colors: ["#5da2d6", "#a9d1ef"], vibe: "Godot blue" }
-  steam:      { colors: ["#66c0f4", "#c7e6fb"], vibe: "Steam light blue" }
+  godot:      { colors: ["#5da2d6"], vibe: "Godot blue" }
+  steam:      { colors: ["#66c0f4"], vibe: "Steam light blue" }
   letsencrypt: { colors: ["#f9a11b"], vibe: "Let's Encrypt amber" }
-  boeing:     { colors: ["#6699fe", "#a9c7ff"], vibe: "Boeing blue" }
-  northrop:   { colors: ["#699edc", "#c9d6e6"], vibe: "Northrop Grumman navy to silver" }
+  boeing:     { colors: ["#6699fe"], vibe: "Boeing blue" }
+  northrop:   { colors: ["#699edc"], vibe: "Northrop Grumman navy to silver" }
 
 library:
   # ---- Companies I've worked for ----
@@ -171,6 +168,7 @@ library:
   - { match: ["infrastructure as code", "infrastructure-as-code"], style: flow }
   - { match: ["GitHub Actions"], style: flow }
   - { match: ["GitHub Pages"], style: flow }
+  - { match: ["Dependabot"], style: flow }
   - { match: ["unit testing", "unit tests"], style: flow }
   - { match: ["REST API", "REST APIs"], style: flow }
   - { match: ["concurrency"], style: static }

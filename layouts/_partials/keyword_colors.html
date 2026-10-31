@@ -72,25 +72,18 @@
 {{- end -}}
 {{- $entries = sort $entries "len" "desc" -}}
 
-{{- /* Paragraph limit, so a single paragraph never turns into a rainbow even if a page picks several
-       terms that sit close together. A "block" is a paragraph, list item, quote or table cell. */ -}}
-{{- $perBlock := $data.limits.perParagraph | default 2 -}}
-{{- $blockTags := slice "p" "li" "blockquote" "td" "th" "dd" "dt" "figcaption" -}}
-
 {{- /* Walk the tokens. $protTag is the outermost protected element we're inside ("" if none);
        $depth counts nested elements with that same name so we know when it really closes. */ -}}
 {{- $s := newScratch -}}
 {{- $out := "" -}}
 {{- $protTag := "" -}}
 {{- $depth := 0 -}}
-{{- $inBlock := 0 -}}
 {{- range findRE `<!--[\s\S]*?-->|<[^>]*>|[^<]+` $html -}}
   {{- $tok := . -}}
   {{- if hasPrefix $tok "<" -}}
     {{- $isClose := hasPrefix $tok "</" -}}
     {{- $isSelfClosing := hasSuffix $tok "/>" -}}
     {{- $name := lower (replaceRE `^</?([A-Za-z][A-Za-z0-9-]*)[\s\S]*$` "$1" $tok) -}}
-    {{- if and (not $isClose) (in $blockTags $name) }}{{ $inBlock = 0 }}{{ end -}}
     {{- if eq $protTag "" -}}
       {{- $isKeywordSpan := and (eq $name "span") (findRE `class="[^"]*\bkw\b` $tok) -}}
       {{- if and (not $isClose) (not $isSelfClosing) (or (in $protected $name) $isKeywordSpan) -}}
@@ -102,31 +95,13 @@
       {{- if le $depth 0 }}{{ $protTag = "" }}{{ end -}}
     {{- end -}}
   {{- else if eq $protTag "" -}}
-    {{- /* Each pass colors the earliest unused keyword in this text, so the paragraph limit keeps
-           the first mentions in reading order. Ties go to the longer keyword ($entries is longest
-           first). */ -}}
-    {{- range seq $perBlock -}}
-      {{- if lt $inBlock $perBlock -}}
-        {{- $best := false -}}
-        {{- $bestPos := -1 -}}
-        {{- $bestMatch := "" -}}
-        {{- range $e := $entries -}}
-          {{- if not ($s.Get (printf "used%d" $e.i)) -}}
-            {{- with findRE $e.re $tok 1 -}}
-              {{- $pos := len (index (split $tok (index . 0)) 0) -}}
-              {{- if or (lt $bestPos 0) (lt $pos $bestPos) -}}
-                {{- $best = $e -}}
-                {{- $bestPos = $pos -}}
-                {{- $bestMatch = index . 0 -}}
-              {{- end -}}
-            {{- end -}}
-          {{- end -}}
-        {{- end -}}
-        {{- with $best -}}
-          {{- $e := . -}}
-          {{- $inBlock = add $inBlock 1 -}}
+    {{- /* Color the first mention of each picked term that hasn't been colored yet. Longer terms go
+           first ($entries is sorted longest first), so "Caves of Qud" wins over a "Qud" inside it. */ -}}
+    {{- range $e := $entries -}}
+      {{- if not ($s.Get (printf "used%d" $e.i)) -}}
+        {{- with findRE $e.re $tok 1 -}}
           {{- $s.Set (printf "used%d" $e.i) true -}}
-          {{- $s.Set (printf "word%d" $e.i) (replaceRE $e.re "$2" $bestMatch) -}}
+          {{- $s.Set (printf "word%d" $e.i) (replaceRE $e.re "$2" (index . 0)) -}}
           {{- $tok = replaceRE $e.re (printf "${1}%d${3}" $e.i) $tok 1 -}}
         {{- end -}}
       {{- end -}}
@@ -136,11 +111,11 @@
 {{- end -}}
 
 {{- /* Turn placeholders into spans (the matched text is already HTML-escaped page text), and warn
-       about picks that never got colored: a typo, a term that only appears in code, links or
-       headings, or one the paragraph limit skipped. */ -}}
+       about picks that never got colored: a typo, or a term that only appears in code, links,
+       headings or tables. */ -}}
 {{- range $e := $entries -}}
   {{- if not ($s.Get (printf "word%d" $e.i)) -}}
-    {{- warnf "%s: color keyword %q wasn't colored (not found in plain text, or skipped by the per-paragraph limit)" $page.File.Path $e.name -}}
+    {{- warnf "%s: color keyword %q wasn't colored (not found in plain text outside code, links, headings and tables)" $page.File.Path $e.name -}}
   {{- end -}}
   {{- with $s.Get (printf "word%d" $e.i) -}}
     {{- $out = replace $out (printf "%d" $e.i) (printf `<span class="%s">%s</span>` $e.class .) -}}

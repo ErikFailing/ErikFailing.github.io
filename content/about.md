@@ -5,7 +5,7 @@ draft = false
 hideMeta = true
 ShowToc = false
 ShowBreadCrumbs = false
-colorKeywords = ['Huntsville', 'Boeing', 'pentest', 'Northrop Grumman', 'World Anchor', 'CI/CD', 'game jam', 'CTF']
+colorKeywords = ['Huntsville', 'Boeing', 'pentest', 'fuzzing', 'Northrop Grumman', 'World Anchor', 'CI/CD', 'game jam', 'CTF']
 colorKeywordsCustom = { 'software assurance' = 'ward' }
 +++
 
