@@ -1,23 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- "EF" monogram in World Anchor-inspired blue and green. Drawn on an even 32-unit grid so edges
-       stay sharp at 16, 32 and 48px. Source for static/favicon.ico and static/favicon-*.png;
-       static/safari-pinned-tab.svg is the same letters in one color. -->
+  <!-- "EF" monogram: vivid blue and green letters on the site's charcoal-to-canvas gradient, with the
+       same subtle edge as the site's cards so it doesn't vanish into dark browser tabs. Drawn on an
+       even 32-unit grid so edges stay sharp at 16, 32 and 48px. Source for static/favicon.ico and
+       static/favicon-*.png; static/safari-pinned-tab.svg is the same letters in one color. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1a2fa8"/>
-      <stop offset="1" stop-color="#0a0f3d"/>
+      <stop offset="0" stop-color="#1d212a"/>
+      <stop offset="1" stop-color="#08090c"/>
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" fill="url(#bg)" stroke="#343a43"/>
   <!-- E -->
-  <g fill="#3fc8ff">
+  <g fill="#00b2ff">
     <rect x="4" y="6" width="4" height="20"/>
     <rect x="4" y="6" width="10" height="4"/>
     <rect x="4" y="14" width="8" height="4"/>
     <rect x="4" y="22" width="10" height="4"/>
   </g>
   <!-- F -->
-  <g fill="#3ee67a">
+  <g fill="#00e676">
     <rect x="18" y="6" width="4" height="20"/>
     <rect x="18" y="6" width="10" height="4"/>
     <rect x="18" y="14" width="8" height="4"/>

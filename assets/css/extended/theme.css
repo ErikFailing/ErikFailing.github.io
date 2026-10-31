@@ -27,7 +27,7 @@
   --selection: #204661;
   --mark: #163c2c;
   --focus: var(--blue);
-  --navy-hi: #1a2fa8;  --navy-lo: #0a0f3d;   /* decorative only */
+  --logo-blue: #00b2ff;  --logo-green: #00e676;   /* decorative only: the EF monogram */
   --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
   /* Fluid type scale: ratio 1.2 at 360px to 1.25 at 1240px, 18px base */
   --step-1: clamp(1.35rem, 1.327rem + 0.1023vw, 1.4063rem);

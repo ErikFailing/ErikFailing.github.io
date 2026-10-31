@@ -33,7 +33,7 @@ while keeping shadows and raised surfaces visible. Text is off-white, never pure
 | `--green` / `--green-hover` | `#3fd68a` / `#7fe5ad` | 10.6:1 / 13.0:1 |
 | `--blue-tint` / `--green-tint` | `#101e29` / `#0f221b` | Backgrounds (12% accent over canvas) |
 | `--on-accent` | `#08090c` | Text on blue or green fills (never white) |
-| `--navy-hi` / `--navy-lo` | `#1a2fa8` / `#0a0f3d` | Decorative only (favicon, logo backdrops) |
+| `--logo-blue` / `--logo-green` | `#00b2ff` / `#00e676` | 8.4:1 / 11.9:1. Decorative only: the EF monogram (favicon, social cards), more vivid than the text accents |
 
 **Roles: blue means "you can act here", green means "category, state or emphasis".**
 
@@ -112,6 +112,13 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   the tone warm, not snarky. Links are underlined like in-text links (`layouts/404.html`).
 - **Home page tagline:** `params.tagline`, one line under the green subtitle in body-text color
   (`--content`, 20px, regular); one line on desktop, balanced across two lines on phones.
+- **Favicon:** the EF monogram, blocky letters on a 32-unit grid in `--logo-blue` and
+  `--logo-green`, on a charcoal-to-canvas gradient (`#1d212a` to `#08090c`) with a 1-unit
+  `--border-strong` edge, like the site's cards, so it stays visible in dark browser tabs. Sources
+  are `assets/favicon/favicon.svg` and `apple-touch-icon.svg` (square, no edge, for iOS); the files
+  in `static/` (`favicon.ico` with 16, 32 and 48px, `favicon-16x16.png`, `favicon-32x32.png`,
+  `apple-touch-icon.png` at 180px) are rendered from them. Redo all of them, and the monogram on
+  `assets/img/social-card-base.png`, after changing the SVGs.
 - **Profile buttons:** surface-2 fill, `--border-strong` outline, 600 weight; on hover a blue
   border and light-blue text.
 - **Social icons:** muted gray at rest, blue on hover.
@@ -146,14 +153,14 @@ build time by [`layouts/_partials/social_card.html`](layouts/_partials/social_ca
 published next to the page as `social-card.png`. Nothing to do per post: the card picks up the
 title and post number on its own.
 
-- **Layout:** the canvas with a blue-to-green strip along the top; the EF logo square, my name
+- **Layout:** the canvas with a blue-to-green strip (logo colors) along the top; the EF monogram, my name
   (`--primary`, bold) and "Software & Security Engineer" (`--secondary`) at the top left; the post
   number ("NO. 3") or "TAG" as a green label; the page title large in `--primary` bold; the
   domain in `--secondary` at the bottom. Titles over 36 characters shrink a step and over 60 shrink
   again, so they stay within three lines. The home page shows `params.tagline` from `hugo.toml`
   instead of a title.
 - **Files:** the background is [`assets/img/social-card-base.png`](assets/img/social-card-base.png)
-  (strip and logo square only; all text is drawn by Hugo). The fonts are static Regular and Bold
+  (strip and monogram only; all text is drawn by Hugo). The fonts are static Regular and Bold
   instances of the site's Open Sans in `assets/fonts/`, made from
   `static/fonts/open-sans-latin-wght-normal.woff2` with fontTools' `instantiateVariableFont`
   (`wght` 400 and 700, saved uncompressed as TTF), because Hugo's text drawing can't read WOFF2 or

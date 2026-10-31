@@ -1,7 +1,7 @@
 {{- /* Builds a page's social card: the 1200x630 image link previews show (LinkedIn, Slack, Discord, X).
        Returns an image resource. Drawn at build time with Hugo's images.Text on
-       assets/img/social-card-base.png (canvas, blue-to-green top strip, navy logo square), using static
-       instances of the site's Open Sans in assets/fonts/. Used through
+       assets/img/social-card-base.png (canvas, blue-to-green top strip, EF favicon monogram), using
+       static instances of the site's Open Sans in assets/fonts/. Used through
        layouts/_partials/templates/_funcs/get-page-images.html for any page without its own image.
        See "Social cards" in STYLE.md. */ -}}
 {{- $bold := resources.Get "fonts/open-sans-latin-bold.ttf" }}
@@ -22,8 +22,6 @@
 {{- if eq .Kind "term" }}{{ $eyebrow = upper .Data.Singular }}{{ end }}
 
 {{- $filters := slice
-  (images.Text "E" (dict "font" $bold "size" 60 "color" "#4db8ff" "x" 94 "y" 80))
-  (images.Text "F" (dict "font" $bold "size" 60 "color" "#3fd68a" "x" 132 "y" 80))
   (images.Text site.Title (dict "font" $bold "size" 34 "color" "#e9edf2" "x" 204 "y" 80))
   (images.Text site.Params.profileMode.subtitle (dict "font" $regular "size" 26 "color" "#aab2bd" "x" 204 "y" 128))
   (images.Text $title (dict "font" $bold "size" $size "color" "#e9edf2" "x" 80 "y" 260 "linespacing" 6))
