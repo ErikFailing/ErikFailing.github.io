@@ -121,7 +121,7 @@ different host, which wasn't worth the rework or risk for this site.
   `_partials/post_meta.html`, `_partials/index_profile.html`,
   `_partials/templates/schema_json.html` and `_partials/templates/_funcs/get-page-images.html`
   against the overrides in `layouts/` (numbered headings, tags, post numbers, series order, 404
-  page, blog tabs, home page tagline, structured data, social cards), and copy over any
+  page, blog tabs, home page tagline and photo, structured data, social cards), and copy over any
   changes. `layouts/series/taxonomy.html` and `layouts/tags/taxonomy.html` replace the theme's
   `taxonomy.html` for the Series and Tags pages; check them if the theme's changes. `layouts/_partials/_funcs/get-page-images.html` overrides a template built into Hugo
   itself (PaperMod's `opengraph.html` calls it); it only forwards to the PaperMod override, so it

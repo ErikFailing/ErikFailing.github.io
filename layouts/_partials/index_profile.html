@@ -1,6 +1,8 @@
-{{- /* Override of themes/PaperMod/layouts/_partials/index_profile.html (the home page in profile mode). Only
-       change: params.tagline in hugo.toml shows as a line under the subtitle. When updating PaperMod, diff
-       this file against the theme's. */ -}}
+{{- /* Override of themes/PaperMod/layouts/_partials/index_profile.html (the home page in profile mode).
+       Two changes; when updating PaperMod, diff this file against the theme's:
+       1. params.tagline in hugo.toml shows as a line under the subtitle.
+       2. The profile photo is cropped to twice its display size (and saved as WebP), so it stays sharp
+          on high-DPI screens; the theme resizes it to exactly the display size. */ -}}
 <div class="profile">
     {{- with site.Params.profileMode }}
     <div class="profile_inner">
@@ -13,15 +15,7 @@
             {{- $processableFormats := (slice "jpg" "jpeg" "png" "tif" "bmp" "gif" "webp") -}}
             {{- $prod := (hugo.IsProduction | or (eq site.Params.env "production")) }}
             {{- if and (in $processableFormats $img.MediaType.SubType) (eq $prod true)}}
-                {{- if (not (and (not .imageHeight) (not .imageWidth))) }}
-                    {{- $img = $img.Resize (printf "%dx%d" .imageWidth .imageHeight) }}
-                {{- else if .imageHeight }}
-                    {{- $img = $img.Resize (printf "x%d" .imageHeight) }}
-                {{ else if .imageWidth }}
-                    {{- $img = $img.Resize (printf "%dx" .imageWidth) }}
-                {{ else }}
-                    {{- $img = $img.Resize "150x150" }}
-                {{- end }}
+                {{- $img = $img.Fill (printf "%dx%d webp q85" (mul 2 (.imageWidth | default 150)) (mul 2 (.imageHeight | default 150))) }}
             {{- end }}
             <img draggable="false" src="{{ $img.Permalink }}" alt="{{ .imageTitle | default "profile image" }}" title="{{ .imageTitle }}"
                 height="{{ .imageHeight | default 150 }}" width="{{ .imageWidth | default 150 }}" />

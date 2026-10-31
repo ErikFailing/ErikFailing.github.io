@@ -127,6 +127,10 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 - **404 page:** the big "404" in `--primary`, then two centered lines of body text (an
   encouraging line, then links to the home page, blog and resume), balanced across lines. Keep
   the tone warm, not snarky. Links are underlined like in-text links (`layouts/404.html`).
+- **Profile photo:** a square headshot at `assets/img/erik.jpg`, shown as a 150px circle above
+  my name on the home page (served as a 300px WebP for high-DPI screens) and used as the photo in
+  the structured data. To replace it, overwrite the file with another square photo; nothing else
+  changes. Check a new photo for location or camera metadata before committing it.
 - **Home page tagline:** `params.tagline`, one line under the green subtitle in body-text color
   (`--content`, 20px, regular); one line on desktop, balanced across two lines on phones.
 - **Favicon:** the EF monogram, blocky letters on a 32-unit grid in `--logo-blue` and

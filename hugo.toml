@@ -150,10 +150,10 @@ enableGitInfo = true
     enabled = true
     title = 'Erik Failing'
     subtitle = 'Software & Security Engineer'
-    # imageUrl = 'img/erik.jpg'        # file goes at assets/img/erik.jpg
-    # imageTitle = 'Erik Failing'
-    # imageWidth = 150
-    # imageHeight = 150
+    imageUrl = 'img/erik.jpg'          # assets/img/erik.jpg, square; also the photo in the structured data
+    imageTitle = 'Photo of Erik Failing'
+    imageWidth = 150                   # display size; the file is made at 2x for sharp high-DPI screens
+    imageHeight = 150
 
     # Buttons under the subtitle. Uncomment each once its page exists.
     [[params.profileMode.buttons]]

@@ -18,7 +18,7 @@ updates:
   # footer override and assets/js/site.js, see "Security headers" in DEPLOY.md) and
   # layouts/single.html, layouts/list.html and layouts/_partials/post_meta.html (numbered headings,
   # tags, post numbers, series order, blog tabs; see STYLE.md), layouts/404.html,
-  # layouts/_partials/index_profile.html (home page tagline), and
+  # layouts/_partials/index_profile.html (home page tagline and photo), and
   # layouts/_partials/templates/schema_json.html and templates/_funcs/get-page-images.html
   # (structured data and social cards). layouts/series/taxonomy.html and layouts/tags/taxonomy.html
   # replace the theme's taxonomy.html for the Series and Tags pages.
