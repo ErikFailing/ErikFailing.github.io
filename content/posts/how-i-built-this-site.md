@@ -149,8 +149,7 @@ text for color alone to mark them.
 I used {=claude: Claude Code=} (an LLM coding assistant) a lot on this project, and I think it was genuinely
 useful, but {=point: as an assistant, not as the one in charge=}. It drafted config, looked up docs, ran test
 builds, and did research I'd otherwise do by hand (like verifying every crawler name against each
-company's docs, or computing contrast ratios for a pile of candidate colors). I still made the
-decisions and read every change before it went in.
+company's docs). I still made the decisions and read every change before it went in.
 
 And reading everything mattered. A few examples:
 
@@ -164,8 +163,7 @@ And reading everything mattered. A few examples:
   stayed off the public site. It was good at flagging candidates, but deciding what's okay to
   publish is {=ward: my call, not a model's=}.
 
-So overall, I think the right mental model is a fast, well-read assistant that can {=glitch: make mistakes
-with total confidence=}. It saved me a lot of time on the tedious parts (looking up DNS records,
+So overall, {=point: I think it saved me a lot of time on the tedious parts=} (looking up DNS records,
 reading theme source to find the right CSS selectors, etc...), and it left me more time for the
 parts I actually care about. But anything it hands me still gets read before it ships.
 
