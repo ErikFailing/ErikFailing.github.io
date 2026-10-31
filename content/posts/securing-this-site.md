@@ -1,7 +1,7 @@
 +++
 title = 'Securing a Static Site'
-date = 2026-10-30
-draft = true
+date = 2026-10-31
+draft = false
 description = 'The security changes I made to this site, ordered by what they actually stop, from email spoofing down to certificate mis-issuance.'
 tags = ['Security', 'GitHub Actions', 'DNS', 'Web']
 +++
