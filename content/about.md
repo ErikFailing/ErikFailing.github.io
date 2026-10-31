@@ -1,6 +1,6 @@
 +++
 title = 'About'
-description = 'Software and security engineer in Huntsville, Alabama.'
+description = 'Software security engineer in Huntsville, Alabama.'
 draft = false
 hideMeta = true
 ShowToc = false
@@ -9,7 +9,7 @@ schemaType = 'ProfilePage'   # structured data: a profile page about me, not a b
 date = 2026-10-29T21:17:09-05:00   # first published; becomes dateCreated in the structured data
 +++
 
-I'm a software and security engineer in {=rocket: Huntsville, Alabama=}, with 5+ years in defense and
+I'm a software security engineer in {=rocket: Huntsville, Alabama=}, with 5+ years in defense and
 aerospace. Most of my work comes down to two things: finding security weaknesses in complex
 systems, and building the tools that make finding them faster.
 

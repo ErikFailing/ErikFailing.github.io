@@ -175,7 +175,7 @@ published next to the page as `social-card.png`. Nothing to do per post: the car
 title and post number on its own.
 
 - **Layout:** the canvas with a blue-to-green strip (logo colors) along the top; the EF monogram, my name
-  (`--primary`, bold) and "Software & Security Engineer" (`--secondary`) at the top left; the post
+  (`--primary`, bold) and "Software Security Engineer" (`--secondary`) at the top left; the post
   number ("NO. 3") or "TAG" as a green label; the page title large in `--primary` bold; the
   domain in `--secondary` at the bottom. Titles over 36 characters shrink a step and over 60 shrink
   again, so they stay within three lines. The home page shows `params.tagline` from `hugo.toml`

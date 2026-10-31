@@ -1,0 +1,16 @@
+Copyright (c) 2026 Erik Failing. All rights reserved.
+
+This repository holds the source and content of erikfailing.com: the posts and pages, images,
+templates, styles, scripts, configuration and documentation. Unless a file or folder says
+otherwise, no license is granted to copy, modify, publish or distribute any of it. Projects I
+choose to open source are released separately, each with its own license.
+
+Viewing this repository and forking it on GitHub are permitted as GitHub's Terms of Service
+provide; that permission does not extend to reusing the content elsewhere.
+
+Third-party parts keep their own licenses:
+
+- themes/PaperMod (a Git submodule): the PaperMod Hugo theme, MIT License. See
+  themes/PaperMod/LICENSE.
+- static/fonts/ and assets/fonts/: the Open Sans font and static instances made from it, SIL Open
+  Font License 1.1. See static/fonts/OFL.txt.

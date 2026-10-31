@@ -55,3 +55,8 @@ Start a new post with `hugo new content posts/my-post-title.md`; it begins as a 
 - [THEME.md](THEME.md): why PaperMod, how it's installed, and how to update it.
 - [DEPLOY.md](DEPLOY.md): how the GitHub Actions build and deploy works.
 - [SECURITY.md](SECURITY.md): how to report a security issue.
+
+## License
+
+Copyright Erik Failing, all rights reserved; see [LICENSE](LICENSE). The PaperMod theme (MIT) and
+the Open Sans font (SIL OFL 1.1) keep their own licenses.

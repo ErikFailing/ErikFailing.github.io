@@ -39,7 +39,7 @@ but it should sound like a person. Concretely:
 
 ## Who's Writing
 
-- I'm a software and security engineer with 5+ years in defense and aerospace. I'm a product
+- I'm a software security engineer with 5+ years in defense and aerospace. I'm a product
   security engineer on a cyber test team: pentesting, fuzzing, reverse engineering custom binaries
   and protocols, and building Python tools that make finding vulnerabilities faster.
 - I hold a CISSP and an M.S. in Cybersecurity and Information Assurance.

@@ -1,6 +1,6 @@
 +++
 title = 'Resume'
-description = 'Resume of Erik Failing, security software engineer.'
+description = 'Resume of Erik Failing, software security engineer.'
 draft = false
 hideMeta = true
 ShowToc = false
@@ -9,7 +9,7 @@ schemaType = 'ProfilePage'   # structured data: a profile page about me, not a b
 date = 2026-10-29T21:17:09-05:00   # first published; becomes dateCreated in the structured data
 +++
 
-**Security Software Engineer** · 5+ years · Pentesting, fuzzing & reverse engineering ·
+**Software Security Engineer** · 5+ years · Pentesting, fuzzing & reverse engineering ·
 Huntsville, AL
 
 [Download PDF](/Erik-Failing-Resume.pdf) ·

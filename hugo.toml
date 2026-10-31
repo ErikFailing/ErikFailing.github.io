@@ -115,7 +115,7 @@ enableGitInfo = true
 # PaperMod settings
 # ---------------------------------------------------------------------------------------------
 [params]
-  description = 'Software and security engineer: application security, pentesting, fuzzing.'
+  description = 'Software security engineer: application security, pentesting, fuzzing.'
   author = 'Erik Failing'
   # One-line pitch: shown under the subtitle on the home page (layouts/_partials/index_profile.html)
   # and as the big text on the home page's social card. The \u00A0 (a non-breaking space) keeps
@@ -163,7 +163,7 @@ enableGitInfo = true
   [params.profileMode]
     enabled = true
     title = 'Erik Failing'
-    subtitle = 'Software & Security Engineer'
+    subtitle = 'Software Security Engineer'
     imageUrl = 'img/erik.jpg'          # assets/img/erik.jpg, square; also the photo in the structured data
     imageTitle = 'Photo of Erik Failing'
     imageWidth = 150                   # display size; the file is made at 2x for sharp high-DPI screens
