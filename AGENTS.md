@@ -19,6 +19,8 @@ read like Erik showing someone something cool, not like marketing.
   `data/accents.yaml` (a named tool, company, person or place gets its own style; otherwise the
   vibe that fits). Mark at most one key point per section with `{=point: ...=}`. Never accent headings,
   links, code, tables or the resume. New tools get a brand-colored style (lightened to pass 7:1).
+- Each post has a permanent `number` in front matter (see "Post numbers" in STYLE.md). Create posts
+  with `hugo new content posts/...` so they get the next number, and never renumber existing posts.
 - Post section headings (`##`) are numbered automatically by CSS (see "Numbered sections" in
   STYLE.md). Write them without numbers.
 - Never invent experiences, results, numbers, quotes or opinions. Work from Erik's notes and leave
@@ -30,7 +32,7 @@ read like Erik showing someone something cool, not like marketing.
 
 - Colors, typography and components follow [STYLE.md](STYLE.md); CSS lives in
   `assets/css/extended/`. Never edit files under `themes/PaperMod/` (a Git submodule). Theme
-  templates overridden in `layouts/` (`single.html`, `list.html`, `_partials/footer.html`) must be diffed
+  templates overridden in `layouts/` (`single.html`, `list.html`, `_partials/footer.html`, `_partials/post_meta.html`) must be diffed
   against the theme's versions when PaperMod updates.
 - The site has a strict Content-Security-Policy (see "Security headers" in DEPLOY.md): no inline
   `<script>`, no `style=""` attributes, and no resources from other domains unless the CSP in

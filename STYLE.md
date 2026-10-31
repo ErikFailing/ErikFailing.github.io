@@ -119,6 +119,10 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 - **Blockquotes:** 3px green bar, upright body text.
 - **Tables:** horizontal rules only, surface-2 header row, scroll sideways on phones.
 - **Images:** 1px `--border` so dark screenshots don't blend into the page.
+- **Post numbers:** each post has a permanent number (`number = 3` in front matter), shown first
+  in the muted meta line as "No. 3" on the post and on list cards. Numbers follow publishing order
+  and never change once assigned; `hugo new content posts/...` fills in the next one, and the
+  build fails if two posts share a number. Numbers aren't in URLs or titles.
 - **Numbered sections (posts only):** each `##` section heading is numbered "1.", "2.", ... with
   the number in green, and the table of contents shows the same numbers. It's generated with CSS
   counters, so headings are written plainly in Markdown, never numbered by hand. Pages (About,
