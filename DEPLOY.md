@@ -113,10 +113,12 @@ GitHub Pages can't send custom response headers, so the site carries what it can
 
 Meta tags can't deliver HSTS, `X-Content-Type-Options`, `X-Frame-Options`/`frame-ancestors` or
 `Permissions-Policy`. For a static site with no cookies, forms or third-party content, only HSTS
-has real value. Community reports say GitHub Support will enable it on request. A ticket from the
-free account was closed without review in October 2026, since free plans only get self-service
-support, so the account was upgraded to Pro and the ticket reopened; it's pending as of
-2026-10-31. Getting the other headers would mean a proxy (e.g. Cloudflare's free plan) or a
+has real value, and GitHub Support enables it on request. A ticket from the free account was
+closed without review in October 2026, since free plans only get self-service support, so the
+account was upgraded to Pro and the ticket reopened. GitHub then turned HSTS on: every page sends
+`Strict-Transport-Security: max-age=31556952` (one year), confirmed live on 2026-11-02. It has no
+`includeSubDomains` or `preload`, so the domain isn't on browsers' preload list; that's GitHub's
+setting, not ours. Getting the other headers would mean a proxy (e.g. Cloudflare's free plan) or a
 different host, which wasn't worth the rework or risk for this site.
 
 **Keeping it working:**
@@ -135,7 +137,8 @@ different host, which wasn't worth the rework or risk for this site.
   inline `<script>`/`style=""` will be blocked. Check the browser console for "Refused to..."
   errors after changes.
 - Scan with [Mozilla HTTP Observatory](https://developer.mozilla.org/en-US/observatory). The
-  expected score is 55 (C), the ceiling for meta tags on GitHub Pages (scanned 2026-10-30).
+  expected score is 75 (B): the meta tags plus GitHub's HSTS header, with `X-Frame-Options` and
+  `X-Content-Type-Options` the only deductions (scanned 2026-11-02).
 
 ## One-time GitHub setting
 

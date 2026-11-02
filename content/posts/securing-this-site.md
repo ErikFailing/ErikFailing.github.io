@@ -21,7 +21,7 @@ order, what attack each one stops, and the couple of things I decided weren't wo
 | 1 | SPF + DMARC records | Anyone sending email "from" my domain | Medium |
 | 2 | Hardened build pipeline | A tampered tool or compromised step changing the live site | Medium (unlikely, high impact) |
 | 3 | Content-Security-Policy | Injected scripts running on my pages | Low to Medium |
-| 4 | HSTS | First-visit interception on hostile Wi-Fi | Low (**TBD**) |
+| 4 | HSTS | First-visit interception on hostile Wi-Fi | Low |
 | 5 | CAA records | A certificate for my domain issued by the wrong authority | Low |
 
 ## Email Spoofing: SPF And DMARC
@@ -107,7 +107,7 @@ so {=point: the CSP is defense in depth, not a wall=}. I tested it by loading ev
 with zero violations, and with a positive control page to make sure violations were actually
 being caught.
 
-## HSTS (TBD)
+## HSTS
 
 {=ward: HSTS=} tells browsers "only ever use HTTPS for this domain." Without it, the very first request to
 `http://erikfailing.com` (say, someone typing the address on hotel Wi-Fi) goes out unencrypted
@@ -120,7 +120,19 @@ GitHub Pages can't send custom headers, and HSTS can't be set from a meta tag. M
 ticket asking GitHub to enable it got {=glitch: auto-closed=} because I was on the free plan, so I upgraded to
 Pro and reopened it lol.
 
-**TBD:** waiting on GitHub Support.
+**Update (November 2, 2026):** GitHub got back to me after I reopened the ticket and turned it on.
+Every page now sends this header:
+
+```text
+Strict-Transport-Security: max-age=31556952
+```
+
+That `max-age` is one year in seconds (31,556,952 / 86,400 = 365.2425 days, the average
+Gregorian year). So once a browser has seen the site over HTTPS, it'll {=ward: refuse plain HTTP for
+erikfailing.com=} for the next year, and the hotel Wi-Fi trick above stops working on repeat
+visitors. It doesn't include `includeSubDomains` or `preload`, so the domain isn't on the browsers'
+built-in preload list, which means the very first visit from a brand new browser still isn't
+covered.
 
 ## CAA Records
 
@@ -142,9 +154,9 @@ update this.
 ## What I Didn't Bother With
 
 The scanner ({=trophy: Mozilla HTTP Observatory=}) took the site from a D (30) to a C (55), which is the
-ceiling for meta tags on GitHub Pages. Getting to an A would mean putting {=cloudflare: Cloudflare=} in front of
-GitHub Pages or moving hosts, and I think that's not worth it, because the remaining headers
-protect almost nothing on this site:
+ceiling for meta tags on GitHub Pages, and then to a B (75) once GitHub turned on HSTS. Getting to
+an A would mean putting {=cloudflare: Cloudflare=} in front of GitHub Pages or moving hosts, and I think that's
+not worth it, because the remaining headers protect almost nothing on this site:
 
 - **Clickjacking protection:** there are no buttons that do anything sensitive to trick someone
   into clicking.
