@@ -3,6 +3,7 @@ title = 'Resume'
 description = 'Resume of Erik Failing, software security engineer.'
 draft = false
 hideMeta = true
+showLastmod = true           # "Last updated <date>" under the description, from Git
 ShowToc = false
 ShowBreadCrumbs = false
 schemaType = 'ProfilePage'   # structured data: a profile page about me, not a blog post
@@ -97,8 +98,9 @@ Huntsville, AL
 
 ## Certifications
 
-ISC2 CISSP · CompTIA SecurityX (formerly CASP+) · CompTIA CySA+ · CompTIA PenTest+ ·
-CompTIA Security+
+[ISC2 CISSP](https://www.credly.com/badges/ce04c380-50e5-4f49-be88-ffd8abb6377b) ·
+[CompTIA SecurityX](https://www.credly.com/badges/ddf71dbc-911b-4a97-a947-4361820ae7b2)
+(formerly CASP+) · CompTIA CySA+ · CompTIA PenTest+ · CompTIA Security+
 
 ## Projects and activities
 

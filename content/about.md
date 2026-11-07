@@ -41,7 +41,7 @@ My game jam and prototype projects are on [itch.io](https://erikfailing.itch.io/
 
 ## Background
 
-I hold a {=ward: CISSP=}, an M.S. in Cybersecurity and Information Assurance from Western Governors
+I hold a [CISSP](https://www.credly.com/badges/ce04c380-50e5-4f49-be88-ffd8abb6377b), an M.S. in Cybersecurity and Information Assurance from Western Governors
 University, and a B.S. in Computer Science from the University of Alabama in Huntsville, where I
 was vice president of the Cybersecurity Club.
 

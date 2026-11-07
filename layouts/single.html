@@ -1,11 +1,13 @@
-{{- /* Override of themes/PaperMod/layouts/single.html. Three changes; when updating PaperMod, diff
+{{- /* Override of themes/PaperMod/layouts/single.html. Four changes; when updating PaperMod, diff
        this file against the theme's:
        1. Posts get the numbered-headings class, which numbers their section headings and table of
           contents with CSS counters (theme.css). A page can override with numberHeadings = true/false.
        2. Tags show at the top of the post (under the date line) as well as the bottom, both through
           layouts/_partials/post_tags.html.
        3. The "View source" link (edit_post.html) is wrapped in .post-edit-link, so the print
-          stylesheet (zz-print.css) can hide it together with its "|" separator. */ -}}
+          stylesheet (zz-print.css) can hide it together with its "|" separator.
+       4. A page with showLastmod = true (the resume) gets a "Last updated <date>" line under its
+          description, from the page's last Git commit (enableGitInfo). */ -}}
 {{- define "main" }}
 
 {{- $numbered := eq .Section "posts" }}
@@ -36,6 +38,11 @@
       <span class="post-edit-link">{{- partial "edit_post.html" . -}}</span>
       {{- partial "post_canonical.html" . -}}
     </div>
+    {{- end }}
+    {{- if .Param "showLastmod" }}
+    <div class="post-meta">Last updated <time datetime="{{ .Lastmod | time.Format "2006-01-02" }}">
+      {{- .Lastmod | time.Format (default ":date_long" site.Params.DateFormat) -}}
+    </time></div>
     {{- end }}
     {{- partial "post_tags.html" (dict "page" . "class" "post-tags-top") }}
   </header>
