@@ -173,6 +173,21 @@ enableGitInfo = true
     imageWidth = 150                   # display size; the file is made at 2x for sharp high-DPI screens
     imageHeight = 150
 
+    # Credential line under the tagline (layouts/_partials/index_profile.html). Facts from the
+    # resume only. Items with a url link to proof, like a Credly badge; title is the hover text.
+    [[params.profileMode.credentials]]
+      text = 'CISSP'
+      url = 'https://www.credly.com/badges/ce04c380-50e5-4f49-be88-ffd8abb6377b'
+      title = 'Verify on Credly'
+    [[params.profileMode.credentials]]
+      text = 'CompTIA SecurityX'
+      url = 'https://www.credly.com/badges/ddf71dbc-911b-4a97-a947-4361820ae7b2'
+      title = 'Verify on Credly'
+    [[params.profileMode.credentials]]
+      text = '5+ years'
+    [[params.profileMode.credentials]]
+      text = 'Pentesting, fuzzing & reverse engineering'
+
     # Buttons under the subtitle. Uncomment each once its page exists.
     [[params.profileMode.buttons]]
       name = 'About'

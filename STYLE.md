@@ -136,6 +136,10 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   changes. Check a new photo for location or camera metadata before committing it.
 - **Home page tagline:** `params.tagline`, one line under the green subtitle in body-text color
   (`--content`, 20px, regular); one line on desktop, balanced across two lines on phones.
+- **Home page credential line:** `profileMode.credentials` in `hugo.toml`, under the tagline in
+  muted text (`--secondary`, 16px), items separated by " · ". Facts from the resume only.
+  Certifications link to their Credly badge, styled like in-text links, so anyone can verify
+  them in one click.
 - **Favicon:** the EF monogram, blocky letters on a 32-unit grid in `--logo-blue` and
   `--logo-green`, on a charcoal-to-canvas gradient (`#1d212a` to `#08090c`) with a 1-unit
   `--border-strong` edge, like the site's cards, so it stays visible in dark browser tabs. Sources

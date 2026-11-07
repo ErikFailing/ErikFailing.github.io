@@ -1,8 +1,10 @@
 {{- /* Override of themes/PaperMod/layouts/_partials/index_profile.html (the home page in profile mode).
-       Two changes; when updating PaperMod, diff this file against the theme's:
+       Three changes; when updating PaperMod, diff this file against the theme's:
        1. params.tagline in hugo.toml shows as a line under the subtitle.
        2. The profile photo is cropped to twice its display size (and saved as WebP), so it stays sharp
-          on high-DPI screens; the theme resizes it to exactly the display size. */ -}}
+          on high-DPI screens; the theme resizes it to exactly the display size.
+       3. profileMode.credentials in hugo.toml shows as a credential line under the tagline, with
+          linked items (Credly badges) styled like in-text links. */ -}}
 <div class="profile">
     {{- with site.Params.profileMode }}
     <div class="profile_inner">
@@ -28,6 +30,15 @@
         <span>{{ .subtitle | markdownify }}</span>
         {{- with site.Params.tagline }}
         <p class="profile-tagline">{{ . }}</p>
+        {{- end }}
+        {{- with .credentials }}
+        <p class="profile-credentials">
+            {{- range $i, $c := . }}
+            {{- if $i }} · {{ end }}
+            {{- with $c.url }}<a href="{{ . }}" rel="noopener" target="_blank"{{ with $c.title }} title="{{ . }}"{{ end }}>{{ $c.text }}</a>
+            {{- else }}<span>{{ $c.text }}</span>{{ end }}
+            {{- end }}
+        </p>
         {{- end }}
         {{- partial "social_icons.html" -}}
 

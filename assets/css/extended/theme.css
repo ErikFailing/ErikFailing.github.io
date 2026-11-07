@@ -80,16 +80,17 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .footer .build-commit { font-family: var(--font-mono); font-size: 0.95em; }
 
 /* 3. Links, focus, selection. Blue means "you can act here". In-text links keep an underline because
-   blue vs body text is only 1.62:1, so color alone can't mark them (WCAG 1.4.1). The series box and
-   the 404 page sit outside .md-content but get the same in-text link style. */
-:is(.md-content, .series-box, .series-entry-list, .not-found-text) a:not(.anchor) {
+   blue vs body text is only 1.62:1, so color alone can't mark them (WCAG 1.4.1). The series box,
+   the 404 page and the home page's credential line sit outside .md-content but get the same
+   in-text link style. */
+:is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials) a:not(.anchor) {
   color: var(--blue);
   text-decoration-line: underline;
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, var(--blue) 60%, transparent);
 }
-:is(.md-content, .series-box, .series-entry-list, .not-found-text) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+:is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 .menu a:hover, .breadcrumbs a:hover, .post-meta a:hover, .toc a:hover, .footer a:hover, .top-link:hover { color: var(--blue); }
 .menu .active { text-decoration-color: var(--blue); }
 .md-content :is(h1, h2, h3, h4, h5, h6) .anchor:hover { color: var(--blue); }
@@ -101,6 +102,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .profile_inner h1 { font-size: var(--step-5); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
 .profile_inner > span { font-size: var(--step-1); font-weight: 600; color: var(--green); }
 .profile-tagline { margin-top: -0.25rem; font-size: 1.25rem; line-height: 1.45; color: var(--content); text-wrap: balance; }
+.profile-credentials { margin-top: -0.25rem; font-size: 1rem; line-height: 1.6; color: var(--secondary); text-wrap: balance; }
 .profile .social-icons a { color: var(--secondary); border-radius: var(--radius); }
 .profile .social-icons a:hover { color: var(--blue); }
 .profile .button { background: var(--code-bg); border: 1px solid var(--border-strong); font-weight: 600; }
@@ -176,5 +178,5 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 /* 7. User preferences */
 @media (prefers-contrast: more) {
   :root, :root[data-theme="dark"] { --secondary: var(--content); --border: var(--border-control); --border-strong: var(--border-control); }
-  :is(.md-content, .series-box, .series-entry-list, .not-found-text) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+  :is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 }
