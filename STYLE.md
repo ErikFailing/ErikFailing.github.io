@@ -85,11 +85,14 @@ characters.
 | Meta, captions, tags | 15px | 400 (tags 600) | 1.5 |
 | Tables | 16px | 400 (header 600) | 1.5 |
 | Footer | 14px | 400 | 1.5 |
-| Code blocks / inline code | 15px / 0.875em | 400 | 1.55 |
+| Code blocks / inline code | 13px / 0.875em | 400 | 1.55 |
 
 - Headings use a fluid scale (ratio 1.2 on phones to 1.25 on desktop) and slightly tighter
   letter-spacing at large sizes.
-- Content column: 680px, about 66–70 characters per line.
+- Content column: 800px on desktop (`--main-width`), about 90 characters of body text per line.
+  With 13px code blocks, code lines up to about 100 characters fit without scrolling. Wrap longer
+  code lines (`\` continuations, one attribute or directive per line) rather than widening the
+  column or shrinking the code.
 - Bold is 650 rather than 700 because light text on dark looks heavier.
 
 ## Spacing

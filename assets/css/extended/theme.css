@@ -15,7 +15,7 @@
   --primary: #e9edf2;        /* headings, nav, UI labels */
   --content: #d9dee5;        /* article body */
   --secondary: #aab2bd;      /* dates, meta, captions, icons at rest */
-  --main-width: 680px;
+  --main-width: 800px;       /* prose ~90 chars; 13px code blocks fit ~100-char lines */
   color-scheme: dark;
 
   /* Added tokens */
@@ -140,7 +140,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .md-content hr { height: 1px; background: var(--border-strong); margin: 3rem 0; }
 .post-content :not(pre) > code { font-size: 0.875em; padding: 0.1em 0.35em; border: 1px solid var(--border); border-radius: 4px; }
 .md-content .highlight:not(table) { border: 1px solid var(--border); }
-.md-content pre code { color: #e6edf3; font-size: 0.9375rem; line-height: 1.55; padding: 1rem 1.25rem; white-space: pre; word-break: normal; }
+.md-content pre code { color: #e6edf3; font-size: 0.8125rem; line-height: 1.55; padding: 1rem 1.25rem; white-space: pre; word-break: normal; }
 .copy-code { background: var(--tertiary); color: var(--primary); border: 1px solid var(--border-strong); }
 .copy-code:hover { border-color: var(--blue); }
 .md-content table:not(.highlight table) { display: block; overflow-x: auto; font-size: 1rem; font-variant-numeric: tabular-nums; }
