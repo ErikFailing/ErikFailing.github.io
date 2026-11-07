@@ -89,6 +89,8 @@ jobs:
           restore-keys: hugo-
 
       - name: Build
+        env:
+          HUGO_COMMIT: ${{ github.sha }}   # the footer's "Built from <commit>" link
         run: |
           echo "Building the project..."
           hugo build \

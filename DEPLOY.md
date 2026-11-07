@@ -38,6 +38,9 @@ It is a copy of Hugo's official workflow from
   release's `hugo_<version>_checksums.txt`. If the tarball doesn't match, `sha256sum --check`
   fails the build before Hugo is unpacked. The hash lives in the workflow, not fetched at build
   time, so a tampered release can't supply a matching checksum file.
+- **The build step passes the commit SHA** as `HUGO_COMMIT` (2026-11-07). The footer reads it with
+  `getenv` (Hugo allows `HUGO_` variables by default) and shows "Built from <short SHA>" linking
+  to that commit. Local builds don't set it, so their footer shows only the "Source" link.
 
 Staying close to the official file makes future updates a simple compare-and-copy.
 

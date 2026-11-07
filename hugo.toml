@@ -127,6 +127,10 @@ enableGitInfo = true
   # Which content sections count as "posts" on the home page and in RSS.
   mainSections = ['posts']
 
+  # The site's repo, linked from the footer as "Source". The footer's "Built from <commit>" link
+  # also points here; the workflow passes the commit in HUGO_COMMIT, so local builds don't show it.
+  sourceURL = 'https://github.com/ErikFailing/ErikFailing.github.io'
+
   # Appearance: dark-only. Colors live in assets/css/extended/theme.css (see STYLE.md). Only the dark
   # palette is designed, so the light/dark switch is hidden; with it hidden PaperMod also ignores any
   # light preference a visitor saved earlier.
@@ -237,11 +241,12 @@ enableGitInfo = true
   #   text = 'Views are my own.'
   #   hideCopyright = false
 
-  # "Suggest changes" link on each post, pointing at the post's source on GitHub.
-  # [params.editPost]
-  #   URL = 'https://github.com/ErikFailing/ErikFailing.github.io/blob/main/content'
-  #   Text = 'Suggest changes'
-  #   appendFilePath = true
+  # "View source" link in each post's meta line, pointing at the post's Markdown on GitHub. Pages
+  # with hideMeta (About, Resume) don't show it.
+  [params.editPost]
+    URL = 'https://github.com/ErikFailing/ErikFailing.github.io/blob/main/content'
+    Text = 'View source'
+    appendFilePath = true
 
   # Cover images on posts (set per post with  cover.image = '...' ).
   # [params.cover]
