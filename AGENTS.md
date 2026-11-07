@@ -41,3 +41,4 @@ read like Erik showing someone something cool, not like marketing.
   `<script>`, no `style=""` attributes, and no resources from other domains unless the CSP in
   `layouts/_partials/extend_head.html` is updated deliberately. Put JavaScript in `assets/js/site.js`.
 - Build and deploy details are in [DEPLOY.md](DEPLOY.md); theme details in [THEME.md](THEME.md).
+- Planned work is tracked in [TODO.md](TODO.md). Check items off when they land.
