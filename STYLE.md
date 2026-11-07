@@ -170,6 +170,25 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   Resume) aren't numbered; any page can override with `numberHeadings = true` or `false` in front
   matter. `###` subsections stay unnumbered.
 
+## Print
+
+Printing a page (or "Save as PDF") uses a light version of the site from
+[`assets/css/extended/zz-print.css`](assets/css/extended/zz-print.css). Browsers drop background
+colors when printing, so without it the screen palette prints as light gray text on white paper.
+
+- **Colors:** the tokens switch to a light palette, and every text color is 7:1 or better on white.
+  Accents print as plain text (their own rule in `accents.css`).
+- **No site chrome:** the header, footer, breadcrumbs, table of contents, tags, series box, post
+  navigation, copy buttons and "View source" link are hidden.
+- **Links** print as plain text followed by their destination in parentheses, like
+  "GitHub (https://github.com/ErikFailing)". Same-page and email links skip it, and site-relative
+  links get `erikfailing.com` in front.
+- **Code** prints black with gray comments, and long lines wrap instead of being cut off at the
+  page edge. Tables print full width.
+- **Type:** body 11pt; headings use fixed sizes instead of the screen's fluid scale.
+- **Checking it:** Ctrl+P in Chrome, or
+  `chrome --headless --print-to-pdf=out.pdf <url>` against `hugo server`.
+
 ## Social cards
 
 Every page gets a 1200×630 preview image for shared links (LinkedIn, Slack, Discord, X), drawn at

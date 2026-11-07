@@ -1,9 +1,11 @@
-{{- /* Override of themes/PaperMod/layouts/single.html. Two changes; when updating PaperMod, diff
+{{- /* Override of themes/PaperMod/layouts/single.html. Three changes; when updating PaperMod, diff
        this file against the theme's:
        1. Posts get the numbered-headings class, which numbers their section headings and table of
           contents with CSS counters (theme.css). A page can override with numberHeadings = true/false.
        2. Tags show at the top of the post (under the date line) as well as the bottom, both through
-          layouts/_partials/post_tags.html. */ -}}
+          layouts/_partials/post_tags.html.
+       3. The "View source" link (edit_post.html) is wrapped in .post-edit-link, so the print
+          stylesheet (zz-print.css) can hide it together with its "|" separator. */ -}}
 {{- define "main" }}
 
 {{- $numbered := eq .Section "posts" }}
@@ -31,7 +33,7 @@
     <div class="post-meta">
       {{- partial "post_meta.html" . -}}
       {{- partial "translation_list.html" . -}}
-      {{- partial "edit_post.html" . -}}
+      <span class="post-edit-link">{{- partial "edit_post.html" . -}}</span>
       {{- partial "post_canonical.html" . -}}
     </div>
     {{- end }}

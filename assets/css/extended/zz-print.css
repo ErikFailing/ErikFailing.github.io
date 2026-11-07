@@ -1,0 +1,82 @@
+/* Print styles: dark text on white paper, no site chrome, link URLs written out. See "Print" in
+   STYLE.md. The site is dark-only on screen, and browsers drop background colors when printing,
+   so without this the light text prints nearly invisible on white. Named zz- so it's bundled
+   last (after zz-chroma.css) and wins over same-specificity rules. Accents turn plain in
+   accents.css's own print rule. */
+@media print {
+  @page { margin: 0.6in 0.7in; }
+
+  /* Light tokens. Every text color here passes 7:1 on white. */
+  :root,
+  :root[data-theme="dark"] {
+    --theme: #fff;
+    --entry: #fff;
+    --code-block-bg: #fff;
+    --code-bg: #f3f4f6;
+    --tertiary: #e5e7eb;
+    --border: #c9ced6;
+    --border-strong: #b5bcc6;
+    --primary: #000;
+    --content: #111;
+    --secondary: #4b5058;
+    --blue: #0b4f8a;
+    --green: #0b5d33;
+    /* Fixed heading sizes; the screen scale grows with viewport width */
+    --step-1: 1.15rem;
+    --step-2: 1.3rem;
+    --step-3: 1.5rem;
+    --step-4: 1.9rem;
+    --step-5: 2.2rem;
+    color-scheme: light;
+  }
+
+  html { font-size: 11pt; }
+  body { font-size: 11pt; line-height: 1.5; background: #fff; color: var(--content); }
+  .main { max-width: none; margin: 0; padding: 0; min-height: 0; }
+
+  /* Screen-only chrome: navigation, buttons and links that do nothing on paper */
+  .header, .footer, .top-link, .breadcrumbs, .toc, .copy-code, .post-footer, .post-tags,
+  .series-box, .post-edit-link, .md-content .anchor { display: none !important; }
+
+  .post-header { margin-bottom: 1.25rem; }
+  .md-content h2 { margin: 1.6rem 0 0.5rem; }
+  .md-content h3 { margin: 1.25rem 0 0.35rem; }
+
+  /* Links: plain text, with the destination written out after it. Same-page anchors and email
+     links skip it, since the email address is already the link text. Site-relative links get the
+     domain so the printed URL works. */
+  :is(.md-content, .series-box, .series-entry-list, .not-found-text) a:not(.anchor) {
+    color: inherit;
+    text-decoration: none;
+  }
+  .md-content a[href]:not([href^="#"], [href^="mailto:"], .anchor)::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--secondary);
+    overflow-wrap: anywhere;
+  }
+  .md-content a[href][href^="/"]:not(.anchor)::after { content: " (erikfailing.com" attr(href) ")"; }
+
+  /* Code: black text with comments in gray, and long lines wrap instead of being cut off at the
+     page edge (paper can't scroll). */
+  .md-content .highlight:not(table), .chroma { background: none !important; }
+  .md-content pre code {
+    color: #000;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding: 0.6rem 0.8rem;
+  }
+  .md-content .chroma span { color: inherit; }
+  .md-content .chroma :is(.c, .c1, .ch, .cm, .cs) { color: var(--secondary); font-style: italic; }
+
+  /* Tables: full width and allowed to break across pages, instead of a scrolling block */
+  .md-content table:not(.highlight table) { display: table; width: 100%; overflow: visible; font-size: 0.9rem; }
+
+  /* Page breaks: keep headings with what follows, and small blocks in one piece */
+  :is(h1, h2, h3, h4, h5, h6) { break-after: avoid; }
+  :is(.highlight, blockquote, figure, img, tr) { break-inside: avoid; }
+  :is(p, li) { orphans: 3; widows: 3; }
+}
