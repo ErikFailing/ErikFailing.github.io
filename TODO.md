@@ -28,6 +28,6 @@ most of these is in `reports/Personal site improvement audit.md` (local only, no
 ## GitHub profile
 
 - [ ] Fix up the GitHub profile, since it's the first icon on the home page: add a profile README
-      (a repo named `ErikFailing`), pin this site and `Fuzzing-Infrastructure`, and add
+      (a repo named `ErikFailing`), pin this site and `Security-Research`, and add
       descriptions to (or archive) the repos that have none.
 
