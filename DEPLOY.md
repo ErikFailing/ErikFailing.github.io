@@ -118,11 +118,14 @@ Meta tags can't deliver HSTS, `X-Content-Type-Options`, `X-Frame-Options`/`frame
 `Permissions-Policy`. For a static site with no cookies, forms or third-party content, only HSTS
 has real value, and GitHub Support enables it on request. A ticket from the free account was
 closed without review in October 2026, since free plans only get self-service support, so the
-account was upgraded to Pro and the ticket reopened. GitHub then turned HSTS on: every page sends
-`Strict-Transport-Security: max-age=31556952` (one year), confirmed live on 2026-11-02. It has no
-`includeSubDomains` or `preload`, so the domain isn't on browsers' preload list; that's GitHub's
-setting, not ours. Getting the other headers would mean a proxy (e.g. Cloudflare's free plan) or a
-different host, which wasn't worth the rework or risk for this site.
+account was upgraded to Pro and the ticket reopened. GitHub then turned HSTS on with
+`max-age=31556952` (one year), confirmed live on 2026-11-02, and a second ticket added
+`includeSubDomains` and `preload`. Every page now sends
+`Strict-Transport-Security: max-age=31556952; includeSubDomains; preload` (confirmed live on
+2026-11-09), and erikfailing.com is on the browsers' HSTS preload list (submitted at
+[hstspreload.org](https://hstspreload.org/) on 2026-11-09), so browsers use HTTPS even on a first
+visit. The header is GitHub's setting, not ours. Getting the other headers would mean a proxy (e.g.
+Cloudflare's free plan) or a different host, which wasn't worth the rework or risk for this site.
 
 **Keeping it working:**
 
@@ -140,6 +143,14 @@ different host, which wasn't worth the rework or risk for this site.
 - Adding anything from another domain (analytics, embeds, a CDN font) needs a CSP change, and
   inline `<script>`/`style=""` will be blocked. Check the browser console for "Refused to..."
   errors after changes.
+- **HSTS preload is a long-term commitment.** Browsers refuse plain HTTP for every subdomain, so
+  any subdomain that serves a website must support HTTPS (check before adding a DNS record for
+  one, including records a third-party service asks for). **Settings > Pages > Enforce HTTPS**
+  must stay on, since the list requires HTTP to redirect to HTTPS. If the site ever moves hosts,
+  the new one must send the same header: a domain that drops `includeSubDomains`, `preload` or the
+  one-year `max-age` can be removed from the list. Removal
+  ([hstspreload.org/removal](https://hstspreload.org/removal/)) takes months to reach browsers.
+  The domain's status is at [hstspreload.org](https://hstspreload.org/?domain=erikfailing.com).
 - Scan with [Mozilla HTTP Observatory](https://developer.mozilla.org/en-US/observatory). The
   expected score is 75 (B): the meta tags plus GitHub's HSTS header, with `X-Frame-Options` and
   `X-Content-Type-Options` the only deductions (scanned 2026-11-02).
