@@ -116,41 +116,25 @@ fake copy of the site, a {=crimson: phishing=} link, or a cryptominer. Hotspot a
 happened for real (Comcast's Wi-Fi hotspots injected ads into pages back in 2014). Browsers trying
 HTTPS first by default shrinks this gap, but doesn't close it.
 
-GitHub Pages can't send custom headers, and HSTS can't be set from a meta tag. My first support
-ticket asking GitHub to enable it got {=glitch: auto-closed=} because I was on the free plan, so I upgraded to
-Pro and reopened it lol.
-
-**Update (November 2, 2026):** GitHub got back to me after I reopened the ticket and turned it on.
-Every page now sends this header:
-
-```text
-Strict-Transport-Security: max-age=31556952
-```
-
-That `max-age` is one year in seconds (31,556,952 / 86,400 = 365.2425 days, the average
-Gregorian year). So once a browser has seen the site over HTTPS, it'll {=ward: refuse plain HTTP for
-erikfailing.com=} for the next year, and the hotel Wi-Fi trick above stops working on repeat
-visitors. It didn't include `includeSubDomains` or `preload` yet, though, so the very first visit
-from a brand new browser still wasn't covered.
-
-**Update (November 9, 2026):** I opened a second ticket asking for those two directives, and
-GitHub added them. The header is now:
+GitHub Pages can't send custom headers, and HSTS can't be set from a meta tag, so I asked GitHub
+Support to turn it on. My first ticket got {=glitch: auto-closed=} because I was on the free plan, so I
+upgraded to Pro and reopened it lol. Every page now sends:
 
 ```text
 Strict-Transport-Security: max-age=31556952; includeSubDomains; preload
 ```
 
-`includeSubDomains` applies the rule to every subdomain too (www, and anything I add later), and
-`preload` opts the domain into the {=ward: HSTS preload list=}, a list of HTTPS-only domains
-hardcoded into Chrome (most other major browsers build their lists from Chrome's). With both in
-place I submitted erikfailing.com at [hstspreload.org](https://hstspreload.org/), so it's on the
-list now. That closes the last gap: {=point: even the very first visit is HTTPS=}, since a brand
-new browser already knows the rule before it's ever talked to the site.
+`max-age` is one year in seconds (31,556,952 / 86,400 = 365.2425 days, the average Gregorian
+year), so once a browser has seen the site over HTTPS, it'll {=ward: refuse plain HTTP for
+erikfailing.com=} for the next year. `includeSubDomains` covers every subdomain too, and `preload`
+let me add the domain to the [HSTS preload list](https://hstspreload.org/), which is hardcoded
+into Chrome (most other major browsers build their lists from Chrome's). So {=point: even the very
+first visit is HTTPS=}, since a brand new browser already knows the rule before it's ever talked
+to the site.
 
-The catch is that preloading is hard to undo. Getting a domain off the list takes months to reach
-people's browsers, and every subdomain I ever create has to support HTTPS, including ones a
-third-party service asks me to set up. Right now www is the only subdomain that serves anything,
-and it already redirects to HTTPS, so nothing breaks.
+The catch is that preloading is hard to undo: getting off the list takes months to reach people's
+browsers, and every subdomain I ever create has to support HTTPS. Right now www is the only one
+that serves anything, and it already redirects to HTTPS, so nothing breaks.
 
 ## CAA Records
 
