@@ -68,27 +68,27 @@ checks behind it were.
 
 Then I pointed the same tool at a message with nothing in front of it. A connected peer can
 attach a stats protobuf to any data packet by setting one flag. The receiver parses it and
-folds the peer's reported numbers into the connection. There's no signature on it and no
-validity check, so {=crimson: every mutated field reaches the code that uses it=}.
+folds the peer's reported numbers into the connection. Nothing gates the message
+itself, so {=crimson: every mutated field reaches the code that uses it=}.
 
-That one harness took total line coverage from 28.9% to 31.8%, {=trophy: the biggest jump of any harness
-up to that point=}. The P2P signaling harness (also LPM, also ungated, about 1,900 lines of
-rendezvous handling that had sat at 0%) beat it right after, going from 31.8% to 36.9%.
+That one harness took total line coverage from 28.9% to 31.8%, {=trophy: the biggest jump of any
+harness up to that point=}. The P2P signaling harness (also LPM, also ungated, about 1,900 lines
+of rendezvous handling that had sat at 0%) beat it right after, going from 31.8% to 36.9%.
 
 So the rule I'd give is:
 
 - **Ungated protobuf path:** LPM is exactly the right tool, and probably the cheapest coverage
   you'll ever get.
-- **Gated protobuf path:** {=point: LPM is necessary and not sufficient=}. Something still has to get you
-  through the gate.
+- **Gated protobuf path:** {=point: LPM is necessary and not sufficient=}. Something still has to
+  get you through the gate.
 
 ## Getting Through The Gate
 
 For the handshake, the gate that matters is a signature. The session crypto info is signed, and
-the signature is checked against the public key inside the certificate. The open-source build
-has no certificate authority behind it, so it accepts a certificate without a CA signature.
-That's by design (Steam's authentication service isn't part of the open-source library), and it
-means {=arcane: the only signature left to satisfy=} is one made with a key the certificate itself
+the signature is checked against the public key inside the certificate. The open-source build has
+no certificate authority behind it, so it accepts a certificate without a CA signature. That makes
+sense (Steam's authentication service isn't part of the open-source library), and it means
+{=arcane: the only signature left to satisfy=} is one made with a key the certificate itself
 names.
 
 So the harness holds {=arcane: its own ed25519 key=}. It swaps the public half into a real captured
@@ -100,19 +100,19 @@ attacker-shaped fields. It's the same idea as forging the STUN integrity check i
 honestly satisfy, satisfy it in the harness=}.
 
 One more gate hid behind that one. The handshake rejects any crypto info whose protocol version
-isn't current, and {=static: a fuzzer almost never guesses the exact version number=}. The harness forces
-that field (and the key type) to valid values after mutation, so every input gets through.
+isn't current, and {=static: a fuzzer almost never guesses the exact version number=}. The harness
+forces that field (and the key type) to valid values after mutation, so every input gets through.
 
 ## Two Mistakes Worth Admitting
 
 1) **My seeds weren't loading.** LPM has two macros. `DEFINE_PROTO_FUZZER` reads its corpus as
-   text-format protobuf, and `DEFINE_BINARY_PROTO_FUZZER` reads serialized binary. I wrote
-   binary seeds and used the text macro, so every seed failed to parse and five harnesses were
-   quietly rebuilding a valid message from nothing. Switching macros {=trophy: revived three of them=}
+   text-format protobuf, and `DEFINE_BINARY_PROTO_FUZZER` reads serialized binary. I wrote binary
+   seeds and used the text macro, so every seed failed to parse and five harnesses were quietly
+   rebuilding a valid message from nothing. Switching macros {=trophy: revived three of them=}
    that had been starved the whole time.
-2) **I assumed coverage went up.** Both handshake harnesses {=glitch: looked right and ran clean=}. Only
-   the coverage build showed they'd added about 0.3 and 0.5 points. That's the whole argument
-   of [the coverage post](/posts/low-coverage-is-not-opportunity/).
+2) **I assumed coverage went up.** Both handshake harnesses {=glitch: looked right and ran
+   clean=}. Only the coverage build showed they'd added about 0.3 and 0.5 points. That's the whole
+   argument of [the coverage post](/posts/low-coverage-is-not-opportunity/).
 
 ## The Same Idea Without Protobuf
 
@@ -123,7 +123,7 @@ also reads live connection state, because some fields only matter relative to it
 ignored unless it names a packet number below the real next-send number, so the harness builds
 that field as {=arcane: the live value plus a fuzzed delta=}.
 
-I think of it as the same trade either way. A raw-byte harness finds the framing bugs, and
-that's where the 2020 CVEs were, so I kept those harnesses. A structure-aware one spends its
-time on what the code does with valid-looking fields. {=point: They don't replace each other=}, which is
-why the SNP layer ended up with four harnesses and not one.
+I think of it as the same trade either way. A raw-byte harness finds the framing bugs, and that's
+where CVE-2020-6016 and CVE-2020-6017 were, so I kept those harnesses. A structure-aware one
+spends its time on what the code does with valid-looking fields. {=point: They don't replace each
+other=}, which is why the SNP layer ended up with four harnesses and not one.

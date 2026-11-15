@@ -11,7 +11,8 @@ tags = ['Fuzzing', 'Security', 'Valve']
 Over the second week of November 2026 I built a fuzzing lab and {=static: twenty fuzzing harnesses=}
 for Valve's GameNetworkingSockets, the open-source version of the networking API in the Steamworks
 SDK. The honest headline is that I didn't find a critical bug: the library held up to hundreds of
-millions of executions, and what came out was five low-severity findings, a harness suite I've
+millions of executions, and what came out was five findings (none of them high severity), a
+harness suite I've
 offered upstream, and a method I'd use again. This post is the overview, and the rest of the
 series goes through each piece.
 
@@ -43,19 +44,21 @@ Beyond the attack surface, I think three things made it a good pick:
    [SECURITY.md](https://github.com/ValveSoftware/GameNetworkingSockets/blob/master/SECURITY.md)
    sends vulnerabilities to Valve's HackerOne program instead of the public issue tracker.
 
-The SNP layer also has history, which told me where bugs like to live. Check Point Research found
-four vulnerabilities there in 2020 (CVE-2020-6016 through CVE-2020-6019, written up in
-[Game On](https://research.checkpoint.com/2020/game-on-finding-vulnerabilities-in-valves-steam-sockets/)
-by Eyal Itkin), and issues #409 and #410 from earlier this year are {=glitch: logic bugs in the same
-reliability code=}. All of those were fixed before the version I pinned, so they were my map, not
-my findings.
+GNS also has history, which told me where bugs like to live. Check Point Research found four
+vulnerabilities in it in 2020, including memory corruption in the SNP layer's segment reassembly
+(CVE-2020-6016 through CVE-2020-6019, written up in [Game
+On](https://research.checkpoint.com/2020/game-on-finding-vulnerabilities-in-valves-steam-sockets/)
+by Eyal Itkin), and issues #409 and #410 from earlier this year are {=glitch: logic bugs in the
+same reliability code=}. All of those were fixed before the version I pinned, so they were my map,
+not my findings.
 
 ## The Setup
 
-Everything runs on my Windows 11 desktop: WSL2 underneath, and {=docker: Docker=} inside WSL2 with a
-pinned toolchain image (clang and LLVM 22, AFL++ v5.03c, CASR 2.13.1). GNS is pinned too, to commit
-`d534c19` (v1.6.1), which was the head of master the whole time. The idea is that {=ward: a crash found
-today still reproduces next month=}, because nothing that can change a result is allowed to drift.
+Everything runs on my Windows 11 desktop: WSL2 underneath, and {=docker: Docker=} inside WSL2 with
+a pinned toolchain image (clang and LLVM 22, AFL++ v5.03c, CASR 2.13.1). GNS is pinned too, to
+commit `d534c19` (v1.6.1), which was the head of master the whole time. The idea is that {=ward: a
+crash found today still reproduces next month=}, because nothing that can change a result is
+allowed to drift.
 
 I used two engines and three oracles, because each one catches things the others can't:
 
@@ -66,9 +69,9 @@ I used two engines and three oracles, because each one catches things the others
   only way to catch logic bugs like #410, which {=ghostly: corrupt no memory at all=}.
 - **MemorySanitizer,** for reads of uninitialized memory, which neither ASan nor UBSan can see.
 
-I built all of this with {=claude: Claude Code=} doing a lot of the implementation and babysitting the
-overnight campaigns, same as the rest of this site. The lab gets
-[its own post](/posts/reproducible-fuzzing-lab/).
+I built all of this with {=claude: Claude Code=} doing a lot of the implementation and babysitting
+the overnight campaigns, same as the rest of this site. The lab gets [its own
+post](/posts/reproducible-fuzzing-lab/).
 
 ## The Twenty Harnesses
 
@@ -86,26 +89,25 @@ The harnesses fall into five areas, matching the table above:
 - **P2P signaling:** a rendezvous message to an existing connection, a connect request that
   creates one, and two peers dialing each other at once.
 
-The two stateless parsers run at 40,000 to 100,000 executions a second. The stateful ones stand
-up a real connection for every input, so a crash always reproduces from a single file, and
-{=static: that costs speed=}: most of them run at about 500 a second. That sounds slow, but it adds
-up. One 45-minute campaign on a single harness with 14 parallel instances got through 21.7
-million executions (45 * 60 = 2,700 seconds, so about 8,000 a second across the machine).
+The two stateless parsers run at 40,000 to 100,000 executions a second. The stateful ones stand up
+a real connection for every input, so a crash always reproduces from a single file, and {=static:
+that costs speed=}: most of them run at a few hundred a second. That sounds slow, but it adds up.
+One 45-minute campaign on a single harness with 14 parallel instances got through 21.7 million
+executions (45 * 60 = 2,700 seconds, so about 8,000 a second across the machine).
 
 I picked what to build next by measuring coverage and then asking who can actually reach the
-uncovered code, which is its own post:
-[Low Coverage Isn't The Same As Opportunity](/posts/low-coverage-is-not-opportunity/). Line
-coverage across the suite went from 28% with the first five harnesses, to 37.6% with eleven, to
-{=trophy: 43.71% with all twenty=}. I think that number undersells it, because most of what's left is
-{=crimson: code an attacker can't drive=} (local key management, sender-side serialization, connection
-lifecycle and API code).
+uncovered code, which is its own post: [Low Coverage Isn't The Same As
+Opportunity](/posts/low-coverage-is-not-opportunity/). Line coverage across the suite went from
+28% with the first five harnesses, to 37.6% with eleven, to {=trophy: 43.71% with all twenty=}. I
+think that number undersells it, because most of what's left is {=crimson: code an attacker can't
+drive=} (local key management, sender-side serialization, connection lifecycle and API code).
 
 ## What It Found
 
-No critical bug. The SNP decoder, the sender-side ack accounting and the crypto handshake all
-came through hundreds of millions of executions under ASan and UBSan without a memory-safety
-crash. Considering the 2020 CVEs were in that same decoder, I think {=point: GNS is a well-hardened
-target now=}, and I'd rather say that plainly than dress it up.
+No critical bug. The SNP decoder, the sender-side ack accounting and the crypto handshake all came
+through hundreds of millions of executions under ASan and UBSan without a memory-safety crash.
+Considering CVE-2020-6016 and CVE-2020-6017 were in that same decoder, I think {=point: GNS is a
+well-hardened target now=}, and I'd rather say that plainly than dress it up.
 
 What did come out was five findings:
 
@@ -114,8 +116,8 @@ What did come out was five findings:
   so I'm treating them as {=ward: hardening fixes=}, not vulnerabilities.
 - **One memory-safety finding,** which I reported privately to Valve. More on that below.
 
-There were also three "findings" that turned out to be {=glitch: my own harness or build=}, including one
-campaign that saved 439 crashes that were all the same bug in my code lol. Those get
+There were also three "findings" that turned out to be {=glitch: my own harness or build=},
+including one campaign that saved 439 crashes that were all the same bug in my code lol. Those get
 [their own post](/posts/my-early-crashes-were-my-own-harness/), because I think catching them
 before reporting was the most important habit of the whole project.
 

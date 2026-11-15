@@ -39,11 +39,11 @@ and the CVE databases for anything matching. Nothing did.
 I filed the report on November 12, 2026, and it was closed the same day as {=glitch: a duplicate of
 an earlier private report=}. So the bug was real, and someone else had found it first.
 
-I think the lesson is about what a duplicate check can and can't do. Valve's program is
-private, so a researcher only sees their own reports and the ones that have been publicly
-disclosed. My search of public sources was done properly, and it still couldn't have found
-this. {=point: The vendor's own triage is the only real duplicate check=} on a private program,
-and the only way to run it is to file.
+I think the lesson is about what a duplicate check can and can't do. Reports on HackerOne are
+private unless they've been disclosed, so a researcher only sees their own reports and the
+publicly disclosed ones. My search of public sources was done properly, and it still couldn't have
+found this. {=point: The vendor's own triage is the only real duplicate check=} when reports are
+private, and the only way to run it is to file.
 
 TODO: Timeline table (found, reported, closed as duplicate, fixed, published), once there is a
 fix date.

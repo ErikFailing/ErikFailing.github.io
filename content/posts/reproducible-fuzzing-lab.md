@@ -3,15 +3,15 @@ title = 'A Reproducible Fuzzing Lab On Windows, WSL2 And Docker'
 date = 2026-11-15T10:10:00-06:00
 draft = false
 number = 5
-description = 'The pinned toolchain, build flags, engines and oracles behind the GameNetworkingSockets fuzzing, and the build mistakes that would have hidden real crashes.'
+description = 'The pinned toolchain, build flags, engines and oracles behind the GameNetworkingSockets fuzzing, and two build details that would have hidden real crashes.'
 series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'Docker', 'Security']
 +++
 
 The lab behind the GameNetworkingSockets fuzzing is my Windows 11 desktop running WSL2, with
-{=docker: Docker=} inside WSL2 and one toolchain image where everything that can change a result is
-pinned. This post covers that setup, the build flags, the two engines and three oracles, and a
-couple of build mistakes that would have quietly hidden crashes if I hadn't caught them.
+{=docker: Docker=} inside WSL2 and one toolchain image where everything that can change a result
+is pinned. This post covers that setup, the build flags, the two engines and three oracles, and
+two build details that would have quietly hidden crashes if I'd missed them.
 
 ## The Goal
 
@@ -44,12 +44,12 @@ ARG CASR_SHA256=4a8cafc51aa68a1bff8be92b886c20c66dd4924d41ac30d9b29ac76b3f324ad4
 Each one is {=iron: pinned the strongest way its source allows=}:
 
 - **The base image** by digest, not by tag.
-- **clang and LLVM 22** from apt.llvm.org, with the repository's signing key {=arcane: checked against a
-  pinned fingerprint=} before apt trusts it. That repo only keeps the newest build of each major
-  version, so the image also writes the exact versions it was built with (22.1.8 right now) to a
-  file inside itself.
-- **{=static: AFL++=}** by tag *and* commit. If the tag ever moves upstream, the build fails instead of
-  quietly changing what I fuzz with.
+- **clang and LLVM 22** from apt.llvm.org, with the repository's signing key {=arcane: checked
+  against a pinned fingerprint=} before apt trusts it. That repo only keeps the newest build of
+  each major version, so the image also writes the exact versions it was built with (22.1.8 right
+  now) to a file inside itself.
+- **{=static: AFL++=}** by tag *and* commit. If the tag ever moves upstream, the build fails
+  instead of quietly changing what I fuzz with.
 - **CASR** (the crash triage tool) as a prebuilt release checked against its SHA-256.
 
 The build ends with a smoke test: libFuzzer with ASan has to find a planted heap overflow in a
@@ -71,10 +71,9 @@ A few things needed fixing before fuzzers would run properly in this stack:
 - **AFL++ refuses to start under WSL's defaults.** WSL pipes core dumps to its own handler, and
   AFL++ wants `core_pattern` set to a plain file name. That's a kernel setting, so the image can't
   fix it; the Ubuntu setup script sets it at every boot.
-- **Docker's default seccomp filter costs speed.** The
-  [Trail of Bits testing handbook](https://appsec.guide/) says it can {=static: cut fuzzing throughput by
-  up to half=}, so campaign containers run with it off:
-
+- **Docker's default seccomp filter costs speed.** The [Trail of Bits testing
+  handbook](https://appsec.guide/) says it can {=static: cut fuzzing throughput by up to half=},
+  so campaign containers run with it off:
 ```bash
 docker run --rm -it --user "$(id -u):$(id -g)" --env HOME=/tmp --cap-add=SYS_PTRACE \
   --security-opt seccomp=unconfined -v "$PWD:/work" fuzzing-toolchain:latest
@@ -93,11 +92,11 @@ The library and the harnesses compile with one set of flags:
 -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
 ```
 
-Two things in this build are there because my first plan got them wrong:
+Two things in this build are there because the obvious setup silently hides crashes:
 
 1) **`-fno-sanitize-recover=undefined`.** Without it, UBSan prints its report and keeps going, so
-   the fuzzer {=glitch: never sees a crash=}. Every UBSan finding in this project would have scrolled
-   past in a log nobody reads.
+   the fuzzer {=glitch: never sees a crash=}. My first plan didn't have it, and every UBSan
+   finding in this project would have scrolled past in a log nobody reads.
 2) **Overriding the CMake build type.** GNS's CMake sets the build type to `RelWithDebInfo` when
    you don't give one, which appends `-O2 -g -DNDEBUG` after my flags. That strips the asserts,
    and {=ward: the asserts are a whole oracle=} (below). Passing
@@ -111,7 +110,8 @@ off everywhere, because {=ward: every suppression is a place a real bug can hide
 
 ## Two Engines
 
-Every harness is a plain `LLVMFuzzerTestOneInput`, so {=static: the same source runs under both engines=}:
+Every harness is a plain `LLVMFuzzerTestOneInput`, so {=static: the same source runs under both
+engines=}:
 
 - **libFuzzer** for development. It's the simplest to run, and it prints per-input progress, so I
   can tell in a minute whether a new harness is reaching anything.
@@ -124,25 +124,25 @@ afl-fuzz -i seeds -o afl-output -S sec1 -p explore -- ./harness
 afl-fuzz -i seeds -o afl-output -S sec2 -p exploit -- ./harness
 ```
 
-The `-c` binary is a second build of the harness with {=static: CmpLog=}, which watches the operands of
-comparisons and feeds them back into the input. That's how the fuzzer {=arcane: gets past magic values=} (a
-marker byte, a length, the STUN magic cookie) without brute forcing them. The main and every
-third secondary run CmpLog, and the others rotate through AFL++'s power schedules so the
-instances don't all do the same work.
+The `-c` binary is a second build of the harness with {=static: CmpLog=}, which watches the
+operands of comparisons and feeds them back into the input. That's how the fuzzer {=arcane: gets
+past magic values=} (a marker byte, a length, the STUN magic cookie) without brute forcing them.
+The main and every third secondary run CmpLog, and the others rotate through AFL++'s power
+schedules so the instances don't all do the same work.
 
 ## Three Oracles
 
 An oracle is whatever decides a run found a bug, and one isn't enough:
 
-- **ASan and UBSan** are the default: out-of-bounds access, use-after-free, and undefined
-  behavior like signed overflow.
-- **The assert oracle.** GNS has debug asserts that log and carry on. With an environment
-  variable set, my harnesses turn those into crashes. That catches {=ghostly: logic bugs that corrupt no
+- **ASan and UBSan** are the default: out-of-bounds access, use-after-free, and undefined behavior
+  like signed overflow.
+- **The assert oracle.** GNS has debug asserts that log and carry on. With an environment variable
+  set, my harnesses turn those into crashes. That catches {=ghostly: logic bugs that corrupt no
   memory=}, and it's noisier, since some asserts fire on malformed input by design.
-- **MemorySanitizer,** for reads of uninitialized memory. MSan {=glitch: false-positives on any code it
-  didn't instrument=}, so this is a separate image where libc++, protobuf and OpenSSL are all
-  built from source under MSan. It took a few tries (and one false alarm) to get there, which is
-  in [the triage post](/posts/my-early-crashes-were-my-own-harness/).
+- **MemorySanitizer,** for reads of uninitialized memory. MSan {=glitch: false-positives on any
+  code it didn't instrument=}, so this is a separate image where libc++, protobuf and OpenSSL are
+  all MSan-instrumented. It took a few tries (and one false alarm) to get there, which is in [the
+  triage post](/posts/my-early-crashes-were-my-own-harness/).
 
 Coverage is a fourth build, with `-fprofile-instr-generate -fcoverage-mapping` and no sanitizers.
 A sanitizer build can't measure coverage, and I think it's worth keeping the two apart: one

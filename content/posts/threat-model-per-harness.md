@@ -18,14 +18,14 @@ post is the template and two examples.
 
 "I fuzzed the STUN parser" sounds like a complete statement, and it isn't. Which function got the
 bytes? Was the integrity check in front of it real or skipped? Would a crash be reachable by
-anyone on the internet, or only by a peer who already knows a password? The harness source
-answers all of that, but only if someone reads {=cpp: 200 lines of C++=} and already knows the library.
+anyone on the internet, or only by a peer who already knows a password? The harness source answers
+all of that, but only if someone reads {=cpp: 200 lines of C++=} and already knows the library.
 
 I think the bigger reason is that writing it down {=point: keeps me honest with myself=}. Every
 harness makes simplifications to be fast or to get past a gate. Each one is fine on its own, and
-each one is also a place where {=glitch: "the fuzzer found nothing"=} quietly stops meaning "there's nothing
-to find." If I have to write the simplification down and say what it hides, I can't pretend I
-didn't make it.
+each one is also a place where {=glitch: "the fuzzer found nothing"=} quietly stops meaning
+"there's nothing to find." If I have to write the simplification down and say what it hides, I
+can't pretend I didn't make it.
 
 ## What Goes In One
 
@@ -43,9 +43,9 @@ Every threat model has the same sections, {=ward: written from the defender's si
 7) **Suppressions.** Every sanitizer check that's turned off for this code, and why.
 8) **Reference bugs.** Public, fixed bugs that lived on this surface.
 
-They're grounded in the pinned source, so {=iron: every claim points at a function I can go check=}. And
-they describe {=crimson: attack surface and bug classes only=}. Findings don't go in them, so a
-threat model is safe to publish alongside its harness.
+They're grounded in the pinned source, so {=iron: every claim points at a function I can go
+check=}. And they describe {=crimson: attack surface and bug classes only=}. Findings don't go in
+them, so a threat model is safe to publish alongside its harness.
 
 ## Example: The STUN Parser
 
@@ -59,7 +59,7 @@ traversal, {=crimson: before any connection exists=}. Its trust boundary is shor
 | The attribute framing, since lengths drive the walk | The output vector, owned by the harness |
 
 The interesting entry is under simplifications. STUN messages carry a CRC and an HMAC, and the
-parser only runs the address and username decoders on a message that verifies. A fuzzer will
+receiver only runs the address and username decoders on a message that verifies. A fuzzer will
 basically never guess a valid HMAC, so my first version of this harness only ever exercised the
 code in front of the check. The current one {=arcane: forges both values=} with a key it also hands
 to the parser, so well-formed inputs verify and the decoders behind the check get fuzzed too.
@@ -72,15 +72,15 @@ That's a real trade, and the threat model has to say what it means for a crash:
 - A crash in the decoders behind the check maps to **someone who holds the ICE password**: the
   intended peer, or anyone who has observed it.
 
-The harness forges the key to reach the code. {=point: It doesn't claim an attacker gets it for free=}, and
-without the write-up I think that distinction would be the first thing to get lost.
+The harness forges the key to reach the code. {=point: It doesn't claim an attacker gets it for
+free=}, and without the write-up I think that distinction would be the first thing to get lost.
 
 ## Example: The NULL Cipher
 
 The SNP harnesses fuzz the reliability layer on an established connection. In production every
-data packet on that connection is {=arcane: AES-256-GCM authenticated=}, so a random attacker can't get
-chosen bytes anywhere near the decoder. My harnesses negotiate GNS's NULL cipher instead, so the
-fuzzer's bytes arrive as plaintext without a tag to forge.
+data packet on that connection is {=arcane: AES-256-GCM authenticated=}, so a random attacker
+can't get chosen bytes anywhere near the decoder. My harnesses negotiate GNS's NULL cipher
+instead, so the fuzzer's bytes arrive as plaintext without a tag to forge.
 
 Is that cheating? The threat model's answer is that it changes {=crimson: who the attacker is=}, and
 says so. The realistic sender here was never a stranger. It's the peer at the other end of the
@@ -90,26 +90,25 @@ plaintext because the tag already vouched for it. So the NULL cipher skips the e
 {=point: it doesn't skip a defense that would have stopped this attacker=}.
 
 It does leave one thing completely dark: the decrypt path itself. The threat model lists that
-under out of scope, and a later harness covers exactly that. It negotiates real
-AES-256-GCM and encrypts the fuzzer's plaintext with the connection's own keys, so the tag
+under out of scope, and a later harness covers exactly that. It negotiates real AES-256-GCM
+and encrypts the fuzzer's plaintext with the connection's own keys, so the tag
 verifies and the real decrypt runs.
 
 ## Was It Worth It
 
 I think so, for three reasons:
 
-- **Gaps turn into a backlog.** An "out of scope" line like the decrypt path above is a
-  ready-made description of the next harness to build.
+- **Gaps turn into a backlog.** An "out of scope" line like the decrypt path above is a ready-made
+  description of the next harness to build.
 - **A clean run means something specific.** "No crashes" only matters if you know what was
   actually exercised.
-- **It's what makes a contribution reviewable.** When I
-  [offered the harnesses upstream](https://github.com/ValveSoftware/GameNetworkingSockets/issues/475),
-  the note on exactly what untrusted bytes reach which entry point was one of the three things I
-  listed, since {=ward: a maintainer shouldn't have to take coverage on faith=}.
+- **It's what makes a contribution reviewable.** When I [offered the harnesses
+  upstream](https://github.com/ValveSoftware/GameNetworkingSockets/issues/475), the note on
+  exactly what untrusted bytes reach which entry point was one of the three things I listed, since
+  {=ward: a maintainer shouldn't have to take coverage on faith=}.
 
-The cost is real though. A good one takes a while to write, and it has to be kept in sync when
-the harness changes. The five harnesses without one are all variations on a harness that has
-one, and they still need their own.
+The cost is real though: each one is a document that has to be kept in sync when its harness
+changes. Five harnesses still don't have one, and they need their own.
 
 [The next post](/posts/fuzzing-stateful-code/) is about a bigger kind of simplification:
 harnesses that set up state themselves before the fuzzer gets a turn.

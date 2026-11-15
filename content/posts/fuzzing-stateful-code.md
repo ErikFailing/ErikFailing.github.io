@@ -19,11 +19,11 @@ think it's the most reusable thing I took from the project.
 Before the pattern, one rule: every input has to be self-contained. My stateful harnesses stand
 up a real in-process connection over loopback, and they {=ward: rebuild it for every single input=}.
 
-That's expensive. The stateless parsers run at 40,000 to 100,000 executions a second, and the
-connection harnesses run at about 500. But an earlier version of my multi-packet harness kept
-one connection alive across inputs to go faster, and its crashes depended on everything the
-campaign had sent before. They didn't reproduce from the saved file, and {=point: a crash I can't
-reproduce is a crash I can't report=}. So the rebuild stays.
+That's expensive. The stateless parsers run at 40,000 to 100,000 executions a second, and the SNP
+connection harnesses run at about 500. But an earlier version of my multi-packet harness kept one
+connection alive across inputs, and its crashes depended on everything the campaign had sent
+before. They didn't reproduce from the saved file, and {=point: a crash I can't reproduce is a
+crash I can't report=}. So the rebuild stays.
 
 Getting a rebuild loop to work at all took some digging in GNS:
 
@@ -32,20 +32,20 @@ Getting a rebuild loop to work at all took some digging in GNS:
   {=ward: the harness decides exactly when the library runs=}.
 - **Force-destroyed connections.** A normal close leaves the connection lingering on wall-clock
   timers that never advance in a tight fuzzing loop, so every input leaked a UDP socket and the
-  run died with {=glitch: "too many open files"=}. The harness runs the same destroy sequence GNS's service
-  thread runs, and memory stays flat.
-- **Real entry points.** Inputs go in as whole UDP packets through the real receive function,
-  not by calling the decoder directly. That way every bit of state is initialized the way a
-  real packet would leave it.
+  run died with {=glitch: "too many open files"=}. The harness runs the same destroy sequence
+  GNS's service thread runs, and memory stays flat.
+- **Real entry points.** Inputs go in as whole UDP packets through the real receive function, not
+  by calling the decoder directly. That way every bit of state is initialized the way a real
+  packet would leave it.
 
 ## The Code That Never Ran
 
-Even with three harnesses on the SNP reliability layer, a coverage report showed {=crimson: 23 of its 62
-functions had never run=}. The biggest reachable chunk was the sender's side of acknowledgments.
-When a peer acks or nacks packets you sent, GNS walks a map of in-flight packets, erases the
-acked ones, releases their data, and queues the nacked ones for retransmit. That's
-{=ghostly: iterator-and-erase code=} driven by fields the peer chooses, which is exactly the kind of
-place a use-after-free could hide.
+Even with three harnesses on the SNP reliability layer, a coverage report showed {=crimson: 23 of
+its 62 functions had never run=}. The biggest reachable chunk was the sender's side of
+acknowledgments. When a peer acks or nacks packets you sent, GNS walks a map of in-flight packets,
+erases the acked ones, releases their data, and queues the nacked ones for retransmit. That's
+{=ghostly: iterator-and-erase code=} driven by fields the peer chooses, which is exactly the kind
+of place a use-after-free could hide.
 
 My harnesses never reached it because they only ever received. The connection being fuzzed had
 barely sent anything, so {=iron: its in-flight map was empty=} and every fuzzed ack had nothing to
@@ -54,8 +54,8 @@ change that.
 
 ## Priming In-Flight Packets
 
-So the new harness sets the state up itself, {=ward: with the library's own API=}, before the fuzzer gets
-a turn:
+So the new harness sets the state up itself, {=ward: with the library's own API=}, before the
+fuzzer gets a turn. Here's the core of it, trimmed:
 
 ```cpp
 static int PrimeInFlight()
@@ -85,17 +85,17 @@ static int PrimeInFlight()
 
 Three details made it work:
 
-1) **Destroying the client.** If the other end stays alive it acks everything, and the map
-   drains before the fuzzer touches it. With the client gone, the packets sit unacknowledged
-   forever, and the fuzzer's acks are {=static: the only thing changing the map=}. That's also what
-   keeps a crash reproducible from one file.
-2) **Opening the send-rate window.** At the default send rate only about two packets go in
-   flight. With no acks coming back, the congestion window never opens, so the rest of the burst
-   sits in the send queue. Setting the minimum and maximum send rate very high takes rate out of the
+1) **Destroying the client.** If the other end stays alive it acks everything, and the map drains
+   before the fuzzer touches it. With the client gone, the packets sit unacknowledged forever, and
+   the fuzzer's acks are {=static: the only thing changing the map=}. That's also what keeps a
+   crash reproducible from one file.
+2) **Opening the send-rate window.** At the default send rate only about two packets go in flight.
+   With no acks coming back, the congestion window never opens, so the rest of the burst sits in
+   the send queue. Setting the minimum and maximum send rate very high takes rate out of the
    picture, and all 24 messages (each 1,100 bytes, so each gets its own packet) go in flight.
-3) **A startup self-check.** The harness prints how many packets it actually primed. If that
-   ever reads 0, {=glitch: the whole surface is inert=} and the fuzzer would happily run for hours covering
-   nothing.
+3) **A startup self-check.** The harness prints how many packets it actually primed. If that ever
+   reads 0, {=glitch: the whole surface is inert=} and the fuzzer would happily run for hours
+   covering nothing.
 
 After that, each input is a sequence of ack frames. The harness builds them from typed fuzzer
 fields and reads the connection's live next-send number, so the acks land on packet numbers
@@ -103,11 +103,11 @@ that are really in flight instead of being thrown out by the first range check.
 
 ## Same Pattern, Different State
 
-The second place this paid off was peer-to-peer connections. GNS has a symmetric mode where {=flow: two
-peers can dial each other at the same time=}. When that happens, one side finds its own outbound
-connection to that peer, runs a tiebreak, and may switch its existing connection from client to
-server. A coverage report showed that role-change function completely uncovered, even with two
-P2P harnesses already running, because {=crimson: nothing existed to collide with=}.
+The second place this paid off was peer-to-peer connections. GNS has a symmetric mode where
+{=flow: two peers can dial each other at the same time=}. When that happens, one side finds its
+own outbound connection to that peer, runs a tiebreak, and may switch its existing connection from
+client to server. A coverage report showed that role-change function completely uncovered, even
+with two P2P harnesses already running, because {=crimson: nothing existed to collide with=}.
 
 The harness for it does the same three moves:
 
@@ -138,6 +138,6 @@ The trade-offs are worth being plain about:
 - **It's slow.** Priming on every input puts this harness at 130 to 240 executions a second,
   among the slowest in the suite.
 
-Overall, I think {=point: the recipe carries to any stateful target=}: find the code that only runs with
-state, build that state through the real API, freeze it so only the fuzzer changes it, check at
-startup that the priming worked, and rebuild it for every input.
+Overall, I think {=point: the recipe carries to any stateful target=}: find the code that only
+runs with state, build that state through the real API, freeze it so only the fuzzer changes it,
+check at startup that the priming worked, and rebuild it for every input.

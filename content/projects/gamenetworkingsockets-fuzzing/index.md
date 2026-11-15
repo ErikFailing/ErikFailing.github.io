@@ -25,8 +25,8 @@ authentication, so in November 2026 I built a fuzzing lab around it and {=static
 harnesses=} that cover the code a remote attacker can actually reach.
 
 The honest headline is that {=point: I didn't find a critical bug=}. GNS held up to hundreds of
-millions of executions, and what came out was a handful of low-severity findings, a harness suite
-I've offered to the project, and a method I'd use again on the next target.
+millions of executions, and what came out was a handful of findings (none of them high severity),
+a harness suite I've offered to the project, and a method I'd use again on the next target.
 
 ## Why this target
 
@@ -39,8 +39,8 @@ I've offered to the project, and a method I'd use again on the next target.
 
 ## What I built
 
-- **A reproducible lab.** Windows 11, WSL2 and {=docker: Docker=}, with everything that can change a
-  result pinned: clang and LLVM 22, AFL++ v5.03c, CASR 2.13.1, the base image, and GNS itself at
+- **A reproducible lab.** Windows 11, WSL2 and {=docker: Docker=}, with everything that can change
+  a result pinned: clang and LLVM 22, AFL++ v5.03c, CASR 2.13.1, the base image, and GNS itself at
   v1.6.1.
 - **Twenty harnesses,** all plain `LLVMFuzzerTestOneInput`, so the same code runs under libFuzzer
   and AFL++. They cover the STUN and ICE code used for NAT traversal, the pre-connection UDP
@@ -48,10 +48,11 @@ I've offered to the project, and a method I'd use again on the next target.
   peer-to-peer signaling. Five of them mutate real protobuf messages with libprotobuf-mutator
   instead of raw bytes.
 - **Three oracles.** ASan with UBSan for memory safety and undefined behavior, an assert oracle
-  that turns the library's own invariant checks into crashes, and a MemorySanitizer build with
-  the whole dependency stack instrumented.
-- **{=ward: Written threat models=}** (fifteen of the twenty harnesses so far), saying what untrusted
-  bytes reach which function, and where the harness is narrower than the real attack surface.
+  that turns the library's own invariant checks into crashes, and a MemorySanitizer build with the
+  whole dependency stack instrumented.
+- **{=ward: Written threat models=}** (fifteen of the twenty harnesses so far), saying what
+  untrusted bytes reach which function, and where the harness is narrower than the real attack
+  surface.
 - **A seeded-bug check.** Two known, fixed, public bugs (CVE-2020-6017 and issue #410) get put
   back into the pinned source to prove the harnesses actually catch them.
 - **Campaign tooling:** coverage reports, corpus minimization, parallel AFL++ runs with CmpLog,
