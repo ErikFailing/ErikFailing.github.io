@@ -1,8 +1,8 @@
 +++
 title = 'Reporting To Valve And Offering The Harnesses Upstream'
-date = 2026-11-15T11:50:00-06:00
+date = 2026-11-15T11:20:00-06:00
 draft = true   # Unfinished on purpose: the story isn't over. Publish after the fix ships and the maintainers reply.
-number = 15
+number = 12
 description = 'How I sorted the GameNetworkingSockets findings by where each belonged, what a duplicate report taught me, and how I asked before sending a pull request.'
 series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'Disclosure', 'Valve', 'Security']

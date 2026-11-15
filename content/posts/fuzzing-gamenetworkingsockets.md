@@ -1,41 +1,40 @@
 +++
-title = "Picking A Fuzzing Target: Valve's GameNetworkingSockets"
+title = "Fuzzing Valve's GameNetworkingSockets: The Target And The Lab"
 date = 2026-11-15T10:00:00-06:00
 draft = false
 number = 4
-description = "Why I picked Valve's open-source networking library to fuzz, what its attack surface looks like, and the plan I started with."
+description = "Why I picked Valve's open-source networking library to fuzz, what its attack surface looks like, and the pinned lab I built to do it."
 series = ['Fuzzing GameNetworkingSockets']
-tags = ['Fuzzing', 'Security', 'Valve']
+tags = ['Fuzzing', 'Docker', 'Security', 'Valve']
+aliases = ['/posts/reproducible-fuzzing-lab/']
 +++
 
 In November 2026 I spent about a week fuzzing Valve's GameNetworkingSockets, the open-source
-version of the networking API in the Steamworks SDK. This series follows that project in the order
-it happened, from an empty machine to {=static: twenty fuzzing harnesses=} and a report to Valve.
-This first post is the starting point: why I picked this target, what there is to attack, and the
-plan I went in with.
+version of the networking API in the Steamworks SDK. This series follows that in the order it
+happened. Spoiler: {=point: I didn't find a critical bug=}, and I ended up with twenty harnesses,
+five findings (none of them high severity) and one report to Valve. This first post is why I
+picked the target and the lab I built for it.
 
 ## Why GameNetworkingSockets
 
 [GameNetworkingSockets](https://github.com/ValveSoftware/GameNetworkingSockets) (GNS from here on)
-is a UDP transport for games: reliable and unreliable messages, fragmentation and reassembly,
-encryption, and peer-to-peer connections with NAT traversal. I think three things made it a good
-pick:
+is a UDP transport for games: reliable and unreliable messages, encryption, and peer-to-peer
+connections with NAT traversal. Three things made it a good pick:
 
-1) It's open source, so I could build it with sanitizers and coverage instrumentation instead of
-   fuzzing a black box.
+1) It's open source, so I could build it with sanitizers and coverage instrumentation.
 2) The project wants this. In
    [issue #410](https://github.com/ValveSoftware/GameNetworkingSockets/issues/410), a bug report
-   from someone who had been fuzzing GNS with AFL++, one of the maintainers replied "I would love
-   to add some fuzzing to the test suite." I couldn't find GNS in OSS-Fuzz either, so harnesses
-   are {=point: a contribution the project asked for=}, not a surprise drop.
+   from someone who had been fuzzing GNS, one of the maintainers replied "I would love to add
+   some fuzzing to the test suite." I couldn't find GNS in OSS-Fuzz either, so harnesses are
+   {=trophy: a contribution the project asked for=}.
 3) A real finding has somewhere to go. The repo's
    [SECURITY.md](https://github.com/ValveSoftware/GameNetworkingSockets/blob/master/SECURITY.md)
-   sends vulnerabilities to Valve's HackerOne program instead of the public issue tracker.
+   sends vulnerabilities to Valve's HackerOne program.
 
 ## What There Is To Attack
 
 GNS is a lot of C++ parsing bytes from strangers, and {=crimson: a lot of it runs before any
-authentication=}. Roughly in the order a packet meets it:
+authentication=}:
 
 | Layer | What parses untrusted bytes | Who can reach it |
 |---|---|---|
@@ -45,57 +44,69 @@ authentication=}. Roughly in the order a packet meets it:
 | P2P signaling | Rendezvous messages and connect requests | A remote peer, through the signaling channel |
 | SNP | The reliability layer: data segments, acks and nacks | The peer on an established connection |
 
-It also has history, which told me where bugs like to live. Check Point Research found four
-vulnerabilities in it in 2020, including memory corruption in the SNP layer's segment reassembly
-(CVE-2020-6016 through CVE-2020-6019, written up in [Game
-On](https://research.checkpoint.com/2020/game-on-finding-vulnerabilities-in-valves-steam-sockets/)
-by Eyal Itkin), and issues #409 and #410 from earlier this year are {=glitch: logic bugs in the
-same reliability code=}. All of those were fixed before the version I pinned, so they were my map,
-not my findings.
+It also has history. Check Point Research found four vulnerabilities in it in 2020, including
+memory corruption in the SNP layer's segment reassembly (CVE-2020-6016 through CVE-2020-6019,
+written up in
+[Game On](https://research.checkpoint.com/2020/game-on-finding-vulnerabilities-in-valves-steam-sockets/)
+by Eyal Itkin), and issues #409 and #410 from earlier this year are {=glitch: logic bugs in the same
+reliability code=}. All of those were fixed before the version I pinned, so they were my map, not
+my findings.
 
-## The Plan
+## The Lab
 
-I went in with a short plan, and most of it survived:
+I wanted two things from the lab: a crash found today has to reproduce next month, and nothing
+sensitive can land in Git by accident. So corpora and crashes live {=ward: outside every repo=}, and
+everything that can change a result is pinned.
 
-1) **Build a lab where results reproduce.** Pin the compiler, the fuzzers and the target, so
-   {=ward: a crash found today still reproduces next month=}.
-2) **Start with the cheapest harnesses.** The STUN and ICE parsers take a buffer and return, with
-   {=iron: no connection, handshake or crypto in front of them=}. They'd give me working coverage
-   and a fast feedback loop on day one.
-3) **Then stand up real connections,** for the code that only runs once two peers are talking.
-4) **Measure coverage and let it pick what's next,** instead of guessing where the unfuzzed code
-   is.
-5) **Use libFuzzer to develop and AFL++ for long runs.** Every harness would be a plain
-   `LLVMFuzzerTestOneInput`, so {=static: the same code runs under both=}.
+My desktop runs Windows, so the stack is Windows 11, WSL2 with Ubuntu 24.04, and {=docker: Docker=}
+inside Ubuntu. The toolchain is one image with every pin at the top of its Dockerfile:
 
-I built all of it with {=claude: Claude Code=} doing a lot of the implementation and babysitting the
-overnight runs, same as the rest of this site.
+```dockerfile
+ARG UBUNTU_IMAGE=ubuntu:24.04@sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852
+ARG LLVM_MAJOR=22
+ARG LLVM_APT_GPG_FINGERPRINT=6084F3CF814B57C1CF12EFD515CF4D18AF4F7421
+ARG AFLPLUSPLUS_TAG=v5.03c
+ARG AFLPLUSPLUS_COMMIT=dbaf11913c1b2702dee5b4d3dcfffd52f1defe50
+ARG CASR_VERSION=2.13.1
+ARG CASR_SHA256=4a8cafc51aa68a1bff8be92b886c20c66dd4924d41ac30d9b29ac76b3f324ad4
+```
 
-## How The Series Goes
+The base image is pinned by digest, LLVM's apt key by fingerprint, AFL++ by tag *and* commit (so
+a moved tag fails the build), and CASR by hash. The build ends with a smoke test: libFuzzer has
+to find a planted heap overflow, AFL++ has to fuzz the same harness, and CASR has to triage the
+crash. GNS gets its own image on top, pinned to commit `d534c19` (v1.6.1), which was the head of
+master the whole time.
 
-Each post is one step, in the order I took them:
+Three things needed fixing before fuzzers ran properly in this stack:
 
-1) Picking the target (this post).
-2) [Building the lab](/posts/reproducible-fuzzing-lab/) on Windows, WSL2 and Docker.
-3) [The first harnesses](/posts/first-fuzzing-harnesses/): two parsers, then a real connection.
-4) [Measuring coverage](/posts/low-coverage-is-not-opportunity/), and learning that a big gap
-   isn't always a target.
-5) [Mutating protobuf messages](/posts/structure-aware-fuzzing-protobuf/) instead of raw bytes.
-6) [Running everything overnight](/posts/overnight-fuzzing-campaigns/) with AFL++, and hitting a
-   flat line.
-7) [Putting old bugs back](/posts/seeded-bug-evaluation/) to prove the harnesses can catch one.
-8) [Priming state](/posts/fuzzing-stateful-code/) to reach code that a fresh connection never
-   runs.
-9) [The false positives](/posts/my-early-crashes-were-my-own-harness/): three "findings" that
-   were my own harness.
-10) [Going back over every harness](/posts/threat-model-per-harness/) with a written threat
-    model, and what that caught.
-11) [The results](/posts/gns-fuzzing-results/): what it found, where it stands, and what I'd
-    keep.
+- **WSL shuts down when idle** and Windows likes to sleep, so a setup script stops both.
+- **AFL++ refuses to start under WSL's defaults,** because WSL pipes core dumps to its own
+  handler. That's a kernel setting, so it's fixed at every boot, not in the image.
+- **Docker's default seccomp filter costs speed.** The
+  [Trail of Bits testing handbook](https://appsec.guide/) says it can cut fuzzing throughput by
+  up to half, so campaign containers run with it off.
 
-## Where It Ends Up
+## Two Ways To Hide A Crash
 
-So nobody reads eleven posts waiting for a twist: {=point: I didn't find a critical bug=}. The
-library held up to hundreds of millions of executions. What came out was five findings (none of
-them high severity), one of which I reported to Valve, a harness suite I've offered upstream, and
-a method I'd use again. I think that's worth writing up honestly.
+The library and harnesses compile with one set of flags:
+
+```text
+-g -O1 -fno-omit-frame-pointer
+-fsanitize=address,undefined
+-fno-sanitize-recover=undefined
+-fno-sanitize=function,alignment,nonnull-attribute
+-fsanitize-ignorelist=sanitizer-ignorelist.txt
+-DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+```
+
+Two details here matter more than they look, because the obvious setup silently hides crashes:
+
+1) **`-fno-sanitize-recover=undefined`.** Without it, UBSan prints its report and keeps going, so
+   the fuzzer {=glitch: never sees a crash=}. My first plan didn't have it.
+2) **Overriding the CMake build type.** GNS's CMake defaults to `RelWithDebInfo`, which appends
+   `-DNDEBUG` after my flags and strips the asserts. Those asserts turn out to be a whole oracle
+   later, and `-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=-O1` keeps them.
+
+I built all of this with {=claude: Claude Code=} doing a lot of the implementation and babysitting
+the overnight runs, same as the rest of this site. With the lab working, the next step was
+something to run in it: [the first harnesses](/posts/first-fuzzing-harnesses/).
