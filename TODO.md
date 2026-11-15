@@ -5,7 +5,7 @@ most of these is in `reports/Personal site improvement audit.md` (local only, no
 
 ## Blog
 
-- [ ] Finish and publish the last post in the Fuzzing GameNetworkingSockets series,
+- [ ] Finish and publish the last post of the GameNetworkingSockets project,
       `content/posts/reporting-and-upstreaming.md`. It's a draft on purpose: it waits on Valve
       shipping a fix for the reported finding and on the maintainers' reply to issue #475. Its
       `TODO:` markers say what's missing. Nothing about the unfixed finding goes in this repo

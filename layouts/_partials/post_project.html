@@ -1,0 +1,9 @@
+{{- /* The project a post belongs to: the page at content/projects/<name>/ for the post's
+       project = '<name>' front matter. Returns the project page, or nothing if the post names no
+       project. A name that matches no project fails the build. */ -}}
+{{- $project := false }}
+{{- with .Params.project }}
+  {{- $project = site.GetPage (printf "/projects/%s" .) }}
+  {{- if not $project }}{{ errorf "%s: project %q has no page under content/projects/" $.File.Path . }}{{ end }}
+{{- end }}
+{{- return $project }}

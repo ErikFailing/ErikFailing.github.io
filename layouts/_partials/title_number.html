@@ -1,7 +1,7 @@
 {{- /* A page's number, shown in front of its title wherever the title is a heading: "#4" on a post,
-       "#1" on a project, "#2" on a series. Called with a page; prints nothing if the page has no
-       `number` in front matter (a series' is in content/series/<name>/_index.md). Numbers are set by
-       hand and counted separately for posts, projects and series. The build fails if two pages of the
+       "#1" on a project. Called with a page; prints nothing if the page has no
+       `number` in front matter. Numbers are set by
+       hand and counted separately for posts and projects. The build fails if two pages of the
        same kind share a number. See "Title numbers" in STYLE.md. */ -}}
 {{- with .Params.number -}}
   {{- $number := int . -}}

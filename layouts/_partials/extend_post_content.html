@@ -1,11 +1,12 @@
 {{- /* Replaces PaperMod's empty extend_post_content.html hook (after the post body, before the footer).
-       A post in a series ( series = ['Building This Site'] in front matter) gets a box listing every
-       post in that series in publishing order, the current one marked. See "Series" in STYLE.md. */ -}}
-{{- range .GetTerms "series" }}
-<aside class="series-box" id="series" aria-label="Series">
-  <p class="series-label">This post is part of a series: <a href="{{ .RelPermalink }}">{{ partial "title_number.html" . }}{{ .LinkTitle }}</a></p>
+       A post that belongs to a project ( project = 'this-site' in front matter) gets a box listing
+       every post of that project in reading order, the current one marked. See "Projects" in
+       STYLE.md. */ -}}
+{{- with partial "post_project.html" . }}
+<aside class="series-box" id="project" aria-label="Project">
+  <p class="series-label">This post is part of a project: <a href="{{ .RelPermalink }}">{{ partial "title_number.html" . }}{{ .LinkTitle }}</a></p>
   <ol>
-    {{- range .Pages.ByDate }}
+    {{- range partial "project_writeups.html" . }}
     {{- if eq .RelPermalink $.RelPermalink }}
     <li><span aria-current="page">{{ .LinkTitle }}</span> <span class="series-here">(this post)</span></li>
     {{- else }}

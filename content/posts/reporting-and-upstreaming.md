@@ -4,7 +4,7 @@ date = 2026-11-15T11:20:00-06:00
 draft = true   # Unfinished on purpose: the story isn't over. Publish after the fix ships and the maintainers reply.
 number = 12
 description = 'How I sorted the GameNetworkingSockets findings by where each belonged, what a duplicate report taught me, and how I asked before sending a pull request.'
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Disclosure', 'Valve', 'Security']
 +++
 

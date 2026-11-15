@@ -105,24 +105,18 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 
 ## Components
 
-- **Series box:** a post with `series = ['Building This Site']` in front matter ends with an
-  `--entry` card (`--border` edge) listing every post in that series in publishing order: a muted
-  label linking to the series page, green list numbers, the other posts as underlined links and the
-  current post in bold `--primary` with "(this post)". Built by
-  `layouts/_partials/extend_post_content.html`. Name a series in title case and reuse it exactly.
-- **Series pages:** `/series/` shows every series as the same kind of card, newest first: the
-  series name as a heading link, its description, a muted "3 posts · date" line, its tags, and its
-  posts in reading order as a green-numbered list of underlined links
-  (`layouts/series/taxonomy.html`). A series' tags are its posts' tags combined, most used first,
-  as small pills (`layouts/_partials/series_tags.html`); nothing to maintain by hand. Each
-  series' own page (`/series/<name>/`) is the normal post list, oldest first, with the same tags
-  under its title. A new series
-  gets its description from `content/series/<name>/_index.md` (`title` and `description`); without
-  one, the card just has no description line.
-- **Blog tabs:** "All posts · Series · Tags" across the top of the Blog page, the Series and Tags
-  pages, and each series' and tag's own page, so readers can switch between them in one click.
+- **Project box:** a post that belongs to a project (`project = 'this-site'` in front matter,
+  the project's folder name under `content/projects/`) ends with an `--entry` card (`--border`
+  edge) listing every post of that project in reading order: a muted label linking to the
+  project, green list numbers, the other posts as underlined links and the current post in bold
+  `--primary` with "(this post)". Built by `layouts/_partials/extend_post_content.html`. A
+  project name that matches no project fails the build. There are no separate series any more:
+  a group of posts that belong together is a project, and the project page is its front page.
+  The old `/series/` URLs redirect to the matching project.
+- **Blog tabs:** "All posts · Tags" across the top of the Blog page, the Tags page and each
+  tag's own page, so readers can switch between them in one click.
   Tabs are 600-weight `--secondary` text on a `--border` rule; hover turns blue, and the current
-  tab (or the parent tab, on a series' or tag's page) is `--primary` with a 2px blue underline. The
+  tab (or the parent tab, on a tag's page) is `--primary` with a 2px blue underline. The
   tabs are the `blog` menu in `hugo.toml`, rendered by `layouts/_partials/blog_nav.html`. Blog in
   the top menu links straight to all posts.
 - **Tags page:** every tag as its colored pill with its post count (the count in regular weight),
@@ -137,14 +131,14 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   and a tag's page lists the project next to the posts (as an entry with its description and a
   "Project · year · role" line). Each project is a page bundle,
   `content/projects/<slug>/index.md`, with `title`, `description`, `status`, `role`, `year`,
-  `tags`, `writeups`, `links`, `featured` and `weight` in front matter (documented at the top of
+  `tags`, `links`, `featured` and `weight` in front matter (documented at the top of
   the layout). Only list projects that exist and can be linked; no "coming soon" cards.
 - **Project pages:** a project's own page (`layouts/projects/single.html`) has its tags under
   the description (where posts have theirs), then a facts card (Status, Role, Year, Links, with
   h6-style eyebrow labels in a left column that stacks on phones), then the Markdown body, then
-  its write-ups in the same box posts use for their series. `writeups` names a blog series exactly, and the box lists that series'
-  published posts in reading order (`layouts/_partials/project_writeups.html`), so a draft never
-  gets linked. Project bodies use the toned-down About voice with sparse accents, and their
+  its write-ups in the same box its posts end with: every published post that names the
+  project, in reading order (`layouts/_partials/project_writeups.html`), so a draft never gets
+  linked. Project bodies use the toned-down About voice with sparse accents, and their
   headings aren't numbered. Projects stay out of the RSS feed and post numbering (`hiddenInRss`
   cascades from `content/projects/_index.md`, and `mainSections` is posts only).
 - **404 page:** the big "404" in `--primary`, then two centered lines of body text (an
@@ -192,23 +186,23 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 - **Blockquotes:** 3px green bar, upright body text.
 - **Tables:** horizontal rules only, surface-2 header row, scroll sideways on phones.
 - **Images:** 1px `--border` so dark screenshots don't blend into the page.
-- **Title numbers:** posts, projects and series each have a number (`number = 4` in front
-  matter; a series' is in `content/series/<name>/_index.md`), shown in front of the title as
-  "#4" in green: on the page's own heading, on its card in every list, and in the series box's
+- **Title numbers:** posts and projects each have a number (`number = 4` in front
+  matter), shown in front of the title as
+  "#4" in green: on the page's own heading, on its card in every list, and in the project box's
   label (`layouts/_partials/title_number.html`). Green and tabular like the section numbers,
   because it's an ordinal label, not part of the name; "#" keeps it from reading as a section
-  number. The three kinds count separately (post #4, project #1, series #2). Numbers are set by
+  number. The two kinds count separately (post #4, project #1). Numbers are set by
   hand: `hugo new content posts/...` suggests the next post number, and the build fails if two
-  pages of the same kind share one. Posts in a series are numbered in reading order. Once a
+  pages of the same kind share one. A project's posts are numbered in reading order. Once a
   post has been out for a while its number stays put; renumber only when I ask. Numbers aren't
   in URLs, browser tab titles or link previews' titles; social cards show them as the small green
-  label ("NO. 4", "PROJECT NO. 1", "SERIES NO. 2").
-- **Series part line:** a post in a series shows "Part 3 of 11 in the series <name>" under its
-  tags, in muted text with the series name as a link (`layouts/single.html`). Parts follow the
-  posts' dates, the same order as the series box, and drafts don't count.
+  label ("NO. 4", "PROJECT NO. 1").
+- **Part line:** a post that belongs to a project shows "Part 3 of 8 in the project <name>"
+  under its tags, in muted text with the project name as a link (`layouts/single.html`). Parts
+  follow the posts' dates, the same order as the project box, and drafts don't count.
 - **Pagination:** a list longer than one page (`[pagination] pagerSize` in `hugo.toml`, 10) ends
   with the blue Prev and Next buttons and "Page 2 of 3" in muted text centered between them
-  (`layouts/_partials/page_nav.html`), on the Blog, tag and series pages, the Series page and
+  (`layouts/_partials/page_nav.html`), on the Blog and tag pages and
   the Projects page. One page of entries shows nothing.
 - **Numbered sections (posts only):** each `##` section heading is numbered "1.", "2.", ... with
   the number in green, and the table of contents shows the same numbers. It's generated with CSS
@@ -224,7 +218,7 @@ colors when printing, so without it the screen palette prints as light gray text
 
 - **Colors:** the tokens switch to a light palette, and every text color is 7:1 or better on white.
   Accents print as plain text (their own rule in `accents.css`).
-- **No site chrome:** the header, footer, breadcrumbs, table of contents, tags, series box, post
+- **No site chrome:** the header, footer, breadcrumbs, table of contents, tags, project box, post
   navigation, copy buttons and "View source" link are hidden.
 - **Links** print as plain text followed by their destination in parentheses, like
   "GitHub (https://github.com/ErikFailing)". Same-page and email links skip it, and site-relative

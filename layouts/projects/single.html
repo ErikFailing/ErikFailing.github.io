@@ -1,9 +1,9 @@
 {{- /* A project's own page (/projects/<slug>/). A site-only layout, like layouts/projects/list.html
        (which documents the front matter). Under the title and description: the project's tags (the
        same pills posts have under their date line), a facts block (status, role, year, links), then
-       the page's Markdown, then the project's write-ups: every published post in the series named
-       by `writeups`, in reading order, in the same box posts use for their series. A project whose
-       series has no published posts yet just has no box. See "Projects" in STYLE.md. */ -}}
+       the page's Markdown, then the project's write-ups: every published post that names this
+       project, in reading order, in the same box those posts end with. A project with no
+       published posts yet just has no box. See "Projects" in STYLE.md. */ -}}
 {{- define "main" }}
 
 <article class="post-single project-single">
@@ -49,9 +49,8 @@
 
   {{- $writeups := partial "project_writeups.html" . }}
   {{- with $writeups }}
-  {{- $series := site.GetPage (printf "/series/%s" ($.Params.writeups | urlize)) }}
   <aside class="series-box" id="writeups" aria-label="Write-ups">
-    <p class="series-label">Write-ups, in reading order{{ with $series }} (the <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> series){{ end }}:</p>
+    <p class="series-label">Write-ups, in reading order:</p>
     <ol>
       {{- range . }}
       <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>

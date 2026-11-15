@@ -3,12 +3,12 @@ title = "Fuzzing Valve's GameNetworkingSockets"
 description = "A reproducible fuzzing lab and twenty harnesses for Valve's open-source game networking library, aimed at the code a remote attacker can actually reach."
 date = 2026-11-15T09:00:00-06:00
 draft = false
-number = 1
+number = 2
+aliases = ['/series/fuzzing-gamenetworkingsockets/']
 status = 'Harnesses offered upstream, waiting on the maintainers'
 role = 'Solo, personal research'
 year = 2026
 tags = ['Fuzzing', 'Security', 'Valve', 'cpp', 'libFuzzer', 'aflplusplus', 'Sanitizers', 'libprotobuf-mutator', 'CASR', 'Docker']
-writeups = 'Fuzzing GameNetworkingSockets'   # the blog series; its published posts are listed on this page
 featured = true
 weight = 10
 [[links]]

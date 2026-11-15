@@ -4,7 +4,7 @@ date = 2026-11-15T10:10:00-06:00
 draft = false
 number = 5
 description = 'The first five GameNetworkingSockets harnesses, from a parser that takes a buffer to a full in-process connection, and the rule that every crash has to reproduce from one file.'
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'cpp', 'libFuzzer', 'Security']
 +++
 

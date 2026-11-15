@@ -4,7 +4,7 @@ date = 2026-11-15T11:10:00-06:00
 draft = false
 number = 11
 description = "What a week of fuzzing Valve's GameNetworkingSockets produced: the harness suite, the coverage it reached, what it found, where things stand with Valve, and what's not done."
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Security', 'Valve']
 +++
 

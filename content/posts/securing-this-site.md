@@ -4,7 +4,7 @@ date = 2026-10-30T21:10:00-05:00
 draft = false
 number = 3
 description = 'The security changes I made to this site, ordered by what they actually stop, from email spoofing down to certificate mis-issuance.'
-series = ['Building This Site']
+project = 'this-site'
 tags = ['Security', 'GitHub Actions', 'DNS', 'Web']
 summary = '''A static site on GitHub Pages doesn't have much to attack: no logins, no forms, no cookies, no
 database. But "not much" isn't nothing, so I went through the whole setup (the domain, the build

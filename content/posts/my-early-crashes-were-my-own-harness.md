@@ -4,7 +4,7 @@ date = 2026-11-15T10:50:00-06:00
 draft = false
 number = 9
 description = 'Three fuzzing "findings" in GameNetworkingSockets that turned out to be my own harness or build, how I caught each one, and the checks I run before believing a crash.'
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Triage', 'Sanitizers', 'Security']
 +++
 

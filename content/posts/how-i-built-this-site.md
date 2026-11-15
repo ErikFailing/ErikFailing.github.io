@@ -4,7 +4,7 @@ date = 2026-10-30T17:45:00-05:00
 draft = false
 number = 1
 description = 'Hugo, PaperMod, GitHub Actions and a custom domain, with an LLM helping along the way.'
-series = ['Building This Site']
+project = 'this-site'
 tags = ['Hugo', 'GitHub Actions', 'Web', 'AI']
 +++
 

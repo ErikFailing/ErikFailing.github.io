@@ -4,7 +4,7 @@ date = 2026-11-15T10:30:00-06:00
 draft = false
 number = 7
 description = 'Running eleven GameNetworkingSockets harnesses overnight under AFL++, what a coverage number that stops moving tells you, and putting two old bugs back to prove the harnesses can catch one.'
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'aflplusplus', 'CASR', 'Security']
 aliases = ['/posts/seeded-bug-evaluation/']
 +++

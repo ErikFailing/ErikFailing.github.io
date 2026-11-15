@@ -22,7 +22,7 @@ enableRobotsTXT = true
 # The GitHub workflow fetches full history for this. A `lastmod` in front matter overrides it.
 enableGitInfo = true
 
-# Show tag and series names exactly as written (libFuzzer, libprotobuf-mutator). Hugo's default
+# Show tag names exactly as written (libFuzzer, libprotobuf-mutator). Hugo's default
 # capitalizes the first letter of every word in them.
 capitalizeListTitles = false
 
@@ -62,13 +62,12 @@ capitalizeListTitles = false
   root = true
   notAlternative = true   # no <link rel="alternate"> to it in every page's head
 
-# Tag and series pages. A series groups posts that belong together ( series = ['Building This Site']
-# in front matter); each post in one gets a box listing the others (layouts/_partials/
-# extend_post_content.html). Hugo also makes category pages by default; they're left out because
-# no post uses categories (it was an empty page).
+# Tag pages. Hugo also makes category pages by default; they're left out because no post uses
+# categories (it was an empty page). Posts that belong together are grouped by a project instead
+# ( project = 'this-site' in a post's front matter, the project's folder name under
+# content/projects/); see "Projects" in STYLE.md.
 [taxonomies]
   tag = 'tags'
-  series = 'series'
   # category = 'categories'
 
 # ---------------------------------------------------------------------------------------------
@@ -100,16 +99,11 @@ capitalizeListTitles = false
 #   pageRef = '/search'
 #   weight = 70
 
-# Blog tabs: the row of links across the top of the Blog, Series and Tags pages (and each series'
-# and tag's own page), from layouts/_partials/blog_nav.html. Lower weight = further left.
+# Blog tabs: the row of links across the top of the Blog and Tags pages (and each tag's own page), from layouts/_partials/blog_nav.html. Lower weight = further left.
 [[menu.blog]]
   name = 'All posts'
   pageRef = '/posts'
   weight = 10
-[[menu.blog]]
-  name = 'Series'
-  pageRef = '/series'
-  weight = 20
 [[menu.blog]]
   name = 'Tags'
   pageRef = '/tags'

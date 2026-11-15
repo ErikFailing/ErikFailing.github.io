@@ -4,7 +4,7 @@ date = 2026-11-15T10:20:00-06:00
 draft = false
 number = 6
 description = 'Using coverage to pick fuzzing targets in GameNetworkingSockets: the harnesses that barely moved the number, the ones that jumped it, and why the difference was reachability and gates.'
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'libprotobuf-mutator', 'Security']
 aliases = ['/posts/structure-aware-fuzzing-protobuf/']
 +++

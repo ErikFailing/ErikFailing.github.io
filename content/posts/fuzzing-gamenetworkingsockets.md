@@ -4,13 +4,13 @@ date = 2026-11-15T10:00:00-06:00
 draft = false
 number = 4
 description = "Why I picked Valve's open-source networking library to fuzz, what its attack surface looks like, and the pinned lab I built to do it."
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Docker', 'Security', 'Valve']
 aliases = ['/posts/reproducible-fuzzing-lab/']
 +++
 
 In November 2026 I spent about a week fuzzing Valve's GameNetworkingSockets, the open-source
-version of the networking API in the Steamworks SDK. This series follows that in the order it
+version of the networking API in the Steamworks SDK. These posts follow that in the order it
 happened. Spoiler: {=point: I didn't find a critical bug=}, and I ended up with twenty harnesses,
 five findings (none of them high severity) and one report to Valve. This first post is why I
 picked the target and the lab I built for it.

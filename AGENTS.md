@@ -14,8 +14,9 @@ read like Erik showing someone something cool, not like marketing.
 - **`content/about.md`:** mostly professional with a light conversational touch; follow the
   toned-down rules in VOICE.md's "Where This Voice Applies" section.
 - **`content/projects/<slug>/index.md`:** one page bundle per project, in the same toned-down
-  voice as About, with sparse accents. The long-form story goes in a blog series, which the
-  project names in `writeups`. See "Projects page" in STYLE.md for the front matter.
+  voice as About, with sparse accents. The long-form story goes in blog posts that name the
+  project (`project = '<folder name>'` in their front matter); there are no separate series.
+  See "Projects page" in STYLE.md for the front matter.
 - **This repo is public, drafts included.** `draft = true` keeps a post off the live site, not
   off GitHub. Anything that can't be public yet (an unfixed vulnerability's details, for example)
   doesn't get written here at all, not even as a `TODO:` that hints at it.
@@ -25,9 +26,9 @@ read like Erik showing someone something cool, not like marketing.
   `data/accents.yaml` (a named tool, company, person or place gets its own style; otherwise the
   vibe that fits). Mark at most one key point per section with `{=point: ...=}`. Never accent headings,
   links, code, tables or the resume. New tools get a brand-colored style (lightened to pass 7:1).
-- Posts, projects and series each have a `number` in front matter, shown in front of the title
+- Posts and projects each have a `number` in front matter, shown in front of the title
   as "#4" (see "Title numbers" in STYLE.md). Create posts with `hugo new content posts/...` so
-  they get the next number, number a series' posts in reading order, and don't renumber posts
+  they get the next number, number a project's posts in reading order, and don't renumber posts
   that are already published unless Erik asks.
 - Post section headings (`##`) are numbered automatically by CSS (see "Numbered sections" in
   STYLE.md). Write them without numbers.
@@ -40,7 +41,7 @@ read like Erik showing someone something cool, not like marketing.
 
 - Colors, typography and components follow [STYLE.md](STYLE.md); CSS lives in
   `assets/css/extended/`. Never edit files under `themes/PaperMod/` (a Git submodule). Theme
-  templates overridden in `layouts/` (`single.html`, `list.html`, `404.html`, `series/taxonomy.html`,
+  templates overridden in `layouts/` (`single.html`, `list.html`, `404.html`,
   `tags/taxonomy.html`, `_partials/footer.html`,
   `_partials/index_profile.html`, `_partials/templates/schema_json.html`,
   `_partials/templates/_funcs/get-page-images.html`) must be diffed against the theme's versions

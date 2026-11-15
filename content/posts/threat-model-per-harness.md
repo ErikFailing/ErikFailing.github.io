@@ -4,7 +4,7 @@ date = 2026-11-15T11:00:00-06:00
 draft = false
 number = 10
 description = 'Every one of my GameNetworkingSockets harnesses has a written threat model. What goes in one, two examples, and the two harness gaps that writing them caught.'
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Threat Modeling', 'Security']
 +++
 

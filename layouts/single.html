@@ -9,7 +9,8 @@
        4. A page with showLastmod = true (the resume) gets a "Last updated <date>" line under its
           description, from the page's last Git commit (enableGitInfo).
        5. The title starts with the post's number ("#4", layouts/_partials/title_number.html).
-       6. A post in a series gets a "Part 3 of 11 in the series ..." line under its tags. */ -}}
+       6. A post that belongs to a project gets a "Part 3 of 8 in the project ..." line under its
+          tags. */ -}}
 {{- define "main" }}
 
 {{- $numbered := eq .Section "posts" }}
@@ -47,10 +48,13 @@
     </time></div>
     {{- end }}
     {{- partial "post_tags.html" (dict "page" . "class" "post-tags-top") }}
-    {{- range .GetTerms "series" }}
+    {{- with partial "post_project.html" . }}
+    {{- $posts := partial "project_writeups.html" . }}
     {{- $part := 0 }}
-    {{- range $i, $p := .Pages.ByDate }}{{ if eq $p.RelPermalink $.RelPermalink }}{{ $part = add $i 1 }}{{ end }}{{ end }}
-    <p class="series-part">Part {{ $part }} of {{ len .Pages }} in the series <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></p>
+    {{- range $i, $p := $posts }}{{ if eq $p.RelPermalink $.RelPermalink }}{{ $part = add $i 1 }}{{ end }}{{ end }}
+    {{- if $part }}
+    <p class="series-part">Part {{ $part }} of {{ len $posts }} in the project <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></p>
+    {{- end }}
     {{- end }}
   </header>
   {{- $isHidden := (.Param "cover.hiddenInSingle") | default (.Param "cover.hidden") | default false }}

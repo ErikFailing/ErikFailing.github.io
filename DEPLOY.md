@@ -133,11 +133,11 @@ Cloudflare's free plan) or a different host, which wasn't worth the rework or ri
   override and `site.js`, and `themes/PaperMod/layouts/single.html`, `list.html`, `404.html`,
   `_partials/index_profile.html`,
   `_partials/templates/schema_json.html` and `_partials/templates/_funcs/get-page-images.html`
-  against the overrides in `layouts/` (numbered headings, tags, post numbers, series order, 404
+  against the overrides in `layouts/` (numbered headings, tags, post numbers, 404
   page, blog tabs, home page tagline, photo and credential line, the "View source" wrapper, the
   resume's "Last updated" line, structured data, social cards), and copy over any
-  changes. `layouts/series/taxonomy.html` and `layouts/tags/taxonomy.html` replace the theme's
-  `taxonomy.html` for the Series and Tags pages; check them if the theme's changes. `layouts/_partials/_funcs/get-page-images.html` overrides a template built into Hugo
+  changes. `layouts/tags/taxonomy.html` replaces the theme's
+  `taxonomy.html` for the Tags page; check it if the theme's changes. `layouts/_partials/_funcs/get-page-images.html` overrides a template built into Hugo
   itself (PaperMod's `opengraph.html` calls it); it only forwards to the PaperMod override, so it
   needs no diffing.
 - Adding anything from another domain (analytics, embeds, a CDN font) needs a CSP change, and

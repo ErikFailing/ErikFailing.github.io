@@ -4,7 +4,7 @@ date = 2026-11-15T10:40:00-06:00
 draft = false
 number = 8
 description = 'A lot of protocol code only runs once a connection already holds state. How my GameNetworkingSockets harnesses build that state first, and keep crashes reproducible anyway.'
-series = ['Fuzzing GameNetworkingSockets']
+project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'cpp', 'Security']
 +++
 
