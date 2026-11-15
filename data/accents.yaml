@@ -92,7 +92,7 @@ styles:
   vscode:     { colors: ["#40a1f6"], use: "VS Code" }
   vim:        { colors: ["#36b24e"], use: "Vim, Neovim" }
   godot:      { colors: ["#5da2d6"], use: "Godot" }
-  steam:      { colors: ["#66c0f4"], use: "Steam" }
+  steam:      { colors: ["#66c0f4"], use: "Steam, Valve, GameNetworkingSockets" }
   letsencrypt: { colors: ["#f9a11b"], use: "Let's Encrypt" }
 
 # Tag colors: a post's tag pills use an accent style's color. A tag named exactly like a style
@@ -105,3 +105,9 @@ tags:
   dns: iron
   web: flood
   design: clarity
+  fuzzing: static
+  valve: steam
+  threat-modeling: ward
+  protobuf: iron
+  triage: arcane
+  disclosure: trophy
