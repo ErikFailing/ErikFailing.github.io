@@ -177,7 +177,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 /* Projects page (layouts/projects/list.html): a grid of cards, one per project. The grid fits as
    many 320px-or-wider columns as the content column holds, so one project fills the row and four
    make a 2x2. Each card is the theme's .post-entry (surface, edge, whole-card link) with the
-   project's facts inside. */
+   project's facts and tags inside. */
 .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--gap); }
 .project-card { margin-bottom: 0; }
 .project-meta { margin-top: 0.25rem; font-size: 0.9375rem; color: var(--secondary); }
@@ -186,11 +186,9 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .project-status { color: var(--green); font-weight: 600; }
 .project-card .project-status { margin-top: 0.6rem; font-size: 0.9375rem; }
 .project-status-label { color: var(--secondary); font-weight: 400; }
-/* The stack: gray, square-cornered chips. Not links, so not pills (pills are tags) and not blue. */
-.project-stack { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0; padding: 0; list-style: none; }
-.project-stack li { padding: 0 8px; font-size: 0.8125rem; line-height: 24px; color: var(--secondary);
-  background: var(--code-bg); border: 1px solid var(--border); border-radius: 4px; }
-.project-card .project-stack { margin-top: 0.75rem; }
+/* A project's tools and topics are ordinary tags (layouts/_partials/post_tags.html), so they get
+   the same colored pills as on posts: .entry-tags on the card, .post-tags-top on its own page. */
+.project-card .entry-tags { margin-top: 0.75rem; }
 /* A project's own page (layouts/projects/single.html): the facts block under the title, a label
    column (the h6 eyebrow look) beside the values. Stacks to one column on phones. */
 .project-facts { margin: 1.5rem 0 2rem; padding: 1rem 1.25rem; background: var(--entry); border: 1px solid var(--border); border-radius: var(--radius); }

@@ -5,7 +5,7 @@ draft = false
 number = 5
 description = 'The pinned toolchain, build flags, engines and oracles behind the GameNetworkingSockets fuzzing, and two build details that would have hidden real crashes.'
 series = ['Fuzzing GameNetworkingSockets']
-tags = ['Fuzzing', 'Docker', 'Security']
+tags = ['Fuzzing', 'Docker', 'aflplusplus', 'libFuzzer', 'Sanitizers', 'Security']
 +++
 
 The lab behind the GameNetworkingSockets fuzzing is my Windows 11 desktop running WSL2, with
@@ -48,7 +48,7 @@ Each one is {=iron: pinned the strongest way its source allows=}:
   against a pinned fingerprint=} before apt trusts it. That repo only keeps the newest build of
   each major version, so the image also writes the exact versions it was built with (22.1.8 right
   now) to a file inside itself.
-- **{=static: AFL++=}** by tag *and* commit. If the tag ever moves upstream, the build fails
+- **{=aflplusplus: AFL++=}** by tag *and* commit. If the tag ever moves upstream, the build fails
   instead of quietly changing what I fuzz with.
 - **CASR** (the crash triage tool) as a prebuilt release checked against its SHA-256.
 

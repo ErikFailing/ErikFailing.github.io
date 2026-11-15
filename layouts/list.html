@@ -5,7 +5,10 @@
        2. A series' page (/series/<name>/) lists its posts oldest first, in reading order, and shows
           the series' combined tags under its title (layouts/_partials/series_tags.html).
        3. The Blog page and each series' and tag's page start with the blog tabs
-          (layouts/_partials/blog_nav.html). */ -}}
+          (layouts/_partials/blog_nav.html).
+       4. Projects have tags too, so a tag's page can list a project next to posts. Its entry shows
+          the project's description and a "Project · year · role" line instead of a post's
+          summary and date line. */ -}}
 {{- define "main" }}
 
 {{- if (and site.Params.profileMode.enabled .IsHome) }}
@@ -100,10 +103,16 @@
   </header>
   {{- if (ne (.Param "hideSummary") true) }}
   <div class="entry-content">
+    {{- if eq .Type "projects" }}
+    <p>{{ .Description }}</p>
+    {{- else }}
     <p>{{ .Summary | plainify | htmlUnescape }}{{ if .Truncated }}...{{ end }}</p>
+    {{- end }}
   </div>
   {{- end }}
-  {{- if not (.Param "hideMeta") }}
+  {{- if eq .Type "projects" }}
+  <footer class="entry-footer">Project{{ with .Params.year }}&nbsp;·&nbsp;{{ . }}{{ end }}{{ with .Params.role }}&nbsp;·&nbsp;{{ . }}{{ end }}</footer>
+  {{- else if not (.Param "hideMeta") }}
   <footer class="entry-footer">
     {{- partial "post_meta.html" . -}}
   </footer>

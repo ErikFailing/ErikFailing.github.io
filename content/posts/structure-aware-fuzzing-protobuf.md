@@ -5,7 +5,7 @@ draft = false
 number = 9
 description = 'Mutating real protobuf messages instead of raw bytes barely helped on one GameNetworkingSockets surface and helped a lot on another. The difference was what stood in front of the parser.'
 series = ['Fuzzing GameNetworkingSockets']
-tags = ['Fuzzing', 'Protobuf', 'Security']
+tags = ['Fuzzing', 'libprotobuf-mutator', 'Security']
 +++
 
 GameNetworkingSockets uses protobuf for its handshake, signaling and stats messages, and {=static: a
@@ -86,9 +86,9 @@ So the rule I'd give is:
 
 For the handshake, the gate that matters is a signature. The session crypto info is signed, and
 the signature is checked against the public key inside the certificate. The open-source build has
-no certificate authority behind it, so it accepts a certificate without a CA signature. That makes
-sense (Steam's authentication service isn't part of the open-source library), and it means
-{=arcane: the only signature left to satisfy=} is one made with a key the certificate itself
+no certificate authority behind it, so by default it accepts a certificate without a CA signature.
+That makes sense (Steam's authentication service isn't part of the open-source library), and it
+means {=arcane: the only signature left to satisfy=} is one made with a key the certificate itself
 names.
 
 So the harness holds {=arcane: its own ed25519 key=}. It swaps the public half into a real captured
@@ -99,9 +99,12 @@ attacker-shaped fields. It's the same idea as forging the STUN integrity check i
 [the threat model post](/posts/threat-model-per-harness/): {=point: when the gate is a check you can
 honestly satisfy, satisfy it in the harness=}.
 
-One more gate hid behind that one. The handshake rejects any crypto info whose protocol version
-isn't current, and {=static: a fuzzer almost never guesses the exact version number=}. The harness
-forces that field (and the key type) to valid values after mutation, so every input gets through.
+One more gate hid behind that one. The handshake rejects crypto info whose protocol version is
+below a minimum, and {=static: the mutator is free to change or drop that field=}. The harness
+sets that field (and the key type) to the current values after mutation, so every input gets
+through. That has a cost I only noticed later: pinning the current version means the branches
+for older, still-accepted versions never run, so letting the fuzzer pick any accepted version
+is on my list.
 
 ## Two Mistakes Worth Admitting
 

@@ -6,7 +6,7 @@ draft = false
 status = 'Harnesses offered upstream, waiting on the maintainers'
 role = 'Solo, personal research'
 year = 2026
-stack = ['C++', 'libFuzzer', 'AFL++', 'ASan / UBSan / MSan', 'libprotobuf-mutator', 'CASR', 'Docker']
+tags = ['Fuzzing', 'Security', 'Valve', 'cpp', 'libFuzzer', 'aflplusplus', 'Sanitizers', 'libprotobuf-mutator', 'CASR', 'Docker']
 writeups = 'Fuzzing GameNetworkingSockets'   # the blog series; its published posts are listed on this page
 featured = true
 weight = 10
@@ -50,9 +50,8 @@ a harness suite I've offered to the project, and a method I'd use again on the n
 - **Three oracles.** ASan with UBSan for memory safety and undefined behavior, an assert oracle
   that turns the library's own invariant checks into crashes, and a MemorySanitizer build with the
   whole dependency stack instrumented.
-- **{=ward: Written threat models=}** (fifteen of the twenty harnesses so far), saying what
-  untrusted bytes reach which function, and where the harness is narrower than the real attack
-  surface.
+- **{=ward: A threat model for every harness=},** saying what untrusted bytes reach which function,
+  and where the harness is narrower than the real attack surface.
 - **A seeded-bug check.** Two known, fixed, public bugs (CVE-2020-6017 and issue #410) get put
   back into the pinned source to prove the harnesses actually catch them.
 - **Campaign tooling:** coverage reports, corpus minimization, parallel AFL++ runs with CmpLog,

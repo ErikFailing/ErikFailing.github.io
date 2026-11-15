@@ -132,15 +132,17 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   column holds, so one project fills the row. A card is the same `--entry` card as a post entry
   (whole card is the link, blue edge on hover): the title, a muted "year · role · N write-ups"
   line, the description, a status line (a muted "Status:" label, then the status in green, since
-  status is state), and the stack as gray square-cornered chips. Chips aren't links, so they're
-  neither pills (those are tags) nor blue. Each project is a page bundle,
+  status is state), and the project's tags. Projects use the same tags as posts, for their tools
+  (`libFuzzer`, `Docker`) as well as their topics, so the pills have the same colors everywhere
+  and a tag's page lists the project next to the posts (as an entry with its description and a
+  "Project · year · role" line). Each project is a page bundle,
   `content/projects/<slug>/index.md`, with `title`, `description`, `status`, `role`, `year`,
-  `stack`, `writeups`, `links`, `featured` and `weight` in front matter (documented at the top of
+  `tags`, `writeups`, `links`, `featured` and `weight` in front matter (documented at the top of
   the layout). Only list projects that exist and can be linked; no "coming soon" cards.
-- **Project pages:** a project's own page (`layouts/projects/single.html`) has a facts card
-  under the title (Status, Role, Year, Stack, Links, with h6-style eyebrow labels in a left
-  column that stacks on phones), then the Markdown body, then its write-ups in the same box posts
-  use for their series. `writeups` names a blog series exactly, and the box lists that series'
+- **Project pages:** a project's own page (`layouts/projects/single.html`) has its tags under
+  the description (where posts have theirs), then a facts card (Status, Role, Year, Links, with
+  h6-style eyebrow labels in a left column that stacks on phones), then the Markdown body, then
+  its write-ups in the same box posts use for their series. `writeups` names a blog series exactly, and the box lists that series'
   published posts in reading order (`layouts/_partials/project_writeups.html`), so a draft never
   gets linked. Project bodies use the toned-down About voice with sparse accents, and their
   headings aren't numbered. Projects stay out of the RSS feed and post numbering (`hiddenInRss`
@@ -175,8 +177,13 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 - **Tags:** pills (tint fill, edge and text) in the matching accent style's color: a tag named like a
   style (`hugo`) uses it automatically, others are mapped in the `tags` list in
   `data/accents.yaml`, and unmatched tags stay green. Brighter on hover. Write tags in front matter
-  the way they should display (`tags = ['GitHub Actions', 'AI']`); Hugo still makes lowercase URLs
-  (`/tags/github-actions/`), and the color mapping uses those slugs. Posts show them at
+  the way they should display (`tags = ['GitHub Actions', 'AI', 'libFuzzer']`); Hugo still makes
+  lowercase URLs (`/tags/github-actions/`), and the color mapping uses those slugs. Names show
+  exactly as written (`capitalizeListTitles = false` in `hugo.toml`). The exception is a name
+  that doesn't belong in a URL: C++ and AFL++ are written as `cpp` and `aflplusplus` (their
+  accent styles' names, so the color matches by itself) and get their display name from
+  `content/tags/<name>/_index.md`. A tool gets a tag when a post or project is really about it,
+  and a new tool tag gets its own accent style. Projects have tags too. Posts show them at
   the top (under the date line, slightly smaller) and at the bottom, and every card in a post list
   shows its post's tags, all through `layouts/_partials/post_tags.html`.
 - **Code blocks:** Hugo's `github-dark` highlighting on `#111318` with a `--border` edge; long
@@ -296,7 +303,7 @@ generated from it, and a misspelled style name fails the build. In short:
 | `ascend` | orange | Climbing up or breaking out: privilege escalation, sandbox escapes |
 | `flood` | sky blue | Overflows: buffer and integer overflows |
 | `ghostly` | pale lavender → violet gradient | Haunted or invisible: use-after-free, clickjacking, CSRF, side channels |
-| `static` | cyan → magenta gradient | Noise and chaos: fuzzing, AFL++, race conditions, visual glitches |
+| `static` | cyan → magenta gradient | Noise and chaos: fuzzing in general, CmpLog, race conditions, visual glitches |
 | `arcane` | violet | Secrets, deep knowledge, AI: reverse engineering, crypto, hashes, SRI, LLMs |
 | `trophy` | gold | Winning and proving it: CTFs, PoCs, bug bounties, awards, scores |
 | `ward` | green | Defenses: defense in depth, least privilege, threat modeling, CSP, HSTS, DNSSEC, SPF/DMARC, MFA |
@@ -306,7 +313,7 @@ generated from it, and a misspelled style name fails the build. In short:
 | `signature` | blue → violet gradient | Me (Erik Failing) |
 | `rocket` | gold → red gradient | Huntsville, Alabama (the Rocket City) |
 | `anchor`, `qud` | own gradients | World Anchor, Caves of Qud |
-| Brand styles | brand colors | Companies (`boeing`, `northrop`), AI (`claude`, `openai`), languages (`python`, `rust`, `golang`, `javascript`, `typescript`, `cpp`, `csharp`, `dotnet`, `java`, `bash`, `powershell`, `zig`), security tools (`ghidra`, `burp`, `wireshark`, `metasploit`, `kali`, `htb`, `tryhackme`, `splunk`), dev tools (`git`, `docker`, `kubernetes`, `terraform`, `ansible`, `aws`, `azure`, `cloudflare`, `linux`, `hugo`, `vscode`, `vim`, `godot`, `steam`, `letsencrypt`) |
+| Brand styles | brand colors | Companies (`boeing`, `northrop`), AI (`claude`, `openai`), languages (`python`, `rust`, `golang`, `javascript`, `typescript`, `cpp`, `csharp`, `dotnet`, `java`, `bash`, `powershell`, `zig`), security tools (`ghidra`, `burp`, `wireshark`, `metasploit`, `kali`, `htb`, `tryhackme`, `splunk`), fuzzing and analysis tools (`aflplusplus`, `libfuzzer`, `sanitizers`, `protobuf`, `casr`; picked hues, since most have no brand color), dev tools (`git`, `docker`, `kubernetes`, `terraform`, `ansible`, `aws`, `azure`, `cloudflare`, `linux`, `hugo`, `vscode`, `vim`, `godot`, `steam`, `letsencrypt`) |
 
 **Adding a style:** add it to `data/accents.yaml` with one color (solid) or two (gradient) and a
 `use` note. Keep the palette mostly solid; gradients are for signature styles only (about 1 in 5).

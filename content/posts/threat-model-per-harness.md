@@ -3,16 +3,15 @@ title = 'Writing A Threat Model For Each Fuzzing Harness'
 date = 2026-11-15T10:30:00-06:00
 draft = false
 number = 7
-description = 'Why most of my GameNetworkingSockets harnesses come with a written threat model, what goes in one, and two examples of the gaps it forces you to admit.'
+description = 'Why every one of my GameNetworkingSockets harnesses comes with a written threat model, what goes in one, and two examples of the gaps it forces you to admit.'
 series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'Threat Modeling', 'Security']
 +++
 
 A fuzzing harness is always narrower than the real attack surface, and the dangerous part is
-that {=ghostly: nothing tells you where=}. So for the GameNetworkingSockets harnesses I've been
-writing a short {=ward: threat model=} next to each one: who can really send these bytes, what the
-harness drives, and where it cuts corners. Fifteen of the twenty harnesses have one so far. This
-post is the template and two examples.
+that {=ghostly: nothing tells you where=}. So every one of the twenty GameNetworkingSockets
+harnesses has a short {=ward: threat model=} written next to it: who can really send these bytes,
+what the harness drives, and where it cuts corners. This post is the template and two examples.
 
 ## Why Bother
 
@@ -107,8 +106,17 @@ I think so, for three reasons:
   exactly what untrusted bytes reach which entry point was one of the three things I listed, since
   {=ward: a maintainer shouldn't have to take coverage on faith=}.
 
-The cost is real though: each one is a document that has to be kept in sync when its harness
-changes. Five harnesses still don't have one, and they need their own.
+The cost is real though: each one is a document that has to be written, and then kept in sync when
+its harness changes. I let that slip for a while, and five of the later harnesses went without
+one.
+
+When I went back and wrote those five, two of them turned out to reach less than my notes
+claimed. The server-side handshake harness and the P2P connect-request harness both stop before
+the connection is accepted, so {=glitch: the server's half of the key exchange never runs=} in
+either one. My notes had both down as covering it. That's from reading the source, and I still
+need a coverage run to confirm it, but fixing those two harnesses is now at the top of my list.
+I think that's the best argument for the whole exercise: having to name, function by function,
+what a harness drives is what caught it.
 
 [The next post](/posts/fuzzing-stateful-code/) is about a bigger kind of simplification:
 harnesses that set up state themselves before the fuzzer gets a turn.

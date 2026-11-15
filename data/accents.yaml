@@ -32,7 +32,7 @@ styles:
   ascend:     { colors: ["#ff9f43"], use: "Climbing up or breaking out: privilege escalation, sandbox escapes" }
   flood:      { colors: ["#5cc8ff"], use: "Water spilling over: buffer and integer overflows" }
   ghostly:    { colors: ["#e4e2f5", "#b69cff"], use: "Haunted or invisible: use-after-free, clickjacking, CSRF, side-channel attacks" }
-  static:     { colors: ["#4fd8e0", "#ff6ad5"], use: "Noise and chaos: fuzzing, fuzzers, AFL++, libFuzzer, race conditions, concurrency, visual glitches like a font swap" }
+  static:     { colors: ["#4fd8e0", "#ff6ad5"], use: "Noise and chaos: fuzzing and fuzzers in general (AFL++ and libFuzzer have their own styles), CmpLog, race conditions, concurrency, visual glitches like a font swap" }
   arcane:     { colors: ["#b69cff"], use: "Secrets, deep knowledge and AI: reverse engineering, static analysis, cryptography and encryption, post-quantum crypto, SHA-256 and checksums, subresource integrity, LLMs, local LLMs, Ollama" }
   trophy:     { colors: ["#ffd166"], use: "Winning and proving it: CTFs, capture the flag, proofs of concept, bug bounties, game jams, hackathons, scores and grades" }
   ward:       { colors: ["#3fd68a"], use: "Shields up, defenses: defense in depth, least privilege, threat modeling, memory safety, secure code review, CSP, HSTS, DNSSEC, SPF and DMARC, zero trust, MFA and passkeys, secrets management, coordinated disclosure, vulnerability reporting" }
@@ -78,6 +78,15 @@ styles:
   tryhackme:  { colors: ["#fe7061"], use: "TryHackMe" }
   splunk:     { colors: ["#6bac3e"], use: "Splunk" }
 
+  # ---- Tier 2: fuzzing and analysis tools ----
+  # None of these has a brand color of its own (Protocol Buffers aside), so each got a hue that
+  # stands apart from its neighbors when the tags sit in a row.
+  aflplusplus: { colors: ["#ff9966"], use: "AFL++ (no brand color; a warm orange)" }
+  libfuzzer:  { colors: ["#f58ad0"], use: "libFuzzer (no brand color; pink, the far end of the fuzzing gradient)" }
+  sanitizers: { colors: ["#d4e157"], use: "The sanitizers: ASan, UBSan, MSan, LSan (no brand color; a warning-label lime)" }
+  protobuf:   { colors: ["#f28b82"], use: "Protocol Buffers, libprotobuf-mutator (the red from its four-color Google logo, lightened)" }
+  casr:       { colors: ["#5eead4"], use: "CASR (no brand color; mint)" }
+
   # ---- Tier 2: dev and infrastructure tools ----
   git:        { colors: ["#fe7155"], use: "Git, Git submodules" }
   docker:     { colors: ["#34a1f9"], use: "Docker" }
@@ -97,7 +106,9 @@ styles:
 
 # Tag colors: a post's tag pills use an accent style's color. A tag named exactly like a style
 # (hugo, python, docker...) uses that style automatically; other tags are mapped here (tag slug:
-# style). Unmatched tags stay the default green.
+# style). Unmatched tags stay the default green. A tag whose name doesn't belong in a URL (C++,
+# AFL++) is written as its style's name in front matter (cpp, aflplusplus) and gets its display
+# name from content/tags/<name>/_index.md, so it matches its style without a mapping here.
 tags:
   github-actions: flow
   ai: arcane
@@ -108,6 +119,6 @@ tags:
   fuzzing: static
   valve: steam
   threat-modeling: ward
-  protobuf: iron
+  libprotobuf-mutator: protobuf
   triage: arcane
   disclosure: trophy

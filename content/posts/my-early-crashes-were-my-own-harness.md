@@ -5,7 +5,7 @@ draft = false
 number = 11
 description = 'Three fuzzing "findings" in GameNetworkingSockets that turned out to be my own harness or build, how I caught each one, and the checks I run before believing a crash.'
 series = ['Fuzzing GameNetworkingSockets']
-tags = ['Fuzzing', 'Triage', 'Security']
+tags = ['Fuzzing', 'Triage', 'CASR', 'Sanitizers', 'Security']
 +++
 
 Three times during the GameNetworkingSockets fuzzing I had something that looked like a real

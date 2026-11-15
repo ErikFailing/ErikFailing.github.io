@@ -122,6 +122,5 @@ It just wouldn't find {=crimson: anything an attacker could use=}.
 - **A flat line is information.** When coverage stops growing overnight, the answer is a new
   harness or a new oracle, not more hours.
 
-Deciding what's reachable is a judgment call, so I've been writing mine down, harness by
-harness. That's
+Deciding what's reachable is a judgment call, so I wrote mine down for every harness. That's
 [the next post](/posts/threat-model-per-harness/).

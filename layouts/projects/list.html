@@ -4,7 +4,8 @@
          title, description   the card's heading and summary (description is also the page's subtitle)
          status               one line on where the project stands, shown in green
          role, year           the muted line under the title
-         stack                a list of tools, shown as gray chips
+         tags                 the same tags posts use: tools and topics, as colored pills that link to
+                              the tag's page (where the project is listed next to the posts)
          writeups             the exact name of the blog series about it; the card counts its posts
          links                [[links]] name + url, shown on the project's own page
          featured, weight     for the home page (see TODO.md) and the order here
@@ -44,13 +45,7 @@
     {{- with .Params.status }}
     <p class="project-status"><span class="project-status-label">Status:</span> {{ . }}</p>
     {{- end }}
-    {{- with .Params.stack }}
-    <ul class="project-stack" aria-label="Built with">
-      {{- range . }}
-      <li>{{ . }}</li>
-      {{- end }}
-    </ul>
-    {{- end }}
+    {{- partial "post_tags.html" (dict "page" . "class" "entry-tags") }}
     <a class="entry-link" aria-label="project: {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
   </article>
   {{- end }}
