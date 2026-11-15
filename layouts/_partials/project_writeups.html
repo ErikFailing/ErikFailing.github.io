@@ -1,0 +1,13 @@
+{{- /* A project's write-ups: the published posts in the blog series named by the project's `writeups`
+       front matter (the series' exact name, e.g. writeups = 'Fuzzing GameNetworkingSockets'), oldest
+       first, which is reading order. Called with the project page; returns a slice of pages, empty
+       when the project names no series or the series has no published posts yet (drafts don't
+       count, so a card never links to a post that isn't live). Used by layouts/projects/list.html
+       and single.html. */ -}}
+{{- $posts := slice }}
+{{- with .Params.writeups }}
+  {{- with site.GetPage (printf "/series/%s" (. | urlize)) }}
+    {{- $posts = .Pages.ByDate }}
+  {{- end }}
+{{- end }}
+{{- return $posts }}

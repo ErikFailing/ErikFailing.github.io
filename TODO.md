@@ -5,25 +5,32 @@ most of these is in `reports/Personal site improvement audit.md` (local only, no
 
 ## Blog
 
-- [ ] Keep writing posts. The one that matters most is the first real security writeup: a finding
-      paired with its fix, like a fuzzing campaign or a reverse engineering methodology post. It
-      also becomes the first security project card and the first pinned item on the home page.
+- [ ] Finish and publish the last post in the Fuzzing GameNetworkingSockets series,
+      `content/posts/reporting-and-upstreaming.md`. It's a draft on purpose: it waits on Valve
+      shipping a fix for the reported finding and on the maintainers' reply to issue #475. Its
+      `TODO:` markers say what's missing. Nothing about the unfixed finding goes in this repo
+      before then, drafts included, since the repo is public.
+- [ ] When the harnesses are public (upstream or in their own repo), link them from the project
+      page (`content/projects/gamenetworkingsockets-fuzzing/index.md`, a `[[links]]` entry),
+      update its `status`, and update the "Where Things Stand" section of the overview post.
+- [ ] Keep writing posts.
 
 ## Projects page
 
-- [ ] Build `/projects/`: one page bundle per project (`content/projects/<slug>/index.md`) with a
-      fixed set of front matter (title, summary, role, year, stack, links, status, featured,
-      weight) and a card grid in a site-only `layouts/projects/list.html`, so no theme file gets
-      shadowed. Keep `mainSections = ['posts']` so projects stay out of RSS and post numbering.
-- [ ] Only list projects that exist and can be linked. No "coming soon" cards.
-- [ ] Uncomment the Projects entries in `hugo.toml` (the `menu.main` item and the home page
+- [x] Build `/projects/`: one page bundle per project (`content/projects/<slug>/index.md`) with a
+      fixed set of front matter and a card grid in a site-only `layouts/projects/list.html`, so no
+      theme file gets shadowed. `mainSections` stays `['posts']` so projects stay out of post
+      numbering, and `hiddenInRss` keeps them out of RSS. See "Projects page" in STYLE.md.
+- [x] Uncomment the Projects entries in `hugo.toml` (the `menu.main` item and the home page
       button).
+- [ ] Add more projects, but only ones that exist and can be linked. No "coming soon" cards.
 
 ## Home page
 
-- [ ] Pin selected projects and blog posts on the front page, 2 to 3 items, picked with something
-      like `featured = true` in front matter and rendered in
-      `layouts/_partials/index_profile.html`. No JavaScript; styles go in `assets/css/extended/`.
+- [ ] Pin selected projects and blog posts on the front page, 2 to 3 items, picked with
+      `featured = true` in front matter (the GameNetworkingSockets project already has it) and
+      rendered in `layouts/_partials/index_profile.html`. No JavaScript; styles go in
+      `assets/css/extended/`.
 
 ## GitHub profile
 

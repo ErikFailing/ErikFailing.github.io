@@ -75,10 +75,10 @@ enableGitInfo = true
   name = 'About'
   pageRef = '/about'
   weight = 10
-# [[menu.main]]
-#   name = 'Projects'
-#   pageRef = '/projects'
-#   weight = 20
+[[menu.main]]
+  name = 'Projects'
+  pageRef = '/projects'
+  weight = 20
 [[menu.main]]
   name = 'Resume'
   pageRef = '/resume'
@@ -124,7 +124,8 @@ enableGitInfo = true
   # Topics for search engines: the home page's keywords tag and "knowsAbout" in the structured data.
   keywords = ['application security', 'product security', 'penetration testing', 'fuzzing', 'reverse engineering', 'software engineering']
 
-  # Which content sections count as "posts" on the home page and in RSS.
+  # Which content sections count as "posts" on the home page and in RSS. Projects
+  # (content/projects/) are deliberately not here, so they stay out of RSS and post numbering.
   mainSections = ['posts']
 
   # The site's repo, linked from the footer as "Source". The footer's "Built from <commit>" link
@@ -192,9 +193,9 @@ enableGitInfo = true
     [[params.profileMode.buttons]]
       name = 'About'
       url = '/about/'
-    # [[params.profileMode.buttons]]
-    #   name = 'Projects'
-    #   url = '/projects/'
+    [[params.profileMode.buttons]]
+      name = 'Projects'
+      url = '/projects/'
     [[params.profileMode.buttons]]
       name = 'Resume'
       url = '/resume/'

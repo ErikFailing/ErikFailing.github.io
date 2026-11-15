@@ -13,6 +13,12 @@ read like Erik showing someone something cool, not like marketing.
 - **`content/resume.md`:** keep it strictly professional. Do not apply VOICE.md's voice to it.
 - **`content/about.md`:** mostly professional with a light conversational touch; follow the
   toned-down rules in VOICE.md's "Where This Voice Applies" section.
+- **`content/projects/<slug>/index.md`:** one page bundle per project, in the same toned-down
+  voice as About, with sparse accents. The long-form story goes in a blog series, which the
+  project names in `writeups`. See "Projects page" in STYLE.md for the front matter.
+- **This repo is public, drafts included.** `draft = true` keeps a post off the live site, not
+  off GitHub. Anything that can't be public yet (an unfixed vulnerability's details, for example)
+  doesn't get written here at all, not even as a `TODO:` that hints at it.
 - **Accents** (see "Accents" in STYLE.md): after drafting a post, do an accent pass. Mark the
   phrase that carries each paragraph's main idea with `{=style: phrase=}`, about one per paragraph
   on average (skip paragraphs with nothing worth pulling out), picking the style from

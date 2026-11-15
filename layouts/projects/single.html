@@ -1,0 +1,71 @@
+{{- /* A project's own page (/projects/<slug>/). A site-only layout, like layouts/projects/list.html
+       (which documents the front matter). Under the title: a facts block (status, role, year, stack,
+       links), then the page's Markdown, then the project's write-ups: every published post in the
+       series named by `writeups`, in reading order, in the same box posts use for their series. A
+       project whose series has no published posts yet just has no box. See "Projects" in STYLE.md. */ -}}
+{{- define "main" }}
+
+<article class="post-single project-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title">{{ .Title }}</h1>
+    {{- with .Description }}
+    <div class="post-description">
+      {{ . }}
+    </div>
+    {{- end }}
+  </header>
+
+  <dl class="project-facts">
+    {{- with .Params.status }}
+    <div><dt>Status</dt><dd class="project-status">{{ . }}</dd></div>
+    {{- end }}
+    {{- with .Params.role }}
+    <div><dt>Role</dt><dd>{{ . }}</dd></div>
+    {{- end }}
+    {{- with .Params.year }}
+    <div><dt>Year</dt><dd>{{ . }}</dd></div>
+    {{- end }}
+    {{- with .Params.stack }}
+    <div><dt>Stack</dt><dd>
+      <ul class="project-stack">
+        {{- range . }}
+        <li>{{ . }}</li>
+        {{- end }}
+      </ul>
+    </dd></div>
+    {{- end }}
+    {{- with .Params.links }}
+    <div><dt>Links</dt><dd>
+      <ul class="project-links">
+        {{- range . }}
+        <li><a href="{{ .url }}"{{ if findRE "://" .url }} rel="noopener"{{ end }}>{{ .name }}</a></li>
+        {{- end }}
+      </ul>
+    </dd></div>
+    {{- end }}
+  </dl>
+
+  {{- if .Content }}
+  <div class="post-content md-content">
+    {{- if not (.Param "disableAnchoredHeadings") }}
+    {{- partial "anchored_headings.html" .Content -}}
+    {{- else }}{{ .Content }}{{ end }}
+  </div>
+  {{- end }}
+
+  {{- $writeups := partial "project_writeups.html" . }}
+  {{- with $writeups }}
+  {{- $series := site.GetPage (printf "/series/%s" ($.Params.writeups | urlize)) }}
+  <aside class="series-box" id="writeups" aria-label="Write-ups">
+    <p class="series-label">Write-ups, in reading order{{ with $series }} (the <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> series){{ end }}:</p>
+    <ol>
+      {{- range . }}
+      <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+      {{- end }}
+    </ol>
+  </aside>
+  {{- end }}
+</article>
+
+{{- end }}{{/* end main */}}

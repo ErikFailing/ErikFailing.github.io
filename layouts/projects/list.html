@@ -1,0 +1,59 @@
+{{- /* The Projects page (/projects/): one card per project, lowest `weight` first. A site-only layout
+       (the theme has no projects templates), so nothing in PaperMod is shadowed. Each project is a
+       page bundle, content/projects/<slug>/index.md, with this front matter:
+         title, description   the card's heading and summary (description is also the page's subtitle)
+         status               one line on where the project stands, shown in green
+         role, year           the muted line under the title
+         stack                a list of tools, shown as gray chips
+         writeups             the exact name of the blog series about it; the card counts its posts
+         links                [[links]] name + url, shown on the project's own page
+         featured, weight     for the home page (see TODO.md) and the order here
+       The project's own page is layouts/projects/single.html. See "Projects" in STYLE.md. */ -}}
+{{- define "main" }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}
+  <div class="post-description">
+    {{ . | markdownify }}
+  </div>
+  {{- end }}
+</header>
+
+{{- with .Content }}
+<div class="post-content md-content">{{ . }}</div>
+{{- end }}
+
+<div class="project-grid">
+  {{- range .RegularPages.ByWeight }}
+  {{- $writeups := partial "project_writeups.html" . }}
+  <article class="post-entry project-card">
+    <header class="entry-header">
+      <h2>{{ .Title }}</h2>
+    </header>
+    {{- $meta := slice }}
+    {{- with .Params.year }}{{ $meta = $meta | append (string .) }}{{ end }}
+    {{- with .Params.role }}{{ $meta = $meta | append . }}{{ end }}
+    {{- with $writeups }}{{ $meta = $meta | append (printf "%d %s" (len .) (cond (eq (len .) 1) "write-up" "write-ups")) }}{{ end }}
+    {{- with $meta }}
+    <p class="project-meta">{{ delimit . " · " }}</p>
+    {{- end }}
+    {{- with .Description }}
+    <p class="project-summary">{{ . }}</p>
+    {{- end }}
+    {{- with .Params.status }}
+    <p class="project-status"><span class="project-status-label">Status:</span> {{ . }}</p>
+    {{- end }}
+    {{- with .Params.stack }}
+    <ul class="project-stack" aria-label="Built with">
+      {{- range . }}
+      <li>{{ . }}</li>
+      {{- end }}
+    </ul>
+    {{- end }}
+    <a class="entry-link" aria-label="project: {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
+  </article>
+  {{- end }}
+</div>
+
+{{- end }}{{/* end main */ -}}

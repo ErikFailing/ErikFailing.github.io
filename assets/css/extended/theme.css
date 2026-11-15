@@ -81,16 +81,16 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 
 /* 3. Links, focus, selection. Blue means "you can act here". In-text links keep an underline because
    blue vs body text is only 1.62:1, so color alone can't mark them (WCAG 1.4.1). The series box,
-   the 404 page and the home page's credential line sit outside .md-content but get the same
-   in-text link style. */
-:is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials) a:not(.anchor) {
+   the 404 page, the home page's credential line and a project page's links sit outside
+   .md-content but get the same in-text link style. */
+:is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials, .project-links) a:not(.anchor) {
   color: var(--blue);
   text-decoration-line: underline;
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, var(--blue) 60%, transparent);
 }
-:is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+:is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials, .project-links) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 .menu a:hover, .breadcrumbs a:hover, .post-meta a:hover, .toc a:hover, .footer a:hover, .top-link:hover { color: var(--blue); }
 .menu .active { text-decoration-color: var(--blue); }
 .md-content :is(h1, h2, h3, h4, h5, h6) .anchor:hover { color: var(--blue); }
@@ -174,9 +174,37 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .series-entry-list { margin: 0.75rem 0 0; padding-inline-start: 1.5rem; }
 .series-entry-list li { margin: 0.25rem 0; padding-inline-start: 0.25rem; }
 .series-entry-list li::marker { color: var(--green); font-weight: 600; }
+/* Projects page (layouts/projects/list.html): a grid of cards, one per project. The grid fits as
+   many 320px-or-wider columns as the content column holds, so one project fills the row and four
+   make a 2x2. Each card is the theme's .post-entry (surface, edge, whole-card link) with the
+   project's facts inside. */
+.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--gap); }
+.project-card { margin-bottom: 0; }
+.project-meta { margin-top: 0.25rem; font-size: 0.9375rem; color: var(--secondary); }
+.project-summary { margin-top: 0.6rem; color: var(--content); }
+/* Status is state, so it is green; the label in front of it stays muted. */
+.project-status { color: var(--green); font-weight: 600; }
+.project-card .project-status { margin-top: 0.6rem; font-size: 0.9375rem; }
+.project-status-label { color: var(--secondary); font-weight: 400; }
+/* The stack: gray, square-cornered chips. Not links, so not pills (pills are tags) and not blue. */
+.project-stack { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0; padding: 0; list-style: none; }
+.project-stack li { padding: 0 8px; font-size: 0.8125rem; line-height: 24px; color: var(--secondary);
+  background: var(--code-bg); border: 1px solid var(--border); border-radius: 4px; }
+.project-card .project-stack { margin-top: 0.75rem; }
+/* A project's own page (layouts/projects/single.html): the facts block under the title, a label
+   column (the h6 eyebrow look) beside the values. Stacks to one column on phones. */
+.project-facts { margin: 1.5rem 0 2rem; padding: 1rem 1.25rem; background: var(--entry); border: 1px solid var(--border); border-radius: var(--radius); }
+.project-facts > div { display: grid; grid-template-columns: 5.5rem 1fr; gap: 0.25rem 1rem; align-items: baseline; padding: 0.35rem 0; }
+.project-facts dt { font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--secondary); }
+.project-facts dd { margin: 0; color: var(--content); }
+.project-facts dd.project-status { color: var(--green); }
+.project-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin: 0; padding: 0; list-style: none; }
+@media (max-width: 480px) {
+  .project-facts > div { grid-template-columns: 1fr; gap: 0; }
+}
 
 /* 7. User preferences */
 @media (prefers-contrast: more) {
   :root, :root[data-theme="dark"] { --secondary: var(--content); --border: var(--border-control); --border-strong: var(--border-control); }
-  :is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+  :is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials, .project-links) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 }

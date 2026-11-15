@@ -127,6 +127,24 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   the top menu links straight to all posts.
 - **Tags page:** every tag as its colored pill with its post count (the count in regular weight),
   most used first (`layouts/tags/taxonomy.html`).
+- **Projects page:** `/projects/` is a grid of cards, one per project, lowest `weight` first
+  (`layouts/projects/list.html`). The grid fits as many 320px-or-wider columns as the content
+  column holds, so one project fills the row. A card is the same `--entry` card as a post entry
+  (whole card is the link, blue edge on hover): the title, a muted "year · role · N write-ups"
+  line, the description, a status line (a muted "Status:" label, then the status in green, since
+  status is state), and the stack as gray square-cornered chips. Chips aren't links, so they're
+  neither pills (those are tags) nor blue. Each project is a page bundle,
+  `content/projects/<slug>/index.md`, with `title`, `description`, `status`, `role`, `year`,
+  `stack`, `writeups`, `links`, `featured` and `weight` in front matter (documented at the top of
+  the layout). Only list projects that exist and can be linked; no "coming soon" cards.
+- **Project pages:** a project's own page (`layouts/projects/single.html`) has a facts card
+  under the title (Status, Role, Year, Stack, Links, with h6-style eyebrow labels in a left
+  column that stacks on phones), then the Markdown body, then its write-ups in the same box posts
+  use for their series. `writeups` names a blog series exactly, and the box lists that series'
+  published posts in reading order (`layouts/_partials/project_writeups.html`), so a draft never
+  gets linked. Project bodies use the toned-down About voice with sparse accents, and their
+  headings aren't numbered. Projects stay out of the RSS feed and post numbering (`hiddenInRss`
+  cascades from `content/projects/_index.md`, and `mainSections` is posts only).
 - **404 page:** the big "404" in `--primary`, then two centered lines of body text (an
   encouraging line, then links to the home page, blog and resume), balanced across lines. Keep
   the tone warm, not snarky. Links are underlined like in-text links (`layouts/404.html`).
