@@ -158,7 +158,8 @@ capitalizeListTitles = false
   ShowRssButtonInSectionTermList = true
   ShowFullTextinRSS = true         # put whole posts in the RSS feed, not just summaries
   # ShowAllPagesInArchive = true   # include non-post pages on the Archive page
-  # ShowPageNums = true            # page numbers instead of only Prev/Next on list pages
+  # (Page numbers on list pages don't use the theme's ShowPageNums: layouts/_partials/page_nav.html
+  # always shows "Page 2 of 3" between Prev and Next.)
   # hideSummary = true             # hide post summaries on list pages
   # disableScrollToTop = true
   # disableAnchoredHeadings = true # stop headings from being clickable links

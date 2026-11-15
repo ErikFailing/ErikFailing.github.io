@@ -15,12 +15,13 @@
 </header>
 
 {{- $dateFormat := default ":date_long" site.Params.DateFormat }}
-{{- range .Pages.ByDate.Reverse }}
+{{- $paginator := .Paginate .Pages.ByDate.Reverse }}
+{{- range $paginator.Pages }}
 {{- $posts := .Pages.ByDate }}
 {{- $first := (index $posts 0).Date | time.Format $dateFormat }}
 {{- $last := (index $posts.Reverse 0).Date | time.Format $dateFormat }}
 <section class="series-entry">
-  <h2 class="series-entry-title"><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+  <h2 class="series-entry-title"><a href="{{ .RelPermalink }}">{{ partial "title_number.html" . }}{{ .LinkTitle }}</a></h2>
   {{- with .Description }}
   <p class="series-entry-description">{{ . }}</p>
   {{- end }}
@@ -35,5 +36,7 @@
   </ol>
 </section>
 {{- end }}
+
+{{- partial "page_nav.html" $paginator }}
 
 {{- end }}{{/* end main */ -}}

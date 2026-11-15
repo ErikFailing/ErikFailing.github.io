@@ -3,6 +3,7 @@ title = "Fuzzing Valve's GameNetworkingSockets"
 description = "A reproducible fuzzing lab and twenty harnesses for Valve's open-source game networking library, aimed at the code a remote attacker can actually reach."
 date = 2026-11-15T09:00:00-06:00
 draft = false
+number = 1
 status = 'Harnesses offered upstream, waiting on the maintainers'
 role = 'Solo, personal research'
 year = 2026
@@ -32,8 +33,7 @@ a harness suite I've offered to the project, and a method I'd use again on the n
 
 - It's open source, so coverage-guided fuzzing with sanitizers is possible.
 - I couldn't find it in OSS-Fuzz, and in
-  [issue #410](https://github.com/ValveSoftware/GameNetworkingSockets/issues/410) one of the
-  maintainers said he "would love to add some fuzzing to the test suite", so harnesses are
+  [issue #410](https://github.com/ValveSoftware/GameNetworkingSockets/issues/410) one of the maintainers said they "would love to add some fuzzing to the test suite", so harnesses are
   something the project actually wants.
 - Valve takes security reports for it through HackerOne, so a real finding has somewhere to go.
 

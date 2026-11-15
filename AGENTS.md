@@ -25,8 +25,10 @@ read like Erik showing someone something cool, not like marketing.
   `data/accents.yaml` (a named tool, company, person or place gets its own style; otherwise the
   vibe that fits). Mark at most one key point per section with `{=point: ...=}`. Never accent headings,
   links, code, tables or the resume. New tools get a brand-colored style (lightened to pass 7:1).
-- Each post has a permanent `number` in front matter (see "Post numbers" in STYLE.md). Create posts
-  with `hugo new content posts/...` so they get the next number, and never renumber existing posts.
+- Posts, projects and series each have a `number` in front matter, shown in front of the title
+  as "#4" (see "Title numbers" in STYLE.md). Create posts with `hugo new content posts/...` so
+  they get the next number, number a series' posts in reading order, and don't renumber posts
+  that are already published unless Erik asks.
 - Post section headings (`##`) are numbered automatically by CSS (see "Numbered sections" in
   STYLE.md). Write them without numbers.
 - Never invent experiences, results, numbers, quotes or opinions. Work from Erik's notes and leave
@@ -39,7 +41,7 @@ read like Erik showing someone something cool, not like marketing.
 - Colors, typography and components follow [STYLE.md](STYLE.md); CSS lives in
   `assets/css/extended/`. Never edit files under `themes/PaperMod/` (a Git submodule). Theme
   templates overridden in `layouts/` (`single.html`, `list.html`, `404.html`, `series/taxonomy.html`,
-  `tags/taxonomy.html`, `_partials/footer.html`, `_partials/post_meta.html`,
+  `tags/taxonomy.html`, `_partials/footer.html`,
   `_partials/index_profile.html`, `_partials/templates/schema_json.html`,
   `_partials/templates/_funcs/get-page-images.html`) must be diffed against the theme's versions
   when PaperMod updates.

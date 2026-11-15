@@ -19,7 +19,11 @@
        series' page. */ -}}
 {{- $eyebrow := "" }}
 {{- with .Params.number }}{{ $eyebrow = printf "NO. %v" . }}{{ end }}
-{{- if eq .Kind "term" }}{{ $eyebrow = upper .Data.Singular }}{{ end }}
+{{- if eq .Section "projects" }}{{ with .Params.number }}{{ $eyebrow = printf "PROJECT NO. %v" . }}{{ end }}{{ end }}
+{{- if eq .Kind "term" }}
+  {{- $eyebrow = upper .Data.Singular }}
+  {{- with .Params.number }}{{ $eyebrow = printf "%s NO. %v" $eyebrow . }}{{ end }}
+{{- end }}
 
 {{- $filters := slice
   (images.Text site.Title (dict "font" $bold "size" 34 "color" "#e9edf2" "x" 204 "y" 80))

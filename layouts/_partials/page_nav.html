@@ -1,0 +1,18 @@
+{{- /* Previous / next links under a paginated list, with "Page 2 of 3" between them so it's clear
+       where you are. Called with a paginator; prints nothing when everything fits on one page. Used by
+       layouts/list.html (posts, tags, a series' posts), layouts/projects/list.html and
+       layouts/series/taxonomy.html. The page size is [pagination] pagerSize in hugo.toml. See
+       "Pagination" in STYLE.md. */ -}}
+{{- if gt .TotalPages 1 }}
+<footer class="page-footer">
+  <nav class="pagination" aria-label="Pages">
+    {{- if .HasPrev }}
+    <a class="prev" href="{{ .Prev.URL | absURL }}">«&nbsp;{{ i18n "prev_page" }}</a>
+    {{- end }}
+    <span class="pagination-current" aria-current="page">Page {{ .PageNumber }} of {{ .TotalPages }}</span>
+    {{- if .HasNext }}
+    <a class="next" href="{{ .Next.URL | absURL }}">{{ i18n "next_page" }}&nbsp;»</a>
+    {{- end }}
+  </nav>
+</footer>
+{{- end }}

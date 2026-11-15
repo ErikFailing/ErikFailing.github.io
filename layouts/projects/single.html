@@ -9,7 +9,7 @@
 <article class="post-single project-single">
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
-    <h1 class="post-title">{{ .Title }}</h1>
+    <h1 class="post-title">{{ partial "title_number.html" . }}{{ .Title }}</h1>
     {{- with .Description }}
     <div class="post-description">
       {{ . }}

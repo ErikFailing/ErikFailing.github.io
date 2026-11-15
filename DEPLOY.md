@@ -131,7 +131,7 @@ Cloudflare's free plan) or a different host, which wasn't worth the rework or ri
 
 - After updating PaperMod, diff `themes/PaperMod/layouts/_partials/footer.html` against the
   override and `site.js`, and `themes/PaperMod/layouts/single.html`, `list.html`, `404.html`,
-  `_partials/post_meta.html`, `_partials/index_profile.html`,
+  `_partials/index_profile.html`,
   `_partials/templates/schema_json.html` and `_partials/templates/_funcs/get-page-images.html`
   against the overrides in `layouts/` (numbered headings, tags, post numbers, series order, 404
   page, blog tabs, home page tagline, photo and credential line, the "View source" wrapper, the

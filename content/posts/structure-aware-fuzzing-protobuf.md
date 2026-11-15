@@ -1,8 +1,8 @@
 +++
 title = 'Structure-Aware Fuzzing With libprotobuf-mutator: Gated vs Ungated'
-date = 2026-11-15T10:50:00-06:00
+date = 2026-11-15T10:40:00-06:00
 draft = false
-number = 9
+number = 8
 description = 'Mutating real protobuf messages instead of raw bytes barely helped on one GameNetworkingSockets surface and helped a lot on another. The difference was what stood in front of the parser.'
 series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'libprotobuf-mutator', 'Security']
@@ -84,7 +84,9 @@ So the rule I'd give is:
 
 ## Getting Through The Gate
 
-For the handshake, the gate that matters is a signature. The session crypto info is signed, and
+I came back to the handshake a little later, after the overnight runs in
+[the next post](/posts/overnight-fuzzing-campaigns/) showed the existing harnesses had stopped
+finding new code. The gate that matters there is a signature. The session crypto info is signed, and
 the signature is checked against the public key inside the certificate. The open-source build has
 no certificate authority behind it, so by default it accepts a certificate without a CA signature.
 That makes sense (Steam's authentication service isn't part of the open-source library), and it
@@ -95,9 +97,9 @@ So the harness holds {=arcane: its own ed25519 key=}. It swaps the public half i
 certificate, lets LPM mutate the crypto info (the key-exchange key, the cipher list), signs the
 result with the private half the same way GNS does, and runs the handshake. The signature
 verifies, and execution finally reaches the key exchange and cipher negotiation with
-attacker-shaped fields. It's the same idea as forging the STUN integrity check in
-[the threat model post](/posts/threat-model-per-harness/): {=point: when the gate is a check you can
-honestly satisfy, satisfy it in the harness=}.
+attacker-shaped fields. It's the same idea I used on the STUN parser, where the harness forges the
+integrity check (that one is in [the threat model post](/posts/threat-model-per-harness/)):
+{=point: when the gate is a check you can honestly satisfy, satisfy it in the harness=}.
 
 One more gate hid behind that one. The handshake rejects crypto info whose protocol version is
 below a minimum, and {=static: the mutator is free to change or drop that field=}. The harness
@@ -130,3 +132,7 @@ I think of it as the same trade either way. A raw-byte harness finds the framing
 where CVE-2020-6016 and CVE-2020-6017 were, so I kept those harnesses. A structure-aware one
 spends its time on what the code does with valid-looking fields. {=point: They don't replace each
 other=}, which is why the SNP layer ended up with four harnesses and not one.
+
+With the stats, P2P and real-crypto harnesses added, the count was up to eleven, and every run
+so far had been short. Time to leave them running:
+[the next post](/posts/overnight-fuzzing-campaigns/).

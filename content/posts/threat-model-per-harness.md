@@ -1,17 +1,18 @@
 +++
 title = 'Writing A Threat Model For Each Fuzzing Harness'
-date = 2026-11-15T10:30:00-06:00
+date = 2026-11-15T11:30:00-06:00
 draft = false
-number = 7
+number = 13
 description = 'Why every one of my GameNetworkingSockets harnesses comes with a written threat model, what goes in one, and two examples of the gaps it forces you to admit.'
 series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'Threat Modeling', 'Security']
 +++
 
-A fuzzing harness is always narrower than the real attack surface, and the dangerous part is
-that {=ghostly: nothing tells you where=}. So every one of the twenty GameNetworkingSockets
-harnesses has a short {=ward: threat model=} written next to it: who can really send these bytes,
-what the harness drives, and where it cuts corners. This post is the template and two examples.
+A fuzzing harness is always narrower than the real attack surface, and the dangerous part is that
+{=ghostly: nothing tells you where=}. So every one of the twenty GameNetworkingSockets harnesses
+has a short {=ward: threat model=} written next to it: who can really send these bytes, what the
+harness drives, and where it cuts corners. This post is the template, two examples, and what
+turned up when I went back and finished the last five.
 
 ## Why Bother
 
@@ -118,5 +119,5 @@ need a coverage run to confirm it, but fixing those two harnesses is now at the 
 I think that's the best argument for the whole exercise: having to name, function by function,
 what a harness drives is what caught it.
 
-[The next post](/posts/fuzzing-stateful-code/) is about a bigger kind of simplification:
-harnesses that set up state themselves before the fuzzer gets a turn.
+That was the last piece of the work itself. What it all added up to is
+[the final post](/posts/gns-fuzzing-results/).

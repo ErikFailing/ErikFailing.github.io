@@ -76,6 +76,12 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 .md-content > :first-child { margin-top: 0; }
 .md-content li { margin-top: 0.4em; }
 .md-content li::marker { color: var(--green); }
+/* A page's number in front of its title ("#4", layouts/_partials/title_number.html), on posts,
+   projects and series, in headings and on cards. Green like the section numbers: an ordinal label,
+   not part of the name. */
+.title-number { color: var(--green); font-weight: 600; font-variant-numeric: tabular-nums; margin-inline-end: 0.1em; white-space: nowrap; }
+/* "Part 3 of 11 in the series ..." under a post's tags (layouts/single.html). */
+.series-part { margin-top: 0.6rem; font-size: 0.9375rem; color: var(--secondary); }
 .footer { font-size: 0.875rem; }
 .footer .build-commit { font-family: var(--font-mono); font-size: 0.95em; }
 
@@ -83,14 +89,14 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
    blue vs body text is only 1.62:1, so color alone can't mark them (WCAG 1.4.1). The series box,
    the 404 page, the home page's credential line and a project page's links sit outside
    .md-content but get the same in-text link style. */
-:is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials, .project-links) a:not(.anchor) {
+:is(.md-content, .series-box, .series-entry-list, .series-part, .not-found-text, .profile-credentials, .project-links) a:not(.anchor) {
   color: var(--blue);
   text-decoration-line: underline;
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, var(--blue) 60%, transparent);
 }
-:is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials, .project-links) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+:is(.md-content, .series-box, .series-entry-list, .series-part, .not-found-text, .profile-credentials, .project-links) a:not(.anchor):hover { color: var(--blue-hover); text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 .menu a:hover, .breadcrumbs a:hover, .post-meta a:hover, .toc a:hover, .footer a:hover, .top-link:hover { color: var(--blue); }
 .menu .active { text-decoration-color: var(--blue); }
 .md-content :is(h1, h2, h3, h4, h5, h6) .anchor:hover { color: var(--blue); }
@@ -111,6 +117,13 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 /* 5. Lists, cards, navigation, tags. Green means "category, state or emphasis"; tags are pills so
    they never read as links. */
 .post-entry:hover, .post-entry:focus-within { border-color: var(--blue-line); }
+/* Previous / next under a paginated list, with "Page 2 of 3" centered between them
+   (layouts/_partials/page_nav.html). A three-column grid keeps the label centered whether one
+   button shows or both. */
+.pagination { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+.pagination .prev { grid-column: 1; justify-self: start; }
+.pagination .next { grid-column: 3; justify-self: end; margin-inline-start: 0; }
+.pagination-current { grid-column: 2; font-size: 0.9375rem; color: var(--secondary); font-variant-numeric: tabular-nums; }
 .pagination a { background: var(--blue); color: var(--on-accent); font-weight: 600; }
 .pagination a:hover { background: var(--blue-hover); }
 .paginav a:hover { background: var(--tertiary); }
@@ -204,5 +217,5 @@ code, kbd, samp, pre { font-family: var(--font-mono); }
 /* 7. User preferences */
 @media (prefers-contrast: more) {
   :root, :root[data-theme="dark"] { --secondary: var(--content); --border: var(--border-control); --border-strong: var(--border-control); }
-  :is(.md-content, .series-box, .series-entry-list, .not-found-text, .profile-credentials, .project-links) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
+  :is(.md-content, .series-box, .series-entry-list, .series-part, .not-found-text, .profile-credentials, .project-links) a:not(.anchor) { text-decoration-color: currentColor; text-decoration-thickness: 0.12em; }
 }

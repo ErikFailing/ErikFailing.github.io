@@ -1,8 +1,8 @@
 +++
 title = 'Fuzzing Stateful Code: Prime The State, Then Attack It'
-date = 2026-11-15T10:40:00-06:00
+date = 2026-11-15T11:10:00-06:00
 draft = false
-number = 8
+number = 11
 description = 'A lot of protocol code only runs once a connection already holds state. How my GameNetworkingSockets harnesses build that state first, and keep crashes reproducible anyway.'
 series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'Security']
@@ -14,34 +14,19 @@ that feeds bytes to a fresh connection never gets there. The pattern that reache
 GameNetworkingSockets was to {=point: prime real state first, then feed it hostile input=}, and I
 think it's the most reusable thing I took from the project.
 
-## The Rule Everything Else Follows
+## Where The Earlier Harnesses Stopped
 
-Before the pattern, one rule: every input has to be self-contained. My stateful harnesses stand
-up a real in-process connection over loopback, and they {=ward: rebuild it for every single input=}.
-
-That's expensive. The stateless parsers run at 40,000 to 100,000 executions a second, and the SNP
-connection harnesses run at about 500. But an earlier version of my multi-packet harness kept one
-connection alive across inputs, and its crashes depended on everything the campaign had sent
-before. They didn't reproduce from the saved file, and {=point: a crash I can't reproduce is a
-crash I can't report=}. So the rebuild stays.
-
-Getting a rebuild loop to work at all took some digging in GNS:
-
-- **No background thread.** GNS normally services connections on its own thread. It exports a
-  manual-poll mode (declared in no public header) that stops that thread from ever starting, so
-  {=ward: the harness decides exactly when the library runs=}.
-- **Force-destroyed connections.** A normal close leaves the connection lingering on wall-clock
-  timers that never advance in a tight fuzzing loop, so every input leaked a UDP socket and the
-  run died with {=glitch: "too many open files"=}. The harness runs the same destroy sequence
-  GNS's service thread runs, and memory stays flat.
-- **Real entry points.** Inputs go in as whole UDP packets through the real receive function, not
-  by calling the decoder directly. That way every bit of state is initialized the way a real
-  packet would leave it.
+The connection harnesses from [earlier in the series](/posts/first-fuzzing-harnesses/) all work
+the same way: stand up a real in-process connection, {=ward: rebuild it for every single input=} so
+a crash reproduces from one file, and feed the fuzzer's bytes in as packets. That reaches
+everything a *fresh* connection does with incoming data. It can't reach code that depends on
+what the connection has already done.
 
 ## The Code That Never Ran
 
-Even with three harnesses on the SNP reliability layer, a coverage report showed {=crimson: 23 of
-its 62 functions had never run=}. The biggest reachable chunk was the sender's side of
+A third overnight campaign, aimed only at the SNP harnesses, came back as flat as the first. A
+coverage report showed why: even with three harnesses on that layer, {=crimson: 23 of its 62
+functions had never run=}. The biggest reachable chunk was the sender's side of
 acknowledgments. When a peer acks or nacks packets you sent, GNS walks a map of in-flight packets,
 erases the acked ones, releases their data, and queues the nacked ones for retransmit. That's
 {=ghostly: iterator-and-erase code=} driven by fields the peer chooses, which is exactly the kind
@@ -141,3 +126,6 @@ The trade-offs are worth being plain about:
 Overall, I think {=point: the recipe carries to any stateful target=}: find the code that only
 runs with state, build that state through the real API, freeze it so only the fuzzer changes it,
 check at startup that the priming worked, and rebuild it for every input.
+
+Those 439 fake crashes weren't the only time I fooled myself. All three are in
+[the next post](/posts/my-early-crashes-were-my-own-harness/).

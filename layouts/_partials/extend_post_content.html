@@ -3,7 +3,7 @@
        post in that series in publishing order, the current one marked. See "Series" in STYLE.md. */ -}}
 {{- range .GetTerms "series" }}
 <aside class="series-box" id="series" aria-label="Series">
-  <p class="series-label">This post is part of a series: <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></p>
+  <p class="series-label">This post is part of a series: <a href="{{ .RelPermalink }}">{{ partial "title_number.html" . }}{{ .LinkTitle }}</a></p>
   <ol>
     {{- range .Pages.ByDate }}
     {{- if eq .RelPermalink $.RelPermalink }}

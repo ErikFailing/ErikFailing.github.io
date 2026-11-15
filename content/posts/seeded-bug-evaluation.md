@@ -8,11 +8,10 @@ series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'Security']
 +++
 
-My GameNetworkingSockets fuzzing mostly found nothing, and "nothing" has two very different
-explanations: the code is solid, or {=glitch: my harnesses are broken=}. To tell them apart, I took
-two known, already-fixed, public bugs, put each one back into the pinned source, and checked
-that the harness meant to catch it actually does. Both got caught. This post is how that check
-works.
+A night of fuzzing that turns up nothing new has two very different explanations: the code is
+solid, or {=glitch: my harnesses are broken=}. To tell them apart, I took two known,
+already-fixed, public bugs, put each one back into the pinned source, and checked that the harness
+meant to catch it actually does. Both got caught. This post is how that check works.
 
 ## The Problem With A Clean Run
 
@@ -136,3 +135,6 @@ It's a small sample though, and I don't want to oversell it:
 One practical gotcha if you try this on Windows: make the revert patch inside the Linux
 container, against the pristine source. A patch made from a Windows checkout can pick up CRLF
 line endings and then fail to apply.
+
+With some evidence that a clean run means something, the question went back to what the
+harnesses still weren't reaching. That's [the next post](/posts/fuzzing-stateful-code/).

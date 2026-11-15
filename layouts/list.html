@@ -8,7 +8,11 @@
           (layouts/_partials/blog_nav.html).
        4. Projects have tags too, so a tag's page can list a project next to posts. Its entry shows
           the project's description and a "Project · year · role" line instead of a post's
-          summary and date line. */ -}}
+          summary and date line.
+       5. Headings carry the page's number ("#4", layouts/_partials/title_number.html): each
+          entry's title, and a series' own page title.
+       6. The previous / next links are layouts/_partials/page_nav.html, which shows
+          "Page 2 of 3" between them (the theme's ShowPageNums option is no longer used). */ -}}
 {{- define "main" }}
 
 {{- if (and site.Params.profileMode.enabled .IsHome) }}
@@ -24,7 +28,7 @@
 <header class="page-header">
   {{- partial "breadcrumbs.html" . }}
   <h1>
-    {{ .Title }}
+    {{ partial "title_number.html" . }}{{ .Title }}
     {{- if and (or (eq .Kind `term`) (eq .Kind `section`)) (.Param "ShowRssButtonInSectionTermList") }}
     {{- with .OutputFormats.Get "rss" }}
     <a href="{{ .RelPermalink }}" title="RSS" aria-label="RSS">
@@ -90,7 +94,7 @@
   {{- partial "cover.html" (dict "cxt" . "IsSingle" false "isHidden" $isHidden) }}
   <header class="entry-header">
     <h2 class="entry-hint-parent">
-      {{- .Title }}
+      <span>{{ partial "title_number.html" . }}{{ .Title }}</span>
       {{- if .Draft }}
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
@@ -122,28 +126,7 @@
 </article>
 {{- end }}
 
-{{- if gt $paginator.TotalPages 1 }}
-<footer class="page-footer">
-  <nav class="pagination">
-    {{- if $paginator.HasPrev }}
-    <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">
-      «&nbsp;{{ i18n "prev_page" }}&nbsp;
-      {{- if (.Param "ShowPageNums") }}
-      {{- sub $paginator.PageNumber 1 }}/{{ $paginator.TotalPages }}
-      {{- end }}
-    </a>
-    {{- end }}
-    {{- if $paginator.HasNext }}
-    <a class="next" href="{{ $paginator.Next.URL | absURL }}">
-      {{- i18n "next_page" }}&nbsp;
-      {{- if (.Param "ShowPageNums") }}
-      {{- add 1 $paginator.PageNumber }}/{{ $paginator.TotalPages }}
-      {{- end }}&nbsp;»
-    </a>
-    {{- end }}
-  </nav>
-</footer>
-{{- end }}
+{{- partial "page_nav.html" $paginator }}
 
 {{- end }}{{/* end profileMode */}}
 

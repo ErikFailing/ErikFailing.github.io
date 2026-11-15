@@ -10,8 +10,8 @@ tags = ['Fuzzing', 'Docker', 'aflplusplus', 'libFuzzer', 'Sanitizers', 'Security
 
 The lab behind the GameNetworkingSockets fuzzing is my Windows 11 desktop running WSL2, with
 {=docker: Docker=} inside WSL2 and one toolchain image where everything that can change a result
-is pinned. This post covers that setup, the build flags, the two engines and three oracles, and
-two build details that would have quietly hidden crashes if I'd missed them.
+is pinned. This is the first real step in the series: that setup, the build flags, and two build
+details that would have quietly hidden crashes if I'd missed them.
 
 ## The Goal
 
@@ -108,43 +108,24 @@ exactly two entries, each one a deliberate pattern in GNS like a two's-complemen
 rebuilding a truncated packet number. I'd rather suppress by file and function than turn a check
 off everywhere, because {=ward: every suppression is a place a real bug can hide=}.
 
-## Two Engines
+## What Came Later
 
-Every harness is a plain `LLVMFuzzerTestOneInput`, so {=static: the same source runs under both
-engines=}:
+On day one the lab was just this: one image, one set of flags, and {=libfuzzer: libFuzzer=},
+because it's the simplest engine to run and it prints per-input progress, so I can tell in a
+minute whether a new harness is reaching anything. Everything else got added when the project
+needed it, and each piece shows up later in the series:
 
-- **libFuzzer** for development. It's the simplest to run, and it prints per-input progress, so I
-  can tell in a minute whether a new harness is reaching anything.
-- **AFL++** for long campaigns, run in parallel the way its docs recommend: one main instance,
-  the rest secondaries, all syncing through one output directory.
+- **A coverage build,** with `-fprofile-instr-generate -fcoverage-mapping` and no sanitizers. A
+  sanitizer build can't measure coverage, so it's a separate build that tells me {=point: where
+  the fuzzers have never been=}. That's [post four](/posts/low-coverage-is-not-opportunity/).
+- **AFL++ with CmpLog,** for long parallel runs once the harnesses were stable. That's [post
+  six](/posts/overnight-fuzzing-campaigns/).
+- **An assert oracle,** which turns GNS's own internal checks into crashes, for {=ghostly: logic
+  bugs that corrupt no memory=}. That arrives with [the first
+  harnesses](/posts/first-fuzzing-harnesses/).
+- **MemorySanitizer,** for reads of uninitialized memory. It needs its own image where libc++,
+  protobuf and OpenSSL are all MSan-instrumented, and getting there involved a false alarm that's
+  in [post nine](/posts/my-early-crashes-were-my-own-harness/).
 
-```bash
-afl-fuzz -i seeds -o afl-output -M main -c ./harness.cmplog -l 2AT -- ./harness
-afl-fuzz -i seeds -o afl-output -S sec1 -p explore -- ./harness
-afl-fuzz -i seeds -o afl-output -S sec2 -p exploit -- ./harness
-```
-
-The `-c` binary is a second build of the harness with {=static: CmpLog=}, which watches the
-operands of comparisons and feeds them back into the input. That's how the fuzzer {=arcane: gets
-past magic values=} (a marker byte, a length, the STUN magic cookie) without brute forcing them.
-The main and every third secondary run CmpLog, and the others rotate through AFL++'s power
-schedules so the instances don't all do the same work.
-
-## Three Oracles
-
-An oracle is whatever decides a run found a bug, and one isn't enough:
-
-- **ASan and UBSan** are the default: out-of-bounds access, use-after-free, and undefined behavior
-  like signed overflow.
-- **The assert oracle.** GNS has debug asserts that log and carry on. With an environment variable
-  set, my harnesses turn those into crashes. That catches {=ghostly: logic bugs that corrupt no
-  memory=}, and it's noisier, since some asserts fire on malformed input by design.
-- **MemorySanitizer,** for reads of uninitialized memory. MSan {=glitch: false-positives on any
-  code it didn't instrument=}, so this is a separate image where libc++, protobuf and OpenSSL are
-  all MSan-instrumented. It took a few tries (and one false alarm) to get there, which is in [the
-  triage post](/posts/my-early-crashes-were-my-own-harness/).
-
-Coverage is a fourth build, with `-fprofile-instr-generate -fcoverage-mapping` and no sanitizers.
-A sanitizer build can't measure coverage, and I think it's worth keeping the two apart: one
-build finds bugs, the other tells me {=point: where the fuzzers have never been=}. What I did with
-that map is [the next post](/posts/low-coverage-is-not-opportunity/).
+With the lab working, the next step was something to run in it:
+[the first harnesses](/posts/first-fuzzing-harnesses/).

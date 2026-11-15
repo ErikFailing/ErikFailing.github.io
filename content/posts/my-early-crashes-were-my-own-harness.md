@@ -1,8 +1,8 @@
 +++
 title = 'Most Of My Early Crashes Were My Own Harness'
-date = 2026-11-15T11:10:00-06:00
+date = 2026-11-15T11:20:00-06:00
 draft = false
-number = 11
+number = 12
 description = 'Three fuzzing "findings" in GameNetworkingSockets that turned out to be my own harness or build, how I caught each one, and the checks I run before believing a crash.'
 series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'Triage', 'CASR', 'Sanitizers', 'Security']
@@ -24,9 +24,11 @@ you triage early on is yourself.
 
 ## False Positive 1: Uninitialized Memory On The Wire
 
-This is the one that got me. MemorySanitizer (MSan) reported that GNS was sending {=glitch:
-uninitialized memory in a handshake packet=}: 128 of the 217 bytes in a connect request, flagged
-right at the `sendto` call. It looked like a {=crimson: textbook information leak=}, and
+With coverage flat, the other way to find something new is a new oracle. MemorySanitizer (MSan)
+catches reads of uninitialized memory, which ASan and UBSan can't see, so I added a third build of
+the library with it. Its first real report is the one that got me. It said GNS was sending
+{=glitch: uninitialized memory in a handshake packet=}: 128 of the 217 bytes in a connect request,
+flagged right at the `sendto` call. It looked like a {=crimson: textbook information leak=}, and
 everything I checked seemed to agree:
 
 - It was deterministic.
@@ -96,24 +98,16 @@ that same clock.
 
 ## The Tooling Side
 
-A few things in the triage setup exist specifically to keep noise from looking like signal:
+The triage setup from [the overnight campaigns post](/posts/overnight-fuzzing-campaigns/)
+(deduplicating with CASR, reporting the real crash site) does a lot of this work. Two more
+habits exist specifically to keep noise from looking like signal:
 
-- **Deduplicate first.** [CASR](https://github.com/ispras/casr) replays every crash file and
-  clusters them by stack, so 470 files become "one distinct crash" before I read anything.
-- **Report the real crash site.** For an assert, the crashing frame is my own oracle hook. The
-  triage script walks up the stack to the first frame inside GNS and reports that.
-- **Don't guess at what doesn't reproduce.** Each crash is replayed once in a fresh process. If it
-  only happened because of state built up over thousands of earlier inputs, it's reported as "not
-  reproduced", not counted as a finding.
-- **Whitelist by location.** Some GNS asserts fire on malformed input by design. Once I've triaged
-  one as benign, it goes on a list {=iron: keyed by file and line, not by message text=}, so a
-  different assert with similar wording can't hide behind it.
-
-That third point also decided which engine I use for what. AFL++ keeps one process alive across
-many inputs, and GNS has a process-wide clock that the per-input connection rebuild doesn't
-reset. So an AFL++ assert crash can depend on accumulated clock state and fail to reproduce
-alone. I use AFL++ for the memory-safety oracle, where crashes come from the input's content,
-and {=static: libFuzzer when an assert crash has to reproduce=}.
+- **Don't guess at what doesn't reproduce.** Each crash is replayed once in a fresh process. If
+  it only happened because of state built up over thousands of earlier inputs, it's reported as
+  "not reproduced", not counted as a finding.
+- **Whitelist by location.** Some GNS asserts fire on malformed input by design. Once I've
+  triaged one as benign, it goes on a list {=iron: keyed by file and line, not by message text=}, so
+  a different assert with similar wording can't hide behind it.
 
 ## What I Check Now
 
@@ -130,3 +124,6 @@ Overall, I think the checklist from these three is short:
 
 I think catching these three mattered more than anything the fuzzers found. I'd rather report
 {=point: one thing I fully understand=} than five things I hope are real.
+
+The last piece of work was going back over every harness and writing down what it actually
+reaches. That's [the next post](/posts/threat-model-per-harness/).

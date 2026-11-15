@@ -7,7 +7,9 @@
        3. The "View source" link (edit_post.html) is wrapped in .post-edit-link, so the print
           stylesheet (zz-print.css) can hide it together with its "|" separator.
        4. A page with showLastmod = true (the resume) gets a "Last updated <date>" line under its
-          description, from the page's last Git commit (enableGitInfo). */ -}}
+          description, from the page's last Git commit (enableGitInfo).
+       5. The title starts with the post's number ("#4", layouts/_partials/title_number.html).
+       6. A post in a series gets a "Part 3 of 11 in the series ..." line under its tags. */ -}}
 {{- define "main" }}
 
 {{- $numbered := eq .Section "posts" }}
@@ -16,7 +18,7 @@
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
     <h1 class="post-title entry-hint-parent">
-      {{ .Title }}
+      <span>{{ partial "title_number.html" . }}{{ .Title }}</span>
       {{- if .Draft }}
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
@@ -45,6 +47,11 @@
     </time></div>
     {{- end }}
     {{- partial "post_tags.html" (dict "page" . "class" "post-tags-top") }}
+    {{- range .GetTerms "series" }}
+    {{- $part := 0 }}
+    {{- range $i, $p := .Pages.ByDate }}{{ if eq $p.RelPermalink $.RelPermalink }}{{ $part = add $i 1 }}{{ end }}{{ end }}
+    <p class="series-part">Part {{ $part }} of {{ len .Pages }} in the series <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></p>
+    {{- end }}
   </header>
   {{- $isHidden := (.Param "cover.hiddenInSingle") | default (.Param "cover.hidden") | default false }}
   {{- partial "cover.html" (dict "cxt" . "IsSingle" true "isHidden" $isHidden) }}

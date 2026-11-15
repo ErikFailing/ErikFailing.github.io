@@ -1,17 +1,17 @@
 +++
 title = "Low Coverage Isn't The Same As Opportunity"
-date = 2026-11-15T10:20:00-06:00
+date = 2026-11-15T10:30:00-06:00
 draft = false
-number = 6
+number = 7
 description = 'How I used coverage reports to pick fuzzing targets in GameNetworkingSockets, and why the biggest gaps were often the wrong ones to chase.'
 series = ['Fuzzing GameNetworkingSockets']
 tags = ['Fuzzing', 'Security']
 +++
 
-I picked what to fuzz next in GameNetworkingSockets by measuring coverage, and it took me a few
-harnesses to learn that {=point: a big coverage gap isn't automatically a target=}. A lot of
-uncovered code is code no attacker can reach. This post is how the coverage loop worked, the
-harnesses that barely moved the number, and the filter I ended up applying to every gap.
+With the first five harnesses running, I picked what to build next by measuring coverage, and it
+took me a few harnesses to learn that {=point: a big coverage gap isn't automatically a target=}.
+A lot of uncovered code is code no attacker can reach. This post is how the coverage loop worked,
+the harnesses that barely moved the number, and the filter I ended up applying to every gap.
 
 ## The Loop
 
@@ -78,6 +78,10 @@ So now every gap gets sorted into one of three buckets before I spend time on it
 - **Blocked:** reachable in theory, but gated by something I can't forge from outside (the
   hardcoded root key), or not compiled into this build at all (the WebRTC path).
 
+The filter cuts both ways. I could push the coverage number up by fuzzing key-file parsers, and
+it would look great on a chart lol. It just wouldn't find {=crimson: anything an attacker could
+use=}.
+
 ## The Gaps That Were Real
 
 Reading gaps that way, the harnesses that came right after the certificate one each moved the
@@ -90,28 +94,8 @@ number a lot more:
 | Real-crypto data path | AES-256-GCM decrypt, which the other harnesses skip | up to 37.6% |
 
 The stats harness is the most useful comparison, because it's the mirror image of the
-certificate one.
-Same technique (mutating a real protobuf), but this message has {=point: no gate in front of it=},
-so every mutated field reaches the code that consumes it. Why that difference matters so much
-is in [the structure-aware post](/posts/structure-aware-fuzzing-protobuf/).
-
-The SNP reliability layer had a subtler gap. Its file was around half covered, with 23 of 62
-functions never reached, even after days of fuzzing. The biggest reachable piece of what was
-missing was the sender's side: what happens when a peer acknowledges packets you sent. My
-harnesses {=ghostly: only ever received=}, so that code had nothing to do. Getting there took a
-different kind of harness, which is [its own post](/posts/fuzzing-stateful-code/).
-
-## Knowing When To Stop
-
-At eleven harnesses I ran everything overnight under both engines, and total coverage {=static: sat
-flat at 37.6% all night=}. I think that's the clearest signal fuzzing gives you: more hours on
-the same harnesses weren't going to find new code, so {=point: the next gains had to come from new
-harnesses=}. Nine more took it to 43.71%.
-
-And then it stops being worth it. What's left uncovered now is almost all in the local and
-blocked buckets, so I think the reachable surface is covered better than 43.71% suggests. I
-could push the number up by fuzzing key-file parsers, and it would look great on a chart lol.
-It just wouldn't find {=crimson: anything an attacker could use=}.
+certificate one. Same technique (mutating a real protobuf), but this message has {=point: no gate
+in front of it=}, so every mutated field reaches the code that consumes it.
 
 ## What I'd Take From It
 
@@ -119,8 +103,6 @@ It just wouldn't find {=crimson: anything an attacker could use=}.
   nothing. I only know that because I checked.
 - **Read the gap before building for it.** The size of a gap says nothing about who can reach
   it.
-- **A flat line is information.** When coverage stops growing overnight, the answer is a new
-  harness or a new oracle, not more hours.
 
-Deciding what's reachable is a judgment call, so I wrote mine down for every harness. That's
-[the next post](/posts/threat-model-per-harness/).
+The certificate harness and the stats harness are two halves of one lesson about protobuf,
+and that's [the next post](/posts/structure-aware-fuzzing-protobuf/).

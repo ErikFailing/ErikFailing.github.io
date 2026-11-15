@@ -8,6 +8,7 @@
                               the tag's page (where the project is listed next to the posts)
          writeups             the exact name of the blog series about it; the card counts its posts
          links                [[links]] name + url, shown on the project's own page
+         number               shown in front of the title as "#1" (set by hand; projects have their own count)
          featured, weight     for the home page (see TODO.md) and the order here
        The project's own page is layouts/projects/single.html. See "Projects" in STYLE.md. */ -}}
 {{- define "main" }}
@@ -26,11 +27,12 @@
 {{- end }}
 
 <div class="project-grid">
-  {{- range .RegularPages.ByWeight }}
+  {{- $paginator := .Paginate .RegularPages.ByWeight }}
+  {{- range $paginator.Pages }}
   {{- $writeups := partial "project_writeups.html" . }}
   <article class="post-entry project-card">
     <header class="entry-header">
-      <h2>{{ .Title }}</h2>
+      <h2>{{ partial "title_number.html" . }}{{ .Title }}</h2>
     </header>
     {{- $meta := slice }}
     {{- with .Params.year }}{{ $meta = $meta | append (string .) }}{{ end }}
@@ -50,5 +52,7 @@
   </article>
   {{- end }}
 </div>
+
+{{- partial "page_nav.html" $paginator }}
 
 {{- end }}{{/* end main */ -}}

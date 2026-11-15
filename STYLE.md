@@ -192,10 +192,24 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 - **Blockquotes:** 3px green bar, upright body text.
 - **Tables:** horizontal rules only, surface-2 header row, scroll sideways on phones.
 - **Images:** 1px `--border` so dark screenshots don't blend into the page.
-- **Post numbers:** each post has a permanent number (`number = 3` in front matter), shown first
-  in the muted meta line as "No. 3" on the post and on list cards. Numbers follow publishing order
-  and never change once assigned; `hugo new content posts/...` fills in the next one, and the
-  build fails if two posts share a number. Numbers aren't in URLs or titles.
+- **Title numbers:** posts, projects and series each have a number (`number = 4` in front
+  matter; a series' is in `content/series/<name>/_index.md`), shown in front of the title as
+  "#4" in green: on the page's own heading, on its card in every list, and in the series box's
+  label (`layouts/_partials/title_number.html`). Green and tabular like the section numbers,
+  because it's an ordinal label, not part of the name; "#" keeps it from reading as a section
+  number. The three kinds count separately (post #4, project #1, series #2). Numbers are set by
+  hand: `hugo new content posts/...` suggests the next post number, and the build fails if two
+  pages of the same kind share one. Posts in a series are numbered in reading order. Once a
+  post has been out for a while its number stays put; renumber only when I ask. Numbers aren't
+  in URLs, browser tab titles or link previews' titles; social cards show them as the small green
+  label ("NO. 4", "PROJECT NO. 1", "SERIES NO. 2").
+- **Series part line:** a post in a series shows "Part 3 of 11 in the series <name>" under its
+  tags, in muted text with the series name as a link (`layouts/single.html`). Parts follow the
+  posts' dates, the same order as the series box, and drafts don't count.
+- **Pagination:** a list longer than one page (`[pagination] pagerSize` in `hugo.toml`, 10) ends
+  with the blue Prev and Next buttons and "Page 2 of 3" in muted text centered between them
+  (`layouts/_partials/page_nav.html`), on the Blog, tag and series pages, the Series page and
+  the Projects page. One page of entries shows nothing.
 - **Numbered sections (posts only):** each `##` section heading is numbered "1.", "2.", ... with
   the number in green, and the table of contents shows the same numbers. It's generated with CSS
   counters, so headings are written plainly in Markdown, never numbered by hand. Pages (About,
