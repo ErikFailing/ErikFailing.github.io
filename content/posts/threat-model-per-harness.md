@@ -31,10 +31,10 @@ publish with the harness.
 ## Example: The STUN Parser
 
 STUN messages carry a CRC and an HMAC, and the receiver only runs the address and username
-decoders on a message that verifies. A fuzzer will basically never guess a valid HMAC, so my
-first version only exercised the code in front of the check. The current one
-{=arcane: forges both values=} with a key it also hands to the parser. Edges covered went from
-about 90 to about 160.
+decoders on a message that verifies. A fuzzer will basically never guess a valid HMAC, so
+without help it only exercises the code in front of the check. The harness
+{=arcane: forges both values=} with a key it also hands to the parser, which took the edges
+covered from about 90 to about 160.
 
 That's a real trade, and the threat model says what it means for a crash:
 

@@ -102,7 +102,7 @@ The library and harnesses compile with one set of flags:
 Two details here matter more than they look, because the obvious setup silently hides crashes:
 
 1) **`-fno-sanitize-recover=undefined`.** Without it, UBSan prints its report and keeps going, so
-   the fuzzer {=glitch: never sees a crash=}. My first plan didn't have it.
+   the fuzzer {=glitch: never sees a crash=}.
 2) **Overriding the CMake build type.** GNS's CMake defaults to `RelWithDebInfo`, which appends
    `-DNDEBUG` after my flags and strips the asserts. Those asserts turn out to be a whole oracle
    later, and `-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=-O1` keeps them.

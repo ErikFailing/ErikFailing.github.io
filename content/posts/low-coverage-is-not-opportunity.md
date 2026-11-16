@@ -41,9 +41,8 @@ points=}. Two reasons:
   usually fails, so the fuzzer reached the rejection paths and not much else.
 
 The fix for the second one is [libprotobuf-mutator](https://github.com/google/libprotobuf-mutator)
-(LPM). The harness declares a message type, and LPM hands it {=protobuf: a parsed, valid message with
-mutated fields=}:
-
+(LPM). The harness declares a message type, and LPM hands it {=protobuf: a parsed, valid message
+with mutated fields=}:
 ```cpp
 // LPM mutates and hands us a structurally valid (field-mutated) message.
 DEFINE_BINARY_PROTO_FUZZER( const CMsgSteamSockets_UDP_Stats &msgStats )
@@ -65,10 +64,9 @@ formats, plus key generation. That's code for {=ward: the application's own keys
 its own config. The part an attacker reaches is a length check the real handshake already
 covered.
 
-Later, the certificate chain validator was the same story. I built a harness with its own
-certificate authority, and its startup self-check failed: this build hardcodes Valve's root key
-and refuses any other. That's a dead end for my harness, and also why the code isn't much of a
-target. {=crimson: An attacker has the same problem I do=}.
+The certificate chain validator looks like a deep, attacker-facing parser too, but this build
+hardcodes Valve's root key and refuses any other. A harness can't get a certificate trusted
+without Valve's private key, and {=crimson: an attacker has the same problem=}.
 
 Now every gap gets sorted before I spend time on it:
 
@@ -98,7 +96,7 @@ field reaches the code that uses it. On a gated one, LPM is necessary and not su
 
 ## Getting Through The Gate
 
-I came back to the handshake a little later. The gate that matters is a signature: the session
+For the handshake, the gate that matters is a signature: the session
 crypto info is signed, and checked against the public key in the certificate. The open-source
 build has no certificate authority behind it, so by default it accepts a certificate without a
 CA signature. That leaves {=arcane: one signature to satisfy=}, made with a key the certificate
@@ -109,14 +107,9 @@ lets LPM mutate the crypto info, signs the result the way GNS does, and runs the
 Execution finally reaches the key exchange with attacker-shaped fields. When the gate is a
 check you can honestly satisfy, satisfy it in the harness.
 
-Two mistakes from this stretch:
+One LPM gotcha worth knowing: `DEFINE_PROTO_FUZZER` reads its corpus as text-format protobuf
+and `DEFINE_BINARY_PROTO_FUZZER` reads binary. Binary seeds with the text macro fail to load
+without any error, and the harness {=glitch: quietly starts from nothing=}.
 
-1) **My seeds weren't loading.** `DEFINE_PROTO_FUZZER` reads text-format protobuf and
-   `DEFINE_BINARY_PROTO_FUZZER` reads binary. I wrote binary seeds and used the text macro, so
-   five harnesses were {=glitch: quietly starting from nothing=}.
-2) **I pinned the protocol version.** The handshake rejects versions below a minimum, so the
-   harness forces the current one. That gets every input through, and hides the branches for
-   older versions that are still accepted. Letting the fuzzer pick is on my list.
-
-Before those last signing-key harnesses, the count stood at eleven, and none had run for
-long. Next: [leaving them on overnight](/posts/overnight-fuzzing-campaigns/).
+None of these harnesses had run for long yet. Next: [leaving them on
+overnight](/posts/overnight-fuzzing-campaigns/).

@@ -3,16 +3,16 @@ title = 'A Flat Line Overnight, And Proving It Means Something'
 date = 2026-11-15T10:30:00-06:00
 draft = false
 number = 7
-description = 'Running eleven GameNetworkingSockets harnesses overnight under AFL++, what a coverage number that stops moving tells you, and putting two old bugs back to prove the harnesses can catch one.'
+description = 'Running the GameNetworkingSockets harnesses overnight under AFL++, what a coverage number that stops moving tells you, and putting two old bugs back to prove the harnesses can catch one.'
 project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'aflplusplus', 'CASR', 'Security']
 aliases = ['/posts/seeded-bug-evaluation/']
 +++
 
-I left all eleven harnesses running overnight under {=aflplusplus: AFL++=}, and total coverage
-{=point: didn't move all night=}. That has two explanations: the harnesses have reached everything
-they can, or they're broken. This post is the overnight setup, and how I told those apart by
-putting two fixed bugs back into the library.
+I left every harness I had (eleven at that point) running overnight under {=aflplusplus: AFL++=},
+and total coverage {=point: didn't move all night=}. That has two explanations: the harnesses have
+reached everything they can, or they're broken. This post is the overnight setup, and how I told
+those apart by putting two fixed bugs back into the library.
 
 ## Same Harnesses, Second Engine
 
@@ -43,9 +43,9 @@ has to reproduce.
 
 In the morning, total line coverage was {=static: 37.6%, exactly where it started=}. More hours on
 the same eleven harnesses weren't going to find new code, so new coverage had to come from new
-harnesses. I built three more aimed past the handshake's signature check, fixed the seed-loading
-bug from the last post, and ran a second campaign on just the changed harnesses. Coverage went
-from 37.6% to 39.95%, with nothing new found.
+harnesses. I added three (the signing-key harness from the last post among them) and ran a second
+campaign on just the changed harnesses. Coverage went from 37.6% to 39.95%, with nothing new
+found.
 
 ## Putting Old Bugs Back
 

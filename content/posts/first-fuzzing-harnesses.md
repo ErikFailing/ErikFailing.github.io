@@ -43,15 +43,14 @@ contain an unfixed bug. Both parsers ran at 100,000 to 200,000 executions a seco
 ## Standing The Library Up
 
 Next is the handler for UDP packets from a host GNS has never heard of. That needs a listen
-socket, and my plan said that would be a problem, because GNS services sockets on a background
-thread and a fuzzer needs to control when things run. The plan was wrong: GNS exports a
-{=arcane: manual-poll mode=} that no public header declares. Turn it on before initializing and
-the service thread never starts.
+socket, and GNS normally services sockets on a background thread, where a fuzzer can't control
+when things run. GNS exports a {=arcane: manual-poll mode=} that no public header declares. Turn
+it on before initializing and the service thread never starts.
 
-The layer with the history is SNP, which only runs on an established connection. My plan also
-assumed every data packet would be gated behind AES-GCM. Wrong again: GNS has a NULL cipher, and
-two connections in the same process can negotiate it. So the harness makes a real client and
-server over loopback with encryption off. Three decisions here carried into every connection
+The layer with the history is SNP, which only runs on an established connection, where data
+packets are normally AES-GCM encrypted. GNS also has a NULL cipher, and two connections in the
+same process can negotiate it. So the harness makes a real client and server over loopback
+with encryption off. Three decisions here carried into every connection
 harness after it:
 
 - **Inject whole packets.** Calling the decoder directly skips setup and reads uninitialized
@@ -69,9 +68,9 @@ packet numbers arrived, where the gaps are. So a second SNP harness treats one i
 sequence of packets, each with a signed sequence-number delta, so the fuzzer can
 {=static: open gaps, fill them out of order, and send duplicates=}.
 
-My first version kept the connection alive across inputs, and that was a mistake. Its crashes
-depended on everything the campaign had sent before, so the saved file reproduced nothing. Now
-state builds up within an input and resets between them, because {=point: a crash I can't
+The connection has to be rebuilt between inputs, though. If it stays alive, a crash depends on
+everything the campaign sent before, and the saved file reproduces nothing. So state builds up
+within an input and resets between them, because {=point: a crash I can't
 reproduce is a crash I can't report=}.
 
 ## A Second Oracle
