@@ -16,12 +16,13 @@ thing I took from the project.
 
 ## The Code That Never Ran
 
-A third overnight campaign, aimed only at the SNP harnesses, came back flat too. A coverage
-report showed why: even with three harnesses on that layer, {=crimson: 23 of its 62 functions had
-never run=}. The biggest reachable chunk was the sender's side of acknowledgments. When a peer
-acks or nacks packets you sent, GNS walks a map of in-flight packets, erases the acked ones and
-queues the nacked ones for retransmit. That's {=ghostly: iterator-and-erase code=} driven by fields
-the peer chooses, exactly where a use-after-free could hide.
+A third overnight campaign, aimed only at the harnesses for SNP (GNS's reliability layer), came
+back flat too. A coverage report showed why: even with three harnesses on that layer, {=crimson:
+23 of its 62 functions had never run=}. The biggest reachable chunk was the sender's side of
+acknowledgments. When a peer acks or nacks packets you sent (confirms them, or reports them
+missing), GNS walks a map of in-flight packets, erases the acked ones and queues the nacked ones
+for retransmit. That's {=ghostly: iterator-and-erase code=} driven by fields the peer chooses,
+exactly where a use-after-free could hide.
 
 My harnesses never reached it because they only ever received. The connection being fuzzed had
 barely sent anything, so its in-flight map was empty and every fuzzed ack had nothing to
@@ -86,8 +87,9 @@ input. The role-change function went {=trophy: from 0% to about 54% covered=}.
 ## What It Found, And What It Costs
 
 On the ack accounting: nothing, and I think that's a real result. About 2.5 hours under ASan
-with 12 to 14 instances produced zero crashes, and so did a 45-minute run under the assert
-oracle (21.7 million executions) once I'd fixed a harness bug that had produced 439 fake ones.
+(AddressSanitizer) with 12 to 14 instances produced zero crashes, and so did a 45-minute run under
+the assert oracle (21.7 million executions) once I'd fixed a harness bug that had produced 439
+fake ones.
 
 The costs: the primed state is one fixed shape (24 equal packets on one lane), there's no real
 timing (retransmits only happen when the fuzzer nacks), and it's slow, at 130 to 240

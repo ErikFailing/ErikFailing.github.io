@@ -17,11 +17,11 @@ they'll read my next report more skeptically.
 ## Uninitialized Memory On The Wire
 
 With coverage flat, the other way to find something new is a new oracle. MemorySanitizer (MSan)
-catches reads of uninitialized memory, which ASan and UBSan can't see, so I added a build with
-it. Its first real report said GNS was sending {=glitch: uninitialized memory in a handshake
-packet=}: 128 of the 217 bytes in a connect request. It looked like a textbook information leak.
-It was deterministic, it reproduced with encryption on and off, and the function that sends the
-packet doesn't zero its buffer first.
+catches reads of uninitialized memory, which the memory and undefined-behavior sanitizers (ASan
+and UBSan) can't see, so I added a build with it. Its first real report said GNS was sending
+{=glitch: uninitialized memory in a handshake packet=}: 128 of the 217 bytes in a connect request.
+It looked like a textbook information leak. It was deterministic, it reproduced with encryption on
+and off, and the function that sends the packet doesn't zero its buffer first.
 
 So I recorded it as a confirmed finding. That lasted less than a day, until I traced where the
 128 bytes came from:

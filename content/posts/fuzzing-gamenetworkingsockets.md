@@ -19,13 +19,15 @@ picked the target and the lab I built for it.
 
 [GameNetworkingSockets](https://github.com/ValveSoftware/GameNetworkingSockets) (GNS from here on)
 is a UDP transport for games: reliable and unreliable messages, encryption, and peer-to-peer
-connections with NAT traversal. Three things made it a good pick:
+connections with NAT traversal (getting two machines behind home routers to reach each other).
+Three things made it a good pick:
 
 1) It's open source, so I could build it with sanitizers and coverage instrumentation.
 2) The project wants this. In
    [issue #410](https://github.com/ValveSoftware/GameNetworkingSockets/issues/410), a bug report
    from someone who had been fuzzing GNS, one of the maintainers replied "I would love to add
-   some fuzzing to the test suite." I couldn't find GNS in OSS-Fuzz either, so harnesses are
+   some fuzzing to the test suite." I couldn't find GNS in OSS-Fuzz (Google's free continuous fuzzing service for open-source
+   projects) either, so harnesses are
    {=trophy: a contribution the project asked for=}.
 3) A real finding has somewhere to go. The repo's
    [SECURITY.md](https://github.com/ValveSoftware/GameNetworkingSockets/blob/master/SECURITY.md)
@@ -44,13 +46,23 @@ authentication=}:
 | P2P signaling | Rendezvous messages and connect requests | A remote peer, through the signaling channel |
 | SNP | The reliability layer: data segments, acks and nacks | The peer on an established connection |
 
-It also has history. Check Point Research found four vulnerabilities in it in 2020, including
+A few names in that table come up in every post:
+
+- **STUN, ICE and TURN** are the standard protocols for NAT traversal. STUN (Session Traversal
+  Utilities for NAT) lets a machine learn its public address, ICE (Interactive Connectivity
+  Establishment) tries address pairs until two peers can reach each other, and TURN (Traversal
+  Using Relays around NAT) relays the traffic when nothing direct works.
+- **SNP** (Steam Networking Protocol) is GNS's own layer for reliability: splitting messages
+  into segments, acknowledging them, and resending what got lost.
+- **P2P** is peer-to-peer: two players connecting to each other instead of to a server.
+
+GNS also has history. Check Point Research found four vulnerabilities in it in 2020, including
 memory corruption in the SNP layer's segment reassembly (CVE-2020-6016 through CVE-2020-6019,
-written up in
-[Game On](https://research.checkpoint.com/2020/game-on-finding-vulnerabilities-in-valves-steam-sockets/)
-by Eyal Itkin), and issues #409 and #410 from earlier this year are {=glitch: logic bugs in the same
-reliability code=}. All of those were fixed before the version I pinned, so they were my map, not
-my findings.
+written up in [Game
+On](https://research.checkpoint.com/2020/game-on-finding-vulnerabilities-in-valves-steam-sockets/)
+by Eyal Itkin), and issues #409 and #410 from earlier this year are {=glitch: logic bugs in the
+same reliability code=}. All of those were fixed before the version I pinned, so they were my map,
+not my findings.
 
 ## The Lab
 
@@ -58,9 +70,9 @@ I wanted two things from the lab: a crash found today has to reproduce next mont
 sensitive can land in Git by accident. So corpora and crashes live {=ward: outside every repo=}, and
 everything that can change a result is pinned.
 
-My desktop runs Windows, so the stack is Windows 11, WSL2 with Ubuntu 24.04, and {=docker: Docker=}
-inside Ubuntu. The toolchain is one image with every pin at the top of its Dockerfile:
-
+My desktop runs Windows, so the stack is Windows 11, WSL2 (Windows Subsystem for Linux) with
+Ubuntu 24.04, and {=docker: Docker=} inside Ubuntu. The toolchain is one image with every pin at
+the top of its Dockerfile:
 ```dockerfile
 ARG UBUNTU_IMAGE=ubuntu:24.04@sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852
 ARG LLVM_MAJOR=22
@@ -71,8 +83,9 @@ ARG CASR_VERSION=2.13.1
 ARG CASR_SHA256=4a8cafc51aa68a1bff8be92b886c20c66dd4924d41ac30d9b29ac76b3f324ad4
 ```
 
-The base image is pinned by digest, LLVM's apt key by fingerprint, AFL++ by tag *and* commit (so
-a moved tag fails the build), and CASR by hash. The build ends with a smoke test: libFuzzer has
+The base image is pinned by digest, the LLVM compiler's apt key by fingerprint, AFL++ (the
+fuzzer I use for long runs) by tag *and* commit, so a moved tag fails the build, and CASR (a
+crash triage tool) by hash. The build ends with a smoke test: libFuzzer has
 to find a planted heap overflow, AFL++ has to fuzz the same harness, and CASR has to triage the
 crash. GNS gets its own image on top, pinned to commit `d534c19` (v1.6.1), which was the head of
 master the whole time.
@@ -88,7 +101,9 @@ Three things needed fixing before fuzzers ran properly in this stack:
 
 ## Two Ways To Hide A Crash
 
-The library and harnesses compile with one set of flags:
+The library and harnesses compile with one set of flags, including the two sanitizers that
+act as crash detectors: ASan (AddressSanitizer) for memory errors and UBSan
+(UndefinedBehaviorSanitizer) for undefined behavior like signed overflow.
 
 ```text
 -g -O1 -fno-omit-frame-pointer

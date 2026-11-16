@@ -15,7 +15,8 @@ five caught two harnesses that reach less than I thought.
 
 ## What Goes In One
 
-"I fuzzed the STUN parser" sounds complete and isn't. Which function got the bytes? Was the
+"I fuzzed the STUN parser" (STUN being one of the NAT traversal protocols) sounds complete and
+isn't. Which function got the bytes? Was the
 integrity check real or skipped? Would a crash be reachable by anyone, or only a peer who knows
 a password? Every threat model answers that in the same sections:
 
@@ -30,23 +31,25 @@ publish with the harness.
 
 ## Example: The STUN Parser
 
-STUN messages carry a CRC and an HMAC, and the receiver only runs the address and username
-decoders on a message that verifies. A fuzzer will basically never guess a valid HMAC, so
-without help it only exercises the code in front of the check. The harness
+STUN messages carry a checksum (a CRC) and a keyed signature (an HMAC), and the receiver only runs
+the address and username decoders on a message that verifies. A fuzzer will basically never guess
+a valid HMAC, so without help it only exercises the code in front of the check. The harness
 {=arcane: forges both values=} with a key it also hands to the parser, which took the edges
 covered from about 90 to about 160.
 
 That's a real trade, and the threat model says what it means for a crash:
 
 - In the attribute walk, it maps to **anyone who can reach the socket**.
-- In the decoders behind the check, it maps to **someone who holds the ICE password**.
+- In the decoders behind the check, it maps to **someone who holds the ICE password** (a secret
+  the two peers swap while setting up the connection).
 
 The harness forges the key to reach the code. {=point: It doesn't claim an attacker gets it for
 free=}.
 
 ## Example: The NULL Cipher
 
-In production every SNP data packet is AES-256-GCM authenticated. My harnesses negotiate the
+In production every data packet in SNP (the reliability layer) is encrypted and authenticated
+with AES-256-GCM. My harnesses negotiate the
 NULL cipher, so the fuzzer's bytes arrive as plaintext. Is that cheating? The threat model's
 answer is that it changes {=crimson: who the attacker is=}. The realistic sender was never a
 stranger. It's the peer on the other end, who completed the handshake, holds the session keys,
@@ -63,7 +66,7 @@ The cost is that each one has to be written and kept in sync. I let that slip, a
 later harnesses went without one.
 
 When I went back and wrote those five, two turned out to reach less than my notes claimed. The
-server-side handshake harness and the P2P connect-request harness both stop before the
+server-side handshake harness and the peer-to-peer connect-request harness both stop before the
 connection is accepted, so {=glitch: the server's half of the key exchange never runs=} in either
 one. That's from reading the source, and I still need a coverage run to confirm it, but fixing
 those two is now at the top of my list. Having to name, function by function, what a harness

@@ -35,10 +35,10 @@ signature checks and key exchange, all before session keys exist. I built a harn
 the handshake with two fuzzed protobuf blobs, and it {=glitch: raised total coverage by about 0.3
 points=}. Two reasons:
 
-- **The happy path was already covered.** My SNP harnesses set up a real connection for every
-  input, which runs a real handshake.
-- **Raw bytes die at the protobuf parser.** Flip a byte in a nested protobuf and the parse
-  usually fails, so the fuzzer reached the rejection paths and not much else.
+- **The happy path was already covered.** My SNP (reliability layer) harnesses set up a real
+  connection for every input, which runs a real handshake.
+- **Raw bytes die at the protobuf parser.** Flip a byte in a nested protobuf and the parse usually
+  fails, so the fuzzer reached the rejection paths and not much else.
 
 The fix for the second one is [libprotobuf-mutator](https://github.com/google/libprotobuf-mutator)
 (LPM). The harness declares a message type, and LPM hands it {=protobuf: a parsed, valid message
@@ -88,7 +88,7 @@ Then I pointed LPM at messages with nothing in front of them:
 | Harness | What it reached | Total line coverage |
 |---|---|---|
 | Inline stats | A protobuf any connected peer can attach to a data packet | 28.9% to 31.8% |
-| P2P signaling | About 1,900 lines of rendezvous handling that sat at 0% | 31.8% to 36.9% |
+| Peer-to-peer signaling | About 1,900 lines of rendezvous handling that sat at 0% | 31.8% to 36.9% |
 | Real-crypto data path | AES-256-GCM decrypt, which the NULL-cipher harnesses skip | up to 37.6% |
 
 Same tool, {=trophy: the biggest jumps of the project=}. On an ungated protobuf path every mutated
@@ -96,10 +96,10 @@ field reaches the code that uses it. On a gated one, LPM is necessary and not su
 
 ## Getting Through The Gate
 
-For the handshake, the gate that matters is a signature: the session
-crypto info is signed, and checked against the public key in the certificate. The open-source
-build has no certificate authority behind it, so by default it accepts a certificate without a
-CA signature. That leaves {=arcane: one signature to satisfy=}, made with a key the certificate
+For the handshake, the gate that matters is a signature: the session crypto info is signed, and
+checked against the public key in the certificate. The open-source build has no certificate
+authority behind it, so by default it accepts a certificate without a certificate authority's
+signature. That leaves {=arcane: one signature to satisfy=}, made with a key the certificate
 itself names.
 
 So the harness holds its own ed25519 key. It swaps the public half into a captured certificate,

@@ -15,11 +15,11 @@ to reproduce from its single file.
 
 ## Start With The Cheapest Thing
 
-The STUN and ICE candidate parsers are {=crimson: the first code a packet touches=} during NAT
-traversal, and they're easy targets: bytes in, result out. The one obstacle is that both are
-file-local inside a GNS source file. I didn't want to patch GNS, so the harness includes the
-whole `.cpp`. Here's the ICE candidate harness, minus a few standard includes:
-
+The parsers for STUN and ICE (the NAT traversal protocols from the last post) are {=crimson: the
+first code a packet touches=} during NAT traversal, and they're easy targets: bytes in, result
+out. The one obstacle is that both are file-local inside a GNS source file. I didn't want to patch
+GNS, so the harness includes the whole `.cpp`. Here's the ICE candidate harness, minus a few
+standard includes:
 ```cpp
 #include "steamnetworkingsockets_ice_client.cpp"
 
@@ -47,10 +47,10 @@ socket, and GNS normally services sockets on a background thread, where a fuzzer
 when things run. GNS exports a {=arcane: manual-poll mode=} that no public header declares. Turn
 it on before initializing and the service thread never starts.
 
-The layer with the history is SNP, which only runs on an established connection, where data
-packets are normally AES-GCM encrypted. GNS also has a NULL cipher, and two connections in the
-same process can negotiate it. So the harness makes a real client and server over loopback
-with encryption off. Three decisions here carried into every connection
+The layer with the history is SNP, GNS's reliability layer, which only runs on an established
+connection, where data packets are normally encrypted with AES-GCM. GNS also has a NULL cipher,
+and two connections in the same process can negotiate it. So the harness makes a real client and
+server over loopback with encryption off. Three decisions here carried into every connection
 harness after it:
 
 - **Inject whole packets.** Calling the decoder directly skips setup and reads uninitialized
@@ -75,11 +75,11 @@ reproduce is a crash I can't report=}.
 
 ## A Second Oracle
 
-Bugs like #410 corrupt no memory, so {=ghostly: ASan and UBSan can't see them=}. What notices is
-GNS itself: it's full of internal asserts that, in a normal build, log and carry on. So the
-stateful harnesses share a hook with two modes. By default asserts are logged and skipped, like
-a release build. With an environment variable set, every assert is a crash:
-
+Bugs like #410 corrupt no memory, so {=ghostly: ASan and UBSan can't see them=} (those are the
+sanitizers for memory errors and undefined behavior). What notices is GNS itself: it's full of
+internal asserts that, in a normal build, log and carry on. So the stateful harnesses share a hook
+with two modes. By default asserts are logged and skipped, like a release build. With an
+environment variable set, every assert is a crash:
 ```bash
 GNS_FUZZ_ASSERT_FATAL=1 ./gns-snp-sequence-harness corpus/
 ```

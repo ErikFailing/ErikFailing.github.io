@@ -9,10 +9,11 @@ tags = ['Fuzzing', 'aflplusplus', 'CASR', 'Security']
 aliases = ['/posts/seeded-bug-evaluation/']
 +++
 
-I left every harness I had (eleven at that point) running overnight under {=aflplusplus: AFL++=},
-and total coverage {=point: didn't move all night=}. That has two explanations: the harnesses have
-reached everything they can, or they're broken. This post is the overnight setup, and how I told
-those apart by putting two fixed bugs back into the library.
+I left every harness I had (eleven at that point) running overnight under {=aflplusplus: AFL++=}
+(a fuzzer built for long parallel runs), and total coverage {=point: didn't move all night=}. That
+has two explanations: the harnesses have reached everything they can, or they're broken. This post
+is the overnight setup, and how I told those apart by putting two fixed bugs back into the
+library.
 
 ## Same Harnesses, Second Engine
 
@@ -30,14 +31,14 @@ afl-fuzz -i seeds -o afl-output -S sec2 -p exploit -- ./harness
 
 Long runs make two piles. For the corpus, libFuzzer's `-merge=1` shrinks it to the smallest set
 with the same coverage, and my script {=ward: refuses the result unless nothing was lost=}. For
-crashes, [CASR](https://github.com/ispras/casr) replays every file and clusters them by stack,
-so hundreds of files become a short list of distinct crashes.
+crashes, [CASR](https://github.com/ispras/casr) (a crash triage tool) replays every file and
+clusters them by stack, so hundreds of files become a short list of distinct crashes.
 
 One catch: the engines aren't interchangeable once a crash has to reproduce. AFL++ keeps one
-process alive across inputs, and GNS has a process-wide clock my per-input rebuild doesn't
-reset. So an assert crash under AFL++ can depend on {=ghostly: clock state from thousands of
-earlier inputs=}. I use AFL++ for the memory-safety oracle and libFuzzer when an assert crash
-has to reproduce.
+process alive across inputs, and GNS has a process-wide clock my per-input rebuild doesn't reset.
+So an assert crash under AFL++ can depend on {=ghostly: clock state from thousands of earlier
+inputs=}. I use AFL++ for the memory-safety oracle (the ASan and UBSan sanitizers) and libFuzzer
+when an assert crash has to reproduce.
 
 ## The Flat Line
 
@@ -78,9 +79,9 @@ so only the assert oracle sees it, and only the multi-packet harness can build t
 needs. One run for it saved 470 crash files, which CASR collapsed to {=trophy: one distinct crash=},
 the right one.
 
-Both got caught. So when the SNP harnesses run clean, I know they can catch a heap overflow and
-a logic bug there, because they did. It's a small sample though: both bugs are in SNP, and
-nothing is seeded yet for the handshake, P2P or NAT traversal harnesses.
+Both got caught. So when the SNP (reliability layer) harnesses run clean, I know they can catch a
+heap overflow and a logic bug there, because they did. It's a small sample though: both bugs are
+in SNP, and nothing is seeded yet for the handshake, peer-to-peer or NAT traversal harnesses.
 
 With some evidence that a clean run means something, the question went back to what the
 harnesses still weren't reaching. That's [the next post](/posts/fuzzing-stateful-code/).

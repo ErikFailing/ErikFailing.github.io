@@ -260,6 +260,10 @@ These are starting points, not forms to fill in. Drop sections that don't apply.
 - Use plain casual words where they fit: "super," "kinda," "like," "stuff," "honestly," "pretty," "actually," "just," "funny enough."
 - Use parentheses for side thoughts and asides. I do this a lot.
 - Use "i.e." and "e.g." freely, and end trailing lists with "etc..." (three dots).
+- Explain an acronym the first time a post uses it, and spell it out unless it's really obvious
+  (UDP, API and CVE are fine as they are; STUN, SNP and ASan are not). A few words in
+  parentheses is enough, and each post does it for itself, since people land on posts out of
+  order.
 - Use numbered points written as "1)", "2)" for steps or reasons inside a paragraph.
 - Use the occasional *italics* for emphasis on one word ("*insane* amounts of development time").
 - Mix short punchy sentences with longer run-on, comma-joined ones, the way people actually talk.

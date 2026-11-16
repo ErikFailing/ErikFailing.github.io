@@ -13,17 +13,18 @@ coverage, five findings (none of them high severity), one report to Valve, and n
 
 ## The Suite
 
-- **NAT traversal:** the STUN attribute parser, the ICE candidate parser, and the STUN and TURN
-  handling behind them.
-- **UDP packet handling:** the handler for packets from an unknown host, plus the stats message
-  a connected peer can attach to any data packet.
-- **SNP,** fuzzed four ways: one packet at a time, as a multi-packet sequence, as well-formed
-  frames built from typed fields, and from the sender's side with malicious acks.
+- **NAT traversal** (how two machines behind routers reach each other): the STUN attribute parser,
+  the ICE candidate parser, and the STUN and TURN handling behind them.
+- **UDP packet handling:** the handler for packets from an unknown host, plus the stats message a
+  connected peer can attach to any data packet.
+- **SNP,** the reliability layer, fuzzed four ways: one packet at a time, as a multi-packet
+  sequence, as well-formed frames built from typed fields, and from the sender's side with
+  malicious acks.
 - **Crypto,** with five harnesses: the handshake on raw bytes, on a mutated certificate, past the
   signature check with a signing key the harness holds, from the server's side, and the real
   AES-256-GCM data path.
-- **P2P signaling:** a rendezvous message to an existing connection, a connect request that
-  creates one, and two peers dialing each other at once.
+- **Peer-to-peer signaling:** a rendezvous message to an existing connection, a connect request
+  that creates one, and two peers dialing each other at once.
 
 | Harnesses | Line coverage |
 |---|---|
@@ -38,9 +39,9 @@ drive: local key management, sender-side serialization, lifecycle and API code.
 ## What It Found
 
 No critical bug. The SNP decoder, the ack accounting and the crypto handshake all came through
-hundreds of millions of executions under ASan and UBSan without a memory-safety crash.
-Considering CVE-2020-6016 and CVE-2020-6017 were in that same decoder, I think {=point: GNS is a
-well-hardened target now=}.
+hundreds of millions of executions under ASan and UBSan (the memory and undefined-behavior
+sanitizers) without a memory-safety crash. Considering CVE-2020-6016 and CVE-2020-6017 were in
+that same decoder, I think {=point: GNS is a well-hardened target now=}.
 
 What did come out:
 
@@ -63,8 +64,9 @@ it from the [project page](/projects/gamenetworkingsockets-fuzzing/).
 
 ## What's Not Done
 
-- **Two harnesses reach less than I thought.** The server-side handshake harness and the P2P
-  connect-request harness both stop before the connection is accepted. Fixing them comes first.
+- **Two harnesses reach less than I thought.** The server-side handshake harness and the
+  peer-to-peer connect-request harness both stop before the connection is accepted. Fixing them
+  comes first.
 - **MemorySanitizer hasn't had a real campaign.** The build works and replays the SNP and crypto
   corpora clean, but it hasn't run overnight.
 - **The seeded bugs only cover SNP.** Nothing but coverage says the other harnesses catch a bug.
