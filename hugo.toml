@@ -219,6 +219,10 @@ capitalizeListTitles = false
     name = 'linkedin'
     url = 'https://www.linkedin.com/in/erikfailing'
   [[params.socialIcons]]
+    name = 'hackerone'
+    title = 'HackerOne'
+    url = 'https://hackerone.com/erik-failing'
+  [[params.socialIcons]]
     name = 'email'
     title = 'Email'
     url = 'mailto:erikfailing@gmail.com'
