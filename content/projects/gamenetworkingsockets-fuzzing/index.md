@@ -1,6 +1,6 @@
 +++
 title = "Fuzzing Valve's GameNetworkingSockets"
-description = "A reproducible fuzzing lab and twenty harnesses for Valve's open-source game networking library, aimed at the code a remote attacker can actually reach."
+description = "A reproducible fuzzing lab and twenty-one harnesses for Valve's open-source game networking library, aimed at the code a remote attacker can actually reach."
 date = 2026-11-15T09:00:00-06:00
 draft = false
 number = 2
@@ -22,7 +22,7 @@ weight = 10
 [GameNetworkingSockets](https://github.com/ValveSoftware/GameNetworkingSockets) (GNS) is Valve's
 open-source game networking library, the open version of the networking API in the Steamworks
 SDK. It parses untrusted UDP packets in C++ at several layers, a lot of it before any
-authentication, so in November 2026 I built a fuzzing lab around it and {=static: twenty fuzzing
+authentication, so in November 2026 I built a fuzzing lab around it and {=static: twenty-one fuzzing
 harnesses=} that cover the code a remote attacker can actually reach.
 
 The honest headline is that {=point: I didn't find a critical bug=}. GNS held up to hundreds of
@@ -42,16 +42,16 @@ a harness suite I've offered to the project, and a method I'd use again on the n
 - **A reproducible lab.** Windows 11, WSL2 and {=docker: Docker=}, with everything that can change
   a result pinned: clang and LLVM 22, AFL++ v5.03c, CASR 2.13.1, the base image, and GNS itself at
   v1.6.1.
-- **Twenty harnesses,** all plain `LLVMFuzzerTestOneInput`, so the same code runs under libFuzzer
-  and AFL++. They cover the STUN and ICE code used for NAT traversal, the pre-connection UDP
-  handler, the SNP reliability layer, the crypto handshake and the AES-256-GCM data path, and
+- **Twenty-one harnesses,** all plain `LLVMFuzzerTestOneInput`, so the same code runs under
+  libFuzzer and AFL++. They cover the STUN and ICE code used for NAT traversal, the pre-connection
+  UDP handler, the SNP reliability layer, the crypto handshake and the AES-256-GCM data path, and
   peer-to-peer signaling. Five of them mutate real protobuf messages with libprotobuf-mutator
   instead of raw bytes.
 - **Three oracles.** ASan with UBSan for memory safety and undefined behavior, an assert oracle
   that turns the library's own invariant checks into crashes, and a MemorySanitizer build with the
   whole dependency stack instrumented.
-- **{=ward: A threat model for every harness=},** saying what untrusted bytes reach which function,
-  and where the harness is narrower than the real attack surface.
+- **{=ward: A threat model for every harness=},** saying what untrusted bytes reach which
+  function, and where the harness is narrower than the real attack surface.
 - **A seeded-bug check.** Two known, fixed, public bugs (CVE-2020-6017 and issue #410) get put
   back into the pinned source to prove the harnesses actually catch them.
 - **Campaign tooling:** coverage reports, corpus minimization, parallel AFL++ runs with CmpLog,
@@ -59,8 +59,8 @@ a harness suite I've offered to the project, and a method I'd use again on the n
 
 ## Results
 
-- Line coverage across the suite went from 28% with the first five harnesses to {=trophy: 43.8% with
-  all twenty=}. Most of what's left isn't code an attacker can drive.
+- Line coverage across the suite went from 28% with the first five harnesses to {=trophy: 46.2% with
+  all twenty-one=}. Most of what's left isn't code an attacker can drive.
 - No high-severity bug. The parts with a history of memory-safety bugs, like the SNP decoder,
   came through clean.
 - Five findings: four are undefined behavior on values parsed off the wire (signed overflows and

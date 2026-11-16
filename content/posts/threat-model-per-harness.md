@@ -9,9 +9,9 @@ tags = ['Fuzzing', 'Threat Modeling', 'Security']
 +++
 
 A fuzzing harness is always narrower than the real attack surface, and {=ghostly: nothing tells
-you where=}. So each of the twenty harnesses has a short {=ward: threat model=} next to it: who can
-really send these bytes, what the harness drives, and where it cuts corners. Finishing the last
-five caught two harnesses that reached less than I thought, which I've since fixed.
+you where=}. So each of the twenty-one harnesses has a short {=ward: threat model=} next to it:
+who can really send these bytes, what the harness drives, and where it cuts corners. Finishing the
+last five caught two harnesses that reached less than I thought, which I've since fixed.
 
 ## What Goes In One
 

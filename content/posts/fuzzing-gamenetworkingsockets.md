@@ -11,9 +11,9 @@ aliases = ['/posts/reproducible-fuzzing-lab/']
 
 In November 2026 I spent about a week fuzzing Valve's GameNetworkingSockets, the open-source
 version of the networking API in the Steamworks SDK. These posts follow that in the order it
-happened. Spoiler: {=point: I didn't find a critical bug=}, and I ended up with twenty harnesses,
-five findings (none of them high severity) and one report to Valve. This first post is why I
-picked the target and the lab I built for it.
+happened. Spoiler: {=point: I didn't find a critical bug=}, and I ended up with twenty-one
+harnesses, five findings (none of them high severity) and one report to Valve. This first post is
+why I picked the target and the lab I built for it.
 
 ## Why GameNetworkingSockets
 

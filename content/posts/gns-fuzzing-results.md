@@ -1,5 +1,5 @@
 +++
-title = 'Twenty Harnesses, No Critical Bug: The Results'
+title = 'Twenty-One Harnesses, No Critical Bug: The Results'
 date = 2026-11-15T11:10:00-06:00
 draft = false
 number = 11
@@ -8,15 +8,16 @@ project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Security', 'Valve']
 +++
 
-What the GameNetworkingSockets fuzzing produced: {=static: twenty harnesses=}, 43.79% line
+What the GameNetworkingSockets fuzzing produced: {=static: twenty-one harnesses=}, 46.24% line
 coverage, five findings (none of them high severity), one report to Valve, and no critical bug.
 
 ## The Suite
 
 - **NAT traversal** (how two machines behind routers reach each other): the STUN attribute parser,
   the ICE candidate parser, and the STUN and TURN handling behind them.
-- **UDP packet handling:** the handler for packets from an unknown host, plus the stats message a
-  connected peer can attach to any data packet.
+- **UDP packet handling:** the handler for packets from an unknown host, the server's
+  connect-request handler entered with a valid challenge, and the stats message a connected
+  peer can attach to any data packet.
 - **SNP,** the reliability layer, fuzzed four ways: one packet at a time, as a multi-packet
   sequence, as well-formed frames built from typed fields, and from the sender's side with
   malicious acks.
@@ -33,8 +34,9 @@ coverage, five findings (none of them high severity), one report to Valve, and n
 | After the second campaign | 39.95% |
 | All twenty | 43.71% |
 | After fixing two harnesses | 43.79% |
+| Twenty-one, after the last overnight campaign | 46.24% |
 
-I think {=trophy: 43.79% undersells it=}, because most of what's left is code an attacker can't
+I think {=trophy: 46.24% undersells it=}, because most of what's left is code an attacker can't
 drive: local key management, sender-side serialization, lifecycle and API code.
 
 ## What It Found
@@ -51,6 +53,24 @@ What did come out:
   so I'm treating them as {=ward: hardening fixes=}, not vulnerabilities.
 - **One memory-safety finding,** which I reported privately to Valve.
 
+## The Last Campaign
+
+After fixing the two harnesses that stopped short of the accept (that story is in
+[the threat model post](/posts/threat-model-per-harness/)), I ran everything that hadn't had a
+long run for about eleven hours overnight: the fixed harnesses under AFL++ with both oracles,
+and MemorySanitizer across thirteen harnesses.
+
+The fixed harnesses saturated within the first couple of hours, so I used the time to build a
+twenty-first. It covers the server's connect-request handler, a stretch that runs
+{=crimson: before authentication=} and sat between two existing harnesses without being reached
+by either. It takes the fuzzer's whole request and supplies the anti-spoofing challenge an
+honest client would have been given.
+
+The result was the same as every campaign before it: {=point: nothing new=}. MemorySanitizer
+ran about 49 million executions without a single report, the new harness ran about 657
+million, and every crash anything saved was a finding I already had. Coverage went from 43.79%
+to 46.24%.
+
 ## Where Things Stand
 
 I reported the memory-safety finding through Valve's HackerOne program, and it was {=trophy: closed
@@ -65,12 +85,10 @@ it from the [project page](/projects/gamenetworkingsockets-fuzzing/).
 
 ## What's Not Done
 
-- **Two harnesses need a real campaign.** The server-side handshake harness and the
-  peer-to-peer connect-request harness used to stop before the connection was accepted. Both
-  are fixed and confirmed by a coverage run, but the code they now reach has only had short
-  runs.
-- **MemorySanitizer hasn't had a real campaign.** The build works and replays the SNP and crypto
-  corpora clean, but it hasn't run overnight.
+- **MemorySanitizer hasn't covered NAT traversal.** The STUN and ICE harnesses aren't built
+  under it yet, so that's the one area it hasn't looked at.
+- **Two small gaps in the newest harnesses:** a second connect request for a connection that
+  already exists, and an application that accepts from inside its callback.
 - **The seeded bugs only cover SNP.** Nothing but coverage says the other harnesses catch a bug.
 
 Overall, I think the durable result is the suite and the method, not a bug. The biggest thing
