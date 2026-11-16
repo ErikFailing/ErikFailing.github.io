@@ -112,10 +112,9 @@ drive: local key management, sender-side serialization, lifecycle and API code.
 
 ## What It Found
 
-No critical bug. The SNP decoder, the ack accounting and the crypto handshake all came through
-hundreds of millions of executions under ASan and UBSan without a memory-safety crash. Considering
-CVE-2020-6016 and CVE-2020-6017 were in that same decoder, I think {=point: GNS is a well-hardened
-target now=}.
+No critical bug. Across the suite, hundreds of millions of executions under ASan and UBSan turned
+up no memory-safety crash. Considering this library had four memory-corruption CVEs in 2020, I
+think {=point: GNS is a well-hardened target now=}.
 
 What did come out:
 
