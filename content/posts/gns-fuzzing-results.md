@@ -71,6 +71,12 @@ ran about 49 million executions without a single report, the new harness ran abo
 million, and every crash anything saved was a finding I already had. Coverage went from 43.79%
 to 46.24%.
 
+I came back afterward and tidied up the loose ends. MemorySanitizer now runs across the whole
+suite instead of thirteen of the harnesses, and the two newest harnesses got the small
+extensions they were short of (sending the same connect request twice, and accepting a
+connection from inside the callback instead of after it). Same answer: no bug I didn't already
+have.
+
 ## Where Things Stand
 
 I reported the memory-safety finding through Valve's HackerOne program, and it was {=trophy: closed
@@ -85,11 +91,11 @@ it from the [project page](/projects/gamenetworkingsockets-fuzzing/).
 
 ## What's Not Done
 
-- **MemorySanitizer hasn't covered NAT traversal.** The STUN and ICE harnesses aren't built
-  under it yet, so that's the one area it hasn't looked at.
-- **Two small gaps in the newest harnesses:** a second connect request for a connection that
-  already exists, and an application that accepts from inside its callback.
-- **The seeded bugs only cover SNP.** Nothing but coverage says the other harnesses catch a bug.
+- **The seeded bugs only cover SNP.** Nothing but coverage says the other harnesses catch a
+  bug, and the other public bugs from that era can't help: one lived in a crypto library I don't
+  build, and another was a 32-bit overflow that just doesn't happen on a 64-bit build. Covering
+  another layer would mean writing a bug myself to catch, which is weaker evidence than a real
+  one.
 
 Overall, I think the durable result is the suite and the method, not a bug. The biggest thing
 left is {=flow: getting the harnesses upstream=}, since a project fuzzing itself continuously will
