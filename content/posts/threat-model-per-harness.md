@@ -11,7 +11,7 @@ tags = ['Fuzzing', 'Threat Modeling', 'Security']
 A fuzzing harness is always narrower than the real attack surface, and {=ghostly: nothing tells
 you where=}. So each of the twenty harnesses has a short {=ward: threat model=} next to it: who can
 really send these bytes, what the harness drives, and where it cuts corners. Finishing the last
-five caught two harnesses that reach less than I thought.
+five caught two harnesses that reached less than I thought, which I've since fixed.
 
 ## What Goes In One
 
@@ -66,10 +66,15 @@ The cost is that each one has to be written and kept in sync. I let that slip, a
 later harnesses went without one.
 
 When I went back and wrote those five, two turned out to reach less than my notes claimed. The
-server-side handshake harness and the peer-to-peer connect-request harness both stop before the
-connection is accepted, so {=glitch: the server's half of the key exchange never runs=} in either
-one. That's from reading the source, and I still need a coverage run to confirm it, but fixing
-those two is now at the top of my list. Having to name, function by function, what a harness
-drives is what caught it.
+server-side handshake harness and the peer-to-peer connect-request harness both stopped before
+the connection was accepted, so {=glitch: the server's half of the key exchange never ran=} in
+either one. The connect-request harness was worse than that: its seed failed an identity check,
+so it had never created a connection at all.
+
+Both fixes were small. Each harness now accepts the connection the way an application would,
+and the seed is regenerated so it passes. A coverage run confirmed it: the connect-request
+harness went from covering 2.5% of the peer-to-peer ICE setup file to {=trophy: 31%=}, and the
+server harness now reaches the connected state with a negotiated cipher. Having to name,
+function by function, what a harness drives is what caught it.
 
 What it all added up to is [the final post](/posts/gns-fuzzing-results/).

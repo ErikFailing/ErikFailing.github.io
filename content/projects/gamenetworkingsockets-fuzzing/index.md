@@ -59,7 +59,7 @@ a harness suite I've offered to the project, and a method I'd use again on the n
 
 ## Results
 
-- Line coverage across the suite went from 28% with the first five harnesses to {=trophy: 43.7% with
+- Line coverage across the suite went from 28% with the first five harnesses to {=trophy: 43.8% with
   all twenty=}. Most of what's left isn't code an attacker can drive.
 - No high-severity bug. The parts with a history of memory-safety bugs, like the SNP decoder,
   came through clean.

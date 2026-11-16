@@ -8,7 +8,7 @@ project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Security', 'Valve']
 +++
 
-What the GameNetworkingSockets fuzzing produced: {=static: twenty harnesses=}, 43.71% line
+What the GameNetworkingSockets fuzzing produced: {=static: twenty harnesses=}, 43.79% line
 coverage, five findings (none of them high severity), one report to Valve, and no critical bug.
 
 ## The Suite
@@ -32,8 +32,9 @@ coverage, five findings (none of them high severity), one report to Valve, and n
 | Eleven | 37.6% |
 | After the second campaign | 39.95% |
 | All twenty | 43.71% |
+| After fixing two harnesses | 43.79% |
 
-I think {=trophy: 43.71% undersells it=}, because most of what's left is code an attacker can't
+I think {=trophy: 43.79% undersells it=}, because most of what's left is code an attacker can't
 drive: local key management, sender-side serialization, lifecycle and API code.
 
 ## What It Found
@@ -64,9 +65,10 @@ it from the [project page](/projects/gamenetworkingsockets-fuzzing/).
 
 ## What's Not Done
 
-- **Two harnesses reach less than I thought.** The server-side handshake harness and the
-  peer-to-peer connect-request harness both stop before the connection is accepted. Fixing them
-  comes first.
+- **Two harnesses need a real campaign.** The server-side handshake harness and the
+  peer-to-peer connect-request harness used to stop before the connection was accepted. Both
+  are fixed and confirmed by a coverage run, but the code they now reach has only had short
+  runs.
 - **MemorySanitizer hasn't had a real campaign.** The build works and replays the SNP and crypto
   corpora clean, but it hasn't run overnight.
 - **The seeded bugs only cover SNP.** Nothing but coverage says the other harnesses catch a bug.
