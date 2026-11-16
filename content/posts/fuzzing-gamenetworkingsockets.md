@@ -1,19 +1,19 @@
 +++
-title = "Fuzzing Valve's GameNetworkingSockets: The Target And The Lab"
+title = "Fuzzing Valve's GameNetworkingSockets: The Target And The First Harnesses"
 date = 2026-11-15T10:00:00-06:00
 draft = false
 number = 4
-description = "Why I picked Valve's open-source networking library to fuzz, what its attack surface looks like, and the pinned lab I built to do it."
+description = "Why I picked Valve's open-source networking library to fuzz, the pinned lab I built for it, and the first five harnesses, from a parser that takes a buffer to a real connection."
 project = 'gamenetworkingsockets-fuzzing'
-tags = ['Fuzzing', 'Docker', 'Security', 'Valve']
-aliases = ['/posts/reproducible-fuzzing-lab/']
+tags = ['Fuzzing', 'Docker', 'cpp', 'libFuzzer', 'Security', 'Valve']
+aliases = ['/posts/reproducible-fuzzing-lab/', '/posts/first-fuzzing-harnesses/']
 +++
 
 In November 2026 I spent about a week fuzzing Valve's GameNetworkingSockets, the open-source
 version of the networking API in the Steamworks SDK. These posts follow that in the order it
 happened. Spoiler: {=point: I didn't find a critical bug=}, and I ended up with twenty-one
 harnesses, five findings (none of them high severity) and one report to Valve. This first post is
-why I picked the target and the lab I built for it.
+the setup: why I picked the target, the lab I built, and the first few harnesses.
 
 ## Why GameNetworkingSockets
 
@@ -26,8 +26,8 @@ Three things made it a good pick:
 2) The project wants this. In
    [issue #410](https://github.com/ValveSoftware/GameNetworkingSockets/issues/410), a bug report
    from someone who had been fuzzing GNS, one of the maintainers replied "I would love to add
-   some fuzzing to the test suite." I couldn't find GNS in OSS-Fuzz (Google's free continuous fuzzing service for open-source
-   projects) either, so harnesses are
+   some fuzzing to the test suite." I couldn't find GNS in OSS-Fuzz (Google's free continuous
+   fuzzing service for open-source projects) either, so harnesses are
    {=trophy: a contribution the project asked for=}.
 3) A real finding has somewhere to go. The repo's
    [SECURITY.md](https://github.com/ValveSoftware/GameNetworkingSockets/blob/master/SECURITY.md)
@@ -123,5 +123,86 @@ Two details here matter more than they look, because the obvious setup silently 
    later, and `-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=-O1` keeps them.
 
 I built all of this with {=claude: Claude Code=} doing a lot of the implementation and babysitting
-the overnight runs, same as the rest of this site. With the lab working, the next step was
-something to run in it: [the first harnesses](/posts/first-fuzzing-harnesses/).
+the overnight runs, same as the rest of this site.
+
+## The First Harnesses: Start With The Cheapest Thing
+
+With the lab working, the first five harnesses went in order of how much setup each one needs:
+two stateless parsers, the handler for packets from unknown hosts, then {=static: a real
+in-process connection=} to reach the reliability layer.
+
+The parsers for STUN and ICE are {=crimson: the first code a packet touches=} during NAT
+traversal, and they're easy targets: bytes in, result out. The one obstacle is that both are
+file-local inside a GNS source file. I didn't want to patch GNS, so the harness includes the
+whole `.cpp`. Here's the ICE candidate harness, minus a few standard includes:
+```cpp
+#include "steamnetworkingsockets_ice_client.cpp"
+
+extern "C" int LLVMFuzzerTestOneInput( const uint8_t *data, size_t size )
+{
+    // 1: The parser takes a NUL-terminated C string and scans for the terminator itself.
+    std::string candidate( reinterpret_cast<const char *>( data ), size );
+
+    // 2: Parse it. The result is ignored on purpose: ASan and UBSan watch for the bugs.
+    SteamNetworkingSocketsLib::RFC5245CandidateAttr attribute{};
+    SteamNetworkingSocketsLib::ParseRFC5245CandidateAttribute( candidate.c_str(), &attribute );
+    return 0;
+}
+```
+
+Its one seed is a candidate line I wrote by hand
+(`candidate:1 1 udp 2130706431 192.168.1.20 27015 typ host`). That's a rule I kept for every
+harness: {=ward: seeds are written, never harvested from crashes=}, so a seeds folder can never
+contain an unfixed bug. Both parsers ran at 100,000 to 200,000 executions a second.
+
+## Standing The Library Up
+
+Next is the handler for UDP packets from a host GNS has never heard of. That needs a listen
+socket, and GNS normally services sockets on a background thread, where a fuzzer can't control
+when things run. GNS exports a {=arcane: manual-poll mode=} that no public header declares. Turn
+it on before initializing and the service thread never starts, so the harness drives every step.
+
+The layer with the history is SNP, GNS's reliability layer, and it only runs on an established
+connection, where data packets are normally encrypted with AES-GCM. A fuzzer can't forge that
+encryption, but it doesn't have to: GNS also has a NULL cipher, and two connections in the same
+process can legitimately negotiate it. So the harness makes a real client and server over loopback
+with encryption off, and the fuzzer's bytes arrive at the decoder as the plaintext it would see
+after decryption. Three decisions here carried into every connection harness after it:
+
+- **Inject whole packets.** Calling the decoder directly skips setup and reads uninitialized
+  state, so each input goes in as a complete UDP packet through the real receive function.
+- **Rebuild the connection for every input.** That drops the speed to about 500 executions a
+  second, but nothing carries over between inputs.
+- **Destroy connections the hard way.** A normal close leaves a connection lingering on timers
+  that never advance in a tight loop, so every input leaked a socket until the run died with
+  {=glitch: "too many open files"=}.
+
+## One Packet Isn't Enough
+
+The logic bugs in #409 and #410 live in what the receiver remembers *between* packets: which
+packet numbers arrived, where the gaps are. So a second SNP harness treats one input as a
+sequence of packets, each with a signed sequence-number delta, so the fuzzer can
+{=static: open gaps, fill them out of order, and send duplicates=}.
+
+The connection still has to be rebuilt between inputs. If it stays alive, a crash depends on
+everything the campaign sent before, and the saved file reproduces nothing. So state builds up
+within an input and resets between them, because {=point: a crash I can't
+reproduce is a crash I can't report=}.
+
+## A Second Oracle
+
+Bugs like #410 corrupt no memory, so {=ghostly: ASan and UBSan can't see them=}. What notices is
+GNS itself: it's full of internal asserts that, in a normal build, log and carry on. So the
+stateful harnesses share a hook with two modes. By default asserts are logged and skipped, like a
+release build. With an environment variable set, every assert is a crash:
+```bash
+GNS_FUZZ_ASSERT_FATAL=1 ./gns-snp-sequence-harness corpus/
+```
+
+It's noisier, since some asserts fire on malformed input by design. One of them has a comment
+from the author right next to it saying they're not sure it's even possible lol. Once I've read
+one and decided it's harmless, it goes on a whitelist keyed by file and line.
+
+That made five harnesses. What I didn't know was how much of the library they reached, and that
+number is what drove everything after it: [aiming the fuzzer with
+coverage](/posts/low-coverage-is-not-opportunity/).
