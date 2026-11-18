@@ -2,7 +2,6 @@
 title = 'Threat Models, And No Critical Bug: The Results'
 date = 2026-11-15T11:10:00-06:00
 draft = false
-number = 7
 description = "Giving every GameNetworkingSockets harness a written threat model (which caught two doing less than I thought), and the final tally: twenty-one harnesses, the coverage, what it found, and where it stands with Valve."
 project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Threat Modeling', 'Security', 'Valve']

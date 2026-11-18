@@ -15,10 +15,11 @@
 {{- $size := 76 }}
 {{- if gt (len $title) 60 }}{{ $size = 56 }}{{ else if gt (len $title) 36 }}{{ $size = 66 }}{{ end }}
 
-{{- /* Small green label above the title: the post number on posts, "TAG" or "SERIES" on a tag's or
-       series' page. */ -}}
+{{- /* Small green label above the title: the post number on posts ("NO. 2.3", from
+       layouts/_partials/page_number.html), "PROJECT NO. 2" on projects, "TAG" or "SERIES" on a
+       tag's or series' page. */ -}}
 {{- $eyebrow := "" }}
-{{- with .Params.number }}{{ $eyebrow = printf "NO. %v" . }}{{ end }}
+{{- with partial "page_number.html" . }}{{ $eyebrow = printf "NO. %s" . }}{{ end }}
 {{- if eq .Section "projects" }}{{ with .Params.number }}{{ $eyebrow = printf "PROJECT NO. %v" . }}{{ end }}{{ end }}
 {{- if eq .Kind "term" }}
   {{- $eyebrow = upper .Data.Singular }}

@@ -1,0 +1,37 @@
+{{- /* A page's number, as a string without the "#": "2.3" on a post, "2" on a project, "" if the
+       page has none. Called with a page. Used by layouts/_partials/title_number.html and
+       layouts/_partials/social_card.html. See "Title numbers" in STYLE.md.
+       - Projects: "#2", from `number` in front matter, set by hand. The build fails if two
+         projects share a number.
+       - Posts: "#2.3", project number then part, worked out from the post's project
+         (`project = '<folder name>'`) and its place in that project's reading order, the same
+         order as the "Part 3 of 4" line and the project box (layouts/_partials/project_writeups.html).
+         Never set by hand. A post with no project, or a project with no number, gets none.
+       - Tag pages: `number` in the term's front matter, if any. */ -}}
+{{- $number := "" -}}
+{{- if eq .Section "posts" -}}
+  {{- with partial "post_project.html" . -}}
+    {{- $project := . -}}
+    {{- with $project.Params.number -}}
+      {{- $projectNumber := int . -}}
+      {{- range $i, $p := partial "project_writeups.html" $project -}}
+        {{- if eq $p.RelPermalink $.RelPermalink }}{{ $number = printf "%d.%d" $projectNumber (add $i 1) }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- with .Params.number -}}
+    {{- $number = string (int .) -}}
+    {{- $peers := slice -}}
+    {{- if eq $.Kind "term" }}{{ $peers = $.Parent.Pages }}{{ else }}{{ $peers = where site.RegularPages "Section" $.Section }}{{ end -}}
+    {{- range $peers -}}
+      {{- $peer := . -}}
+      {{- if ne $peer.RelPermalink $.RelPermalink -}}
+        {{- with $peer.Params.number }}{{ if eq (string (int .)) $number -}}
+          {{- errorf "number %s is used by both %s and %s" $number $.RelPermalink $peer.RelPermalink -}}
+        {{- end }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $number -}}

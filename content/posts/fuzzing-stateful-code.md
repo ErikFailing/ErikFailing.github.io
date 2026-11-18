@@ -2,7 +2,6 @@
 title = 'Reaching Deeper, And The Crashes That Were My Own'
 date = 2026-11-15T10:40:00-06:00
 draft = false
-number = 6
 description = "Priming real connection state before the fuzzer gets a turn, to reach GameNetworkingSockets code a fresh connection never runs, and the three times a 'finding' turned out to be my own harness."
 project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'cpp', 'Triage', 'Sanitizers', 'Security']

@@ -2,7 +2,6 @@
 title = "Aiming The Fuzzer: Coverage, And Proving A Clean Run Means Something"
 date = 2026-11-15T10:20:00-06:00
 draft = false
-number = 5
 description = "Using coverage to pick fuzzing targets in GameNetworkingSockets, why the biggest gaps were often the wrong ones, running the harnesses overnight, and putting old bugs back to prove a clean run means something."
 project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'libprotobuf-mutator', 'aflplusplus', 'CASR', 'Security']

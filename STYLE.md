@@ -186,17 +186,18 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
 - **Blockquotes:** 3px green bar, upright body text.
 - **Tables:** horizontal rules only, surface-2 header row, scroll sideways on phones.
 - **Images:** 1px `--border` so dark screenshots don't blend into the page.
-- **Title numbers:** posts and projects each have a number (`number = 4` in front
-  matter), shown in front of the title as
-  "#4" in green: on the page's own heading, on its card in every list, and in the project box's
-  label (`layouts/_partials/title_number.html`). Green and tabular like the section numbers,
-  because it's an ordinal label, not part of the name; "#" keeps it from reading as a section
-  number. The two kinds count separately (post #4, project #1). Numbers are set by
-  hand: `hugo new content posts/...` suggests the next post number, and the build fails if two
-  pages of the same kind share one. A project's posts are numbered in reading order. Once a
-  post has been out for a while its number stays put; renumber only when I ask. Numbers aren't
-  in URLs, browser tab titles or link previews' titles; social cards show them as the small green
-  label ("NO. 4", "PROJECT NO. 1").
+- **Title numbers:** posts are numbered by project: "#2.3" is part 3 of project #2. Projects
+  have a number set by hand (`number = 2` in front matter); a post's number is worked out from
+  its `project` and its place in that project's reading order (by date, drafts excluded, the
+  same order as the part line and the project box), so posts never carry a `number` and two
+  can't collide. A post with no project gets no number. Shown in green in front of the title: on
+  the page's own heading, on its card in every list, and in the project box's label
+  (`layouts/_partials/title_number.html`, computed in `layouts/_partials/page_number.html`).
+  Green and tabular like the section numbers, because it's an ordinal label, not part of the
+  name; "#" keeps it from reading as a section number. The build fails if two projects share a
+  number. Backdating a post into the middle of a project shifts the parts after it, so new posts
+  go at the end. Numbers aren't in URLs, browser tab titles or link previews' titles; social
+  cards show them as the small green label ("NO. 2.3", "PROJECT NO. 2").
 - **Part line:** a post that belongs to a project shows "Part 3 of 8 in the project <name>"
   under its tags, in muted text with the project name as a link (`layouts/single.html`). Parts
   follow the posts' dates, the same order as the project box, and drafts don't count.

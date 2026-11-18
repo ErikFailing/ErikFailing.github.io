@@ -2,7 +2,6 @@
 title = "Fuzzing Valve's GameNetworkingSockets: The Target And The First Harnesses"
 date = 2026-11-15T10:00:00-06:00
 draft = false
-number = 4
 description = "Why I picked Valve's open-source networking library to fuzz, the pinned lab I built for it, and the first five harnesses, from a parser that takes a buffer to a real connection."
 project = 'gamenetworkingsockets-fuzzing'
 tags = ['Fuzzing', 'Docker', 'cpp', 'libFuzzer', 'Security', 'Valve']
