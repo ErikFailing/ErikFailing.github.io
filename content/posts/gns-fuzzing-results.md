@@ -77,6 +77,21 @@ went from covering 2.5% of the peer-to-peer ICE setup file to {=trophy: 31%=}, a
 harness now reaches the connected state with a negotiated cipher. Having to name, function by
 function, what a harness drives is what caught it.
 
+## The Last Campaign
+
+With those two harnesses fixed, I ran everything that hadn't had a long run for about eleven hours
+overnight: the fixed harnesses under AFL++ with both oracles, and MemorySanitizer across the
+suite. They saturated within the first couple of hours, so I used the time to build a twenty-first
+harness. It covers the server's connect-request handler, a stretch that runs {=crimson: before
+authentication=} and sat between two existing harnesses without being reached by either; it takes
+the fuzzer's whole request and supplies the anti-spoofing challenge an honest client would have
+been given.
+
+The result was the same as every campaign before it: {=point: nothing new=}. MemorySanitizer ran
+tens of millions of executions without a single new finding, the new harness ran hundreds of
+millions, and every crash anything saved was a finding I already had. Coverage went from 43.79% to
+46.24%.
+
 ## The Suite
 
 The twenty-one harnesses, by area:
@@ -112,7 +127,8 @@ drive: local key management, sender-side serialization, lifecycle and API code.
 ## What It Found
 
 No critical bug. Across the suite, hundreds of millions of executions under ASan and UBSan turned
-up no memory-safety crash. Considering this library had four memory-corruption CVEs in 2020, I
+up a single memory-safety finding, and the code with a history of memory-corruption bugs, like
+SNP's segment reassembly, came through clean. Considering this library had four CVEs in 2020, I
 think {=point: GNS is a well-hardened target now=}.
 
 What did come out:
@@ -121,21 +137,6 @@ What did come out:
   loads, all on values parsed off the wire. They only show up under UBSan and corrupt no memory,
   so I'm treating them as {=ward: hardening fixes=}, not vulnerabilities.
 - **One memory-safety finding,** which I reported privately to Valve.
-
-## The Last Campaign
-
-With those two harnesses fixed, I ran everything that hadn't had a long run for about eleven hours
-overnight: the fixed harnesses under AFL++ with both oracles, and MemorySanitizer across the
-suite. They saturated within the first couple of hours, so I used the time to build a twenty-first
-harness. It covers the server's connect-request handler, a stretch that runs {=crimson: before
-authentication=} and sat between two existing harnesses without being reached by either; it takes
-the fuzzer's whole request and supplies the anti-spoofing challenge an honest client would have
-been given.
-
-The result was the same as every campaign before it: {=point: nothing new=}. MemorySanitizer ran
-tens of millions of executions without a single new finding, the new harness ran hundreds of
-millions, and every crash anything saved was a finding I already had. Coverage went from 43.79% to
-46.24%.
 
 ## Where Things Stand
 

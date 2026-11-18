@@ -54,6 +54,10 @@ DEFINE_BINARY_PROTO_FUZZER( const CMsgSteamSockets_UDP_Stats &msgStats )
 }
 ```
 
+One LPM gotcha worth knowing: `DEFINE_PROTO_FUZZER` reads its corpus as text-format protobuf
+and `DEFINE_BINARY_PROTO_FUZZER` reads binary. Binary seeds with the text macro fail to load
+without any error, and the harness {=glitch: quietly starts from nothing=}.
+
 An LPM version of the certificate harness added about 0.5 points. Better, but the key parser I
 was aiming at, `keypair.cpp`, sat at exactly 18.96% through both harnesses.
 
@@ -74,7 +78,8 @@ So now every gap gets sorted before I spend time on it:
 - **Local:** sender-side serialization, lifecycle and API code, local crypto setup. Skip.
 - **Blocked:** gated by something I can't forge (the hardcoded root key), or not compiled in.
 
-I could push the number up by fuzzing the key-file parsers, and it would look great on a chart lol.
+I could push the number up by fuzzing the key-file parsers, and it would look great on a chart lol,
+but a bug in code only the application itself feeds isn't one an attacker can trigger.
 
 ## Gated vs Ungated
 
@@ -107,10 +112,6 @@ private half the way GNS does. The check passes because it's verifying the harne
 against the harness's key, and {=arcane: execution finally reaches the key exchange=} with
 attacker-shaped fields behind the gate. When a gate is a check you can honestly satisfy, satisfy
 it in the harness.
-
-One LPM gotcha worth knowing: `DEFINE_PROTO_FUZZER` reads its corpus as text-format protobuf
-and `DEFINE_BINARY_PROTO_FUZZER` reads binary. Binary seeds with the text macro fail to load
-without any error, and the harness {=glitch: quietly starts from nothing=}.
 
 ## Leaving Them On Overnight
 

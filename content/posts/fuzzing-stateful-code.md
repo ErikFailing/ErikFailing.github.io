@@ -88,19 +88,42 @@ input. The role-change function went {=trophy: from 0% to about 54% covered=}.
 ## What It Found, And What It Costs
 
 On the ack accounting: nothing, and I think that's a real result. About 2.5 hours under ASan
-(AddressSanitizer) with 12 to 14 instances produced zero crashes, and so did a 45-minute run under
-the assert oracle (21.7 million executions).
+(AddressSanitizer) with 12 to 14 instances produced zero crashes, and the assert oracle came up
+clean too, eventually.
 
 The costs: the primed state is one fixed shape (24 equal packets on one lane), there's no real
 timing (retransmits only happen when the fuzzer nacks), and it's slow, at 130 to 240
 executions a second.
 
-That clean assert-oracle run came with an asterisk, though. The first time I ran it, it saved
-439 crashes, and for a few minutes I thought I had something. Every one was my own harness. That
-was the third time on this project a "finding" turned out to be me, so it's worth going through
-all three, because {=point: nothing goes to a vendor until I understand its root cause=}. If
-Valve's engineer spends an hour discovering my harness built an impossible situation, they'll
-read my next report more skeptically.
+That "eventually" is because the first assert-oracle run saved 439 crashes, and for a few minutes
+I thought I had something. Every one was my own harness. It was one of three times on this
+project a "finding" turned out to be me, so it's worth going through all three, because
+{=point: nothing goes to a vendor until I understand its root cause=}. If Valve's engineer spends
+an hour discovering my harness built an impossible situation, they'll read my next report more
+skeptically.
+
+## 439 Crashes, One Bug, Mine
+
+Under the assert oracle the ack harness {=static: saved 439 crashes in one run=}, and every
+one was the same assert: the time between sending a packet and receiving its ack was
+negative. The cause was two clocks. The harness primed its in-flight packets using the library's
+real clock, then delivered the fuzzed acks stamped with a fixed logical clock that was *earlier*.
+So GNS was handed acks for packets that, by its own clock, hadn't been sent yet, and its assert
+correctly said that's impossible. What I checked before believing that:
+
+1) Replayed 8 of the 439 inputs. All 8 hit the identical assert.
+2) Fixed the harness to stamp acks with the real clock.
+3) Replayed the same 8 inputs: {=trophy: 0 of 8 crashed=}.
+4) Re-ran the campaign: 45 minutes, 21.7 million executions, zero assert crashes.
+
+So that surface held up under both oracles, and the 439 were me lol.
+
+## A Crash In My Own Stand-In
+
+One of the stateful harnesses crashed on a null socket, and the null came from my harness's
+stand-in for the network, not from anything the library did with attacker bytes. It's the most
+common kind: a harness fakes the parts around the code it's testing, and
+{=ghostly: every fake is a place to manufacture a crash=} no attacker could cause.
 
 ## Uninitialized Memory On The Wire
 
@@ -111,8 +134,8 @@ of the 217 bytes in a connect request. It looked like a textbook information lea
 deterministic, it reproduced with encryption on and off, and the function that sends the packet
 doesn't zero its buffer first.
 
-So I recorded it as a confirmed finding. That lasted less than a day, until I traced where the
-128 bytes came from:
+So I wrote it up in my notes as a confirmed finding. That lasted less than a day, until I traced
+where the 128 bytes came from:
 
 - 32 bytes: the certificate's public key
 - 32 bytes: the ephemeral key-exchange key
@@ -127,29 +150,6 @@ packet went out with zero flagged bytes.
 My "confirmations" never tested the right thing. Encrypted mode generates its keys with OpenSSL
 too, so of course it reproduced there. The real fix was the expensive one I'd been putting off:
 build OpenSSL from source under MSan, so {=iron: the whole dependency stack is instrumented=}.
-
-## A Crash In My Own Stand-In
-
-One of the stateful harnesses crashed on a null socket, and the null came from my harness's
-stand-in for the network, not from anything the library did with attacker bytes. It's the most
-common kind: a harness fakes the parts around the code it's testing, and
-{=ghostly: every fake is a place to manufacture a crash=} no attacker could cause.
-
-## 439 Crashes, One Bug, Mine
-
-Back to the ack harness. Under the assert oracle it {=static: saved 439 crashes in one run=}, and
-every one was the same assert: the time between sending a packet and receiving its ack was
-negative. The cause was two clocks. The harness primed its in-flight packets using the library's
-real clock, then delivered the fuzzed acks stamped with a fixed logical clock that was *earlier*.
-So GNS was handed acks for packets that, by its own clock, hadn't been sent yet, and its assert
-correctly said that's impossible. What I checked before believing that:
-
-1) Replayed 8 of the 439 inputs. All 8 hit the identical assert.
-2) Fixed the harness to stamp acks with the real clock.
-3) Replayed the same 8 inputs: {=trophy: 0 of 8 crashed=}.
-4) Re-ran the campaign: 45 minutes, 21.7 million executions, zero assert crashes.
-
-So that surface held up under both oracles, and the 439 were me lol.
 
 ## What I Check Now
 

@@ -98,6 +98,9 @@ Three things needed fixing before fuzzers ran properly in this stack:
   [Trail of Bits testing handbook](https://appsec.guide/) says it can cut fuzzing throughput by
   up to half, so campaign containers run with it off.
 
+I built all of this with {=claude: Claude Code=} doing a lot of the implementation and babysitting
+the overnight runs, same as the rest of this site.
+
 ## Two Ways To Hide A Crash
 
 The library and harnesses compile with one set of flags, including the two sanitizers that
@@ -120,9 +123,6 @@ Two details here matter more than they look, because the obvious setup silently 
 2) **Overriding the CMake build type.** GNS's CMake defaults to `RelWithDebInfo`, which appends
    `-DNDEBUG` after my flags and strips the asserts. Those asserts turn out to be a whole oracle
    later, and `-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=-O1` keeps them.
-
-I built all of this with {=claude: Claude Code=} doing a lot of the implementation and babysitting
-the overnight runs, same as the rest of this site.
 
 ## The First Harnesses: Start With The Cheapest Thing
 
@@ -200,7 +200,7 @@ GNS_FUZZ_ASSERT_FATAL=1 ./gns-snp-sequence-harness corpus/
 
 It's noisier, since some asserts fire on malformed input by design. One of them has a comment
 from the author right next to it saying they're not sure it's even possible lol. Once I've read
-one and decided it's harmless, it goes on a whitelist keyed by file and line.
+one and decided it's harmless, it goes on an allowlist keyed by file and line.
 
 That made five harnesses. What I didn't know was how much of the library they reached, and that
 number is what drove everything after it: [aiming the fuzzer with
