@@ -122,3 +122,8 @@ tags:
   libprotobuf-mutator: protobuf
   triage: arcane
   disclosure: trophy
+  bug-bounty: trophy
+  recon: crimson
+  cors: ghostly
+  grpc: protobuf
+  oauth: ward
