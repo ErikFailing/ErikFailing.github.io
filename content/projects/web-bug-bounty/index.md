@@ -9,6 +9,8 @@ role = 'Solo, personal research'
 year = 2026
 tags = ['Bug Bounty', 'Web', 'Security', 'Recon', 'CORS', 'gRPC', 'Python', 'Bash']
 weight = 15
+accent = 'crimson'
+pattern = 'crosshatch'
 +++
 
 In November 2026 I spent about a week on a closed-scope web bug bounty program on HackerOne, my

@@ -1,0 +1,14 @@
+{{- /* The project theme a page or a card for it gets: the project's folder name (its slug) when the project
+       has an accent in front matter, otherwise "". A project page is its own project; a post belongs to the
+       project its project = '<name>' names (layouts/_partials/post_project.html). The slug goes in
+       data-project-page (on a page) or data-project (on a card), and assets/css/project-themes.css does the
+       rest. See "Project themes" in STYLE.md. */ -}}
+{{- $project := false }}
+{{- if and (eq .Type "projects") .IsPage }}
+  {{- $project = . }}
+{{- else }}
+  {{- $project = partial "post_project.html" . }}
+{{- end }}
+{{- $slug := "" }}
+{{- with $project }}{{ if .Params.accent }}{{ $slug = .File.ContentBaseName }}{{ end }}{{ end }}
+{{- return $slug }}

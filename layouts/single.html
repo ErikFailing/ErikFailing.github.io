@@ -1,4 +1,4 @@
-{{- /* Override of themes/PaperMod/layouts/single.html. Four changes; when updating PaperMod, diff
+{{- /* Override of themes/PaperMod/layouts/single.html. Changes; when updating PaperMod, diff
        this file against the theme's:
        1. Posts get the numbered-headings class, which numbers their section headings and table of
           contents with CSS counters (theme.css). A page can override with numberHeadings = true/false.
@@ -10,12 +10,14 @@
           description, from the page's last Git commit (enableGitInfo).
        5. The title starts with the post's number ("#2.3", layouts/_partials/title_number.html).
        6. A post that belongs to a project gets a "Part 3 of 8 in the project ..." line under its
-          tags. */ -}}
+          tags.
+       7. A post in a themed project carries data-project-page="<slug>" on its article
+          (layouts/_partials/project_theme.html), which gives the page its project theme. */ -}}
 {{- define "main" }}
 
 {{- $numbered := eq .Section "posts" }}
 {{- if isset .Params "numberheadings" }}{{ $numbered = .Params.numberheadings }}{{ end }}
-<article class="post-single{{ if $numbered }} numbered-headings{{ end }}">
+<article class="post-single{{ if $numbered }} numbered-headings{{ end }}"{{ with partial "project_theme.html" . }} data-project-page="{{ . }}"{{ end }}>
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
     <h1 class="post-title entry-hint-parent">

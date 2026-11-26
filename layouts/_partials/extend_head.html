@@ -11,3 +11,7 @@
 {{- /* Accent color classes, generated from data/accents.yaml (see "Accents" in STYLE.md). */ -}}
 {{- $accents := resources.Get "css/accent-styles.css" | resources.ExecuteAsTemplate "assets/css/accent-styles.css" . | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $accents.RelPermalink }}" integrity="{{ $accents.Data.Integrity }}" crossorigin="anonymous">
+{{- /* Project themes, generated from each project's accent and pattern front matter (see "Project themes" in
+       STYLE.md). */ -}}
+{{- $projectThemes := resources.Get "css/project-themes.css" | resources.ExecuteAsTemplate "assets/css/project-themes.css" . | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $projectThemes.RelPermalink }}" integrity="{{ $projectThemes.Data.Integrity }}" crossorigin="anonymous">

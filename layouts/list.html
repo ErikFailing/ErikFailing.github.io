@@ -11,7 +11,9 @@
        5. Headings carry the page's number ("#2.3", layouts/_partials/title_number.html): each
           entry's title.
        6. The previous / next links are layouts/_partials/page_nav.html, which shows
-          "Page 2 of 3" between them (the theme's ShowPageNums option is no longer used). */ -}}
+          "Page 2 of 3" between them (the theme's ShowPageNums option is no longer used).
+       7. An entry for a post or project in a themed project carries data-project="<slug>"
+          (layouts/_partials/project_theme.html), which gives the card its project theme. */ -}}
 {{- define "main" }}
 
 {{- if (and site.Params.profileMode.enabled .IsHome) }}
@@ -81,7 +83,7 @@
 {{- $class = "post-entry tag-entry" }}
 {{- end }}
 
-<article class="{{ $class }}">
+<article class="{{ $class }}"{{ with partial "project_theme.html" . }} data-project="{{ . }}"{{ end }}>
   {{- $isHidden := (.Param "cover.hiddenInList") | default (.Param "cover.hidden") | default false }}
   {{- partial "cover.html" (dict "cxt" . "IsSingle" false "isHidden" $isHidden) }}
   <header class="entry-header">

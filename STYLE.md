@@ -121,7 +121,8 @@ Base unit 4px: 4, 8, 12, 16, 24, 32, 48, 64px.
   the top menu links straight to all posts.
 - **Tags page:** every tag as its colored pill with its post count (the count in regular weight),
   most used first (`layouts/tags/taxonomy.html`).
-- **Projects page:** `/projects/` is a grid of cards, one per project, lowest `weight` first
+- **Projects page:** `/projects/` is a grid of cards, one per project, highest `number` first so
+  the newest is top left, like the Blog page
   (`layouts/projects/list.html`). The grid fits as many 320px-or-wider columns as the content
   column holds, so one project fills the row. A card is the same `--entry` card as a post entry
   (whole card is the link, blue edge on hover): the title, a muted "year · role · N write-ups"
@@ -344,6 +345,61 @@ Brand colors use the brand's own color, lightened (keeping the hue) if needed to
   readers and copy/paste see normal text.
 - Every color and every point along each gradient passes 7:1 on the canvas. Solid blues are fine:
   links are always underlined and accents never are.
+
+## Project themes
+
+Each project, and everything that belongs to it, gets a slight theme in one color of its own, so a
+reader can tell the projects apart at a glance. It's three pieces, always together:
+
+1. **A glow:** a soft light in the project color, with a fainter second light drifted a little in hue
+   (where the browser supports relative colors; otherwise the same color).
+2. **A pattern:** a faint background pattern in the project color, fading out before the body text.
+3. **Numbers:** the title number ("#3.2") and the section and table-of-contents numbers use the project
+   color instead of green.
+
+**Where it shows, and how strong:**
+
+- **Cards, balanced:** every card for a post or project in a themed project (the Projects page, the
+  Blog page, tag pages) gets the glow from its top-left corner, a fainter one from the bottom-right,
+  the pattern fading out from the corner, and a project-colored title number.
+- **Full pages, stronger:** a project's own page and every post in it get the glow and pattern at the
+  top of the page, about 760px deep, plus all the numbers.
+- **Nowhere else.** List pages, About, the resume and posts outside a project are unchanged. Print is
+  unchanged too: the rules are screen-only.
+
+**Setting it up:** a project picks its theme in its own front matter, and its posts follow through
+their `project` field:
+
+```toml
+accent = 'crimson'      # a style from data/accents.yaml; its (first) color is the project color
+pattern = 'crosshatch'  # grid, dots, crosshatch or none
+```
+
+A project with no `accent` gets no theme. An unknown style or pattern fails the build.
+
+| Project | Accent | Color | Pattern |
+|---|---|---|---|
+| #1 This Site | `arcane` | violet `#b69cff` | grid (a blueprint) |
+| #2 GameNetworkingSockets | `flow` | cyan `#4fd8e0` | dots (static) |
+| #3 Web bug bounty | `crimson` | red `#ff6b6b` | crosshatch |
+
+**Rules:**
+
+- **Never a blue project color.** Blue means "you can act here", and a blue section number would read
+  as a link. Pick a style whose color is clearly not the link blue.
+- **One color per project, from the palette.** Every accent color already passes 7:1 on the canvas, so
+  the recolored numbers do too.
+- **Body text never changes color,** and the pattern fades out near the top of the article, so most
+  reading happens on the plain canvas.
+
+**How it's built:** [`layouts/_partials/project_theme.html`](layouts/_partials/project_theme.html)
+works out a page's or card's project. Posts and project pages carry `data-project-page="<slug>"` on
+their article, and cards carry `data-project="<slug>"`.
+[`assets/css/project-themes.css`](assets/css/project-themes.css) is a template run at build time (like
+the accent styles): it writes each project's color and pattern as custom properties, then the shared
+rules. The full-page rules select `body:has([data-project-page])`, so a browser without `:has()`
+simply shows the page unthemed. There are no inline styles, so the Content-Security-Policy is
+unchanged.
 
 ## Writing for skimmers
 

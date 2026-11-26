@@ -1,0 +1,79 @@
+{{- /* Generated: a theme per project, from each project's front matter (content/projects/<slug>/index.md):
+         accent    an accent style from data/accents.yaml; its (first) color is the project's color
+         pattern   grid, dots, crosshatch or none: the faint background pattern
+       A project with no accent gets no theme. Pages that belong to a project carry data-project-page="<slug>"
+       (posts and the project's own page); cards for them carry data-project="<slug>". See "Project themes" in
+       STYLE.md. Built and linked by layouts/_partials/extend_head.html. */ -}}
+/* Generated from the projects' front matter by assets/css/project-themes.css */
+@media screen {
+{{- $styles := hugo.Data.accents.styles }}
+{{- $patterns := slice "grid" "dots" "crosshatch" "none" }}
+{{- range (site.GetPage "/projects").RegularPages }}
+{{- $page := . }}
+{{- with .Params.accent }}
+{{- $slug := $page.File.ContentBaseName }}
+{{- $style := index $styles . }}
+{{- if not $style }}{{ errorf "%s: accent %q is not a style in data/accents.yaml" $page.File.Path . }}{{ end }}
+{{- if not $style.colors }}{{ errorf "%s: accent %q has no color" $page.File.Path . }}{{ end }}
+{{- $color := index $style.colors 0 }}
+{{- $pattern := $page.Params.pattern | default "none" }}
+{{- if not (in $patterns $pattern) }}{{ errorf "%s: pattern %q must be one of %s" $page.File.Path $pattern (delimit $patterns ", ") }}{{ end }}
+[data-project="{{ $slug }}"],
+body:has([data-project-page="{{ $slug }}"]) {
+  --p: {{ $color }};
+  --p-drift: {{ $color }};
+{{- if eq $pattern "grid" }}
+  --pattern:
+    linear-gradient(color-mix(in srgb, var(--p) var(--pa), transparent) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, color-mix(in srgb, var(--p) var(--pa), transparent) 1px, transparent 1px) 0 0 / 28px 28px;
+{{- else if eq $pattern "dots" }}
+  --pattern: radial-gradient(color-mix(in srgb, var(--p) var(--pd), transparent) 1px, transparent 1.7px) 0 0 / 14px 14px;
+{{- else if eq $pattern "crosshatch" }}
+  --pattern:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--p) var(--pa), transparent) 0 1px, transparent 1px 11px),
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--p) calc(var(--pa) * 0.55), transparent) 0 1px, transparent 1px 22px);
+{{- else }}
+  --pattern: linear-gradient(transparent, transparent);
+{{- end }}
+}
+{{- end }}
+{{- end }}
+
+/* The glow's second light: the project color, drifted a little in hue, where the browser can compute it. */
+@supports (color: oklch(from red l c h)) {
+  [data-project], body:has([data-project-page]) { --p-drift: oklch(from var(--p) l c calc(h + 28)); }
+}
+
+/* Strength: cards are balanced (blog post and project cards alike); a project's own pages, its posts and
+   its project page, are stronger. */
+[data-project] { --glow: 16%; --pa: 10%; --pd: 28%; }
+body:has([data-project-page]) { --glow: 24%; --pa: 15%; --pd: 40%; --pattern-height: 760px; }
+
+/* Full pages: the glow at the top, then the pattern, faded out into the canvas before the body text. */
+body:has([data-project-page]) {
+  background:
+    radial-gradient(1100px 480px at 18% -140px, color-mix(in srgb, var(--p) var(--glow), transparent), transparent 70%) no-repeat,
+    radial-gradient(800px 400px at 86% -120px, color-mix(in srgb, var(--p-drift) calc(var(--glow) * 0.5), transparent), transparent 70%) no-repeat,
+    linear-gradient(to bottom, transparent, var(--theme) var(--pattern-height)) no-repeat,
+    var(--pattern),
+    var(--theme);
+}
+
+/* Cards: the same light from the top-left corner, a fainter second one from the bottom-right, and the
+   pattern fading out from the corner. */
+.post-entry[data-project] {
+  background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--p) var(--glow), transparent), transparent 62%) no-repeat,
+    radial-gradient(90% 70% at 100% 100%, color-mix(in srgb, var(--p-drift) calc(var(--glow) * 0.45), transparent), transparent 60%) no-repeat,
+    linear-gradient(135deg, transparent, var(--entry) 70%) no-repeat,
+    var(--pattern),
+    var(--entry);
+}
+
+/* Numbers in the project color instead of green: the title number on cards and pages, and the section
+   numbers and table of contents on posts. */
+[data-project] .title-number,
+body:has([data-project-page]) .title-number { color: var(--p); }
+body:has([data-project-page]) .numbered-headings .md-content h2::before,
+body:has([data-project-page]) .numbered-headings .toc .inner > ul > li > a::before { color: var(--p); }
+}

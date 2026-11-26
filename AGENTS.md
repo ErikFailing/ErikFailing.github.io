@@ -16,7 +16,9 @@ read like Erik showing someone something cool, not like marketing.
 - **`content/projects/<slug>/index.md`:** one page bundle per project, in the same toned-down
   voice as About, with sparse accents. The long-form story goes in blog posts that name the
   project (`project = '<folder name>'` in their front matter); there are no separate series.
-  See "Projects page" in STYLE.md for the front matter.
+  See "Projects page" in STYLE.md for the front matter. Each project picks a theme color and
+  pattern (`accent`, `pattern`) that its page, its posts and their cards share; see "Project
+  themes" in STYLE.md.
 - **This repo is public, drafts included.** `draft = true` keeps a post off the live site, not
   off GitHub. Anything that can't be public yet (an unfixed vulnerability's details, for example)
   doesn't get written here at all, not even as a `TODO:` that hints at it.

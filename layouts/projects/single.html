@@ -3,10 +3,12 @@
        same pills posts have under their date line), a facts block (status, role, year, links), then
        the page's Markdown, then the project's write-ups: every published post that names this
        project, in reading order, in the same box those posts end with. A project with no
-       published posts yet just has no box. See "Projects" in STYLE.md. */ -}}
+       published posts yet just has no box. A project with an accent carries data-project-page on its
+       article, which gives the page its theme ("Project themes" in STYLE.md). See "Projects" in
+       STYLE.md. */ -}}
 {{- define "main" }}
 
-<article class="post-single project-single">
+<article class="post-single project-single"{{ with partial "project_theme.html" . }} data-project-page="{{ . }}"{{ end }}>
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
     <h1 class="post-title">{{ partial "title_number.html" . }}{{ .Title }}</h1>

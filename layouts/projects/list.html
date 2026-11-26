@@ -1,4 +1,5 @@
-{{- /* The Projects page (/projects/): one card per project, lowest `weight` first. A site-only layout
+{{- /* The Projects page (/projects/): one card per project, highest `number` first
+       (newest first, like the Blog page). A site-only layout
        (the theme has no projects templates), so nothing in PaperMod is shadowed. Each project is a
        page bundle, content/projects/<slug>/index.md, with this front matter:
          title, description   the card's heading and summary (description is also the page's subtitle)
@@ -10,7 +11,9 @@
        card counts them.
          links                [[links]] name + url, shown on the project's own page
          number               shown in front of the title as "#1" (set by hand; projects have their own count)
-         featured, weight     for the home page (see TODO.md) and the order here
+         featured, weight     for the home page (see TODO.md); the order here comes from number
+         accent, pattern      the project's theme: an accent style for its color and a background pattern
+                              (grid, dots, crosshatch or none); see "Project themes" in STYLE.md
        The project's own page is layouts/projects/single.html. See "Projects" in STYLE.md. */ -}}
 {{- define "main" }}
 <header class="page-header">
@@ -28,10 +31,10 @@
 {{- end }}
 
 <div class="project-grid">
-  {{- $paginator := .Paginate .RegularPages.ByWeight }}
+  {{- $paginator := .Paginate (sort .RegularPages "Params.number" "desc") }}
   {{- range $paginator.Pages }}
   {{- $writeups := partial "project_writeups.html" . }}
-  <article class="post-entry project-card">
+  <article class="post-entry project-card"{{ with partial "project_theme.html" . }} data-project="{{ . }}"{{ end }}>
     <header class="entry-header">
       <h2>{{ partial "title_number.html" . }}{{ .Title }}</h2>
     </header>

@@ -11,6 +11,8 @@ year = 2026
 tags = ['Fuzzing', 'Security', 'Valve', 'cpp', 'libFuzzer', 'aflplusplus', 'Sanitizers', 'libprotobuf-mutator', 'CASR', 'Docker']
 featured = true
 weight = 10
+accent = 'flow'
+pattern = 'dots'
 [[links]]
   name = 'Upstream issue #475'
   url = 'https://github.com/ValveSoftware/GameNetworkingSockets/issues/475'

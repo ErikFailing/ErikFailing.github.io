@@ -10,6 +10,8 @@ role = 'Solo'
 year = 2026
 tags = ['Hugo', 'GitHub Actions', 'Web', 'Security', 'Design']
 weight = 20
+accent = 'arcane'
+pattern = 'grid'
 [[links]]
   name = 'Source on GitHub'
   url = 'https://github.com/ErikFailing/ErikFailing.github.io'
