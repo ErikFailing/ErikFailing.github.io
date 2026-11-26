@@ -2,7 +2,7 @@
 date = '2026-11-26T09:20:00-06:00'
 draft = false
 title = "Testing Without Credentials, And Why My CORS Finding Wasn't A Finding"
-description = 'The no-credential checklist I ran against a bug bounty program, what each clean result actually proves, and a CORS misconfiguration on 100 hosts that turned out to expose nothing, with a local lab that shows why.'
+description = 'The no-credential checklist I ran against a bug bounty program, what each clean result actually proves, and a CORS misconfiguration across a shared gateway that turned out to expose nothing, with a local lab that shows why.'
 project = 'web-bug-bounty'
 tags = ['Bug Bounty', 'CORS', 'OAuth', 'Web', 'Security', 'Python']
 +++
