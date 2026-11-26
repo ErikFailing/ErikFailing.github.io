@@ -238,8 +238,7 @@ These are starting points, not forms to fill in. Drop sections that don't apply.
 - **Only public targets and personal research,** done on my own time and equipment.
 - **Nothing from work.** No details about current or past employers' systems, programs, customers,
   findings, tooling or networks beyond what's already on my resume. Nothing classified or
-  controlled, ever, even in vague or "anonymized" form. If a post touches my field, check whether
-  it needs prepublication review before publishing.
+  controlled, ever, even in vague or "anonymized" form.
 - **Hack The Box: retired machines only.** Follow the platform's rules on writeups. Same for CTFs
   still running.
 - **Disclosure writeups only after coordinated disclosure:** the vendor has fixed it or the agreed
