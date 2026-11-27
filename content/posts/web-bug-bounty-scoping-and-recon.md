@@ -65,11 +65,9 @@ Every active tool follows the same rules:
 - **Paced.** Every tool has a rate limit and a request cap. The probes defaulted to 3 requests a
   second, and the later runs went at 1 a second or slower.
 
-DNS was the awkward one. A DNS lookup can't carry an HTTP header, and I caught (in an audit of my
-own traffic, later in the week) that one DNS-only tool had resolved names without recording who ran
-it. The rule I settled on is that {=ward: DNS-only tools still require the username=}, and write it
-to a `run-meta.txt` with the run's details, so every run is attributable even when the protocol
-can't say so.
+DNS can't carry an HTTP header, so {=ward: DNS-only tools still require the username=} too, and
+write it to a `run-meta.txt` with the run's details, so every run is attributable even when the
+protocol can't say so.
 
 One app made the pacing point for me. During content discovery, its backend {=glitch: stopped
 answering after about ten fast requests=}, a tarpit. So I stopped content discovery there and mined

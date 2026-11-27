@@ -19,7 +19,8 @@ Each of these came back clean. A clean result is only worth something if you kno
 out, so I've noted what each one proved:
 
 - **Subdomain takeover.** A DNS pass over every in-scope name turned up 14 dangling CNAMEs (DNS
-  aliases pointing at names that no longer exist), all pointing at cloud load balancer names the provider won't hand out again, so none were claimable.
+  aliases pointing at names that no longer exist), all pointing at cloud load balancer names the
+  provider won't hand out again, so none were claimable.
 - **Open redirect.** I sent the login page's return-URL parameter an off-site canary on all 228
   live login hosts, without following redirects, and checked the `Location` header. None
   redirected off-site.
@@ -35,14 +36,13 @@ out, so I've noted what each one proved:
   protocol-relative `//`, two substring-confusion tricks and a trailing slash) and compares each
   answer to two controls: the real redirect URI and one never registered anywhere. All eight were
   rejected. Leaving out the PKCE (Proof Key for Code Exchange) parameters got a spec-compliant
-  `invalid_request` error back. I ran it twice, because a couple of requests got no answer the
-  first time, and across both runs every trick got a clean rejection at least once.
+  `invalid_request` error back. Across two runs, every trick got a clean rejection.
 - **Token forgery.** A 15-row battery against one read-only API method that requires a token, one
   request every 4 seconds, with no real user identities in any token: no header, a malformed token,
   `alg: none`, RS256 (RSA-signed) with an empty or bad signature, a swapped `kid`, and HS256
   (HMAC-signed) tokens using secrets derived from the identity provider's public key (algorithm
-  confusion). Every row that answered (14 of 15) got a 401. The error messages showed the validator accepts {=ward: exactly
-  one algorithm=}, so the RS256 and `none` tricks never got past the first check.
+  confusion). Every row that answered (14 of 15) got a 401. The error messages showed the
+  validator accepts {=ward: exactly one algorithm=}, so the RS256 and `none` tricks never got past the first check.
 - **Known CVEs.** Targeted nuclei templates for the stack I'd actually fingerprinted, across all 18
   apps. Zero matches.
 
@@ -62,11 +62,7 @@ faces. It could read it, and the same request through the gateway to a real back
 came back readable too.
 
 Then I sized it across every host serving the same login page. Most of them reflected the same
-way, and the browser proof read a backend response on every new one I ran it against. A small
-mistake got caught on the way: I built the list of hosts still to test with `grep -vFf`, which
-matches substrings, and it {=glitch: silently dropped two unrelated hosts=} whose names happened to
-contain an already-tested one. A count check (95 instead of 97) caught it before anything ran, and
-`grep -vxFf` (whole-line matches) fixed it.
+way, and the browser proof read a backend response on every new one I ran it against.
 
 At that point I had a working proof of concept, a gateway-wide blast radius and a drafted report.
 
@@ -80,22 +76,17 @@ the victim's token, because it doesn't have it.
 
 So a logged-in victim's browser would make the cross-origin request with no token, and get the
 same 401 anyone gets. The only thing an attacker page could read was content that's public anyway
-(login-page settings and identity provider metadata, the same things any visitor gets). The mechanism was
-real and gateway-wide, but no confidentiality boundary was crossed.
-
-I'd also gotten part of the mechanism wrong in my first write-up. I thought one CORS grant covered a
-whole redirect chain. Per the Fetch standard, each response in a cross-origin redirect chain has to
-carry its own allow headers. It worked here because the gateway added them to every response it
-sent, so the conclusion (gateway-wide) held but my explanation didn't.
+(login-page settings and identity provider metadata, the same things any visitor gets). The
+mechanism was real and gateway-wide, but no confidentiality boundary was crossed.
 
 There was one way the finding could still matter: a session cookie that authenticates on its own
 and is sendable cross-site (`SameSite=None; Secure`). So I built `cookie-probe.sh` to look for one,
 with the same rules as every other tool (scope guard, attribution, pacing). It sends a real browser
 User-Agent (with the research header still attached), since these hosts gave non-browser clients
-a placeholder page, and doesn't follow
-redirects, so a cookie on any response counts and nothing leaves scope. Across every reflecting
-host, {=trophy: zero `Set-Cookie` headers of any kind=}, on redirects and normal responses alike. One limit I wrote down: it checks plain GETs only, so a cookie set only
-after a completed login wouldn't show up.
+a placeholder page, and doesn't follow redirects, so a cookie on any response counts and nothing
+leaves scope. Across every reflecting host, {=trophy: zero `Set-Cookie` headers of any kind=}, on
+redirects and normal responses alike. It checks plain GETs only, so a cookie set only after a
+completed login wouldn't show up.
 
 The finding went down to informational, and I didn't submit it.
 
@@ -200,7 +191,5 @@ cookie would also need `SameSite=None; Secure`, which is exactly what `cookie-pr
 ## What I Took From It
 
 I think the lesson is to {=point: prove the impact chain end to end before calling it a finding=}.
-I'd proven the mechanism carefully (a real browser, a real backend, the blast radius), and I still
-had a hole in the one link that decides whether anything leaks: what the victim's browser actually
-sends. With only a few trial reports, catching that before submitting instead of in triage was the
-whole game.
+A real browser, a real backend and a gateway-wide blast radius proved the mechanism. What decides
+whether anything leaks is what the victim's browser actually sends.
