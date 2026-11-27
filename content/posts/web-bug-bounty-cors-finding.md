@@ -31,18 +31,18 @@ out, so I've noted what each one proved:
 - **Login attacks on a local-password app.** Every username, real-looking or not, got an identical
   `401 Invalid credentials`, so no user enumeration. A small, lockout-aware default-credentials
   check got 401 every time. There was no signup and no password reset to abuse.
-- **OIDC (OpenID Connect) redirect validation and PKCE.** `oidc-probe.sh` sends eight `redirect_uri` bypass tricks
-  (an extra path segment, path traversal, a scheme downgrade, the userinfo `@` trick, a
+- **OIDC (OpenID Connect) redirect validation and PKCE.** `oidc-probe.sh` sends eight
+  `redirect_uri` bypass tricks (an extra path segment, path traversal, a scheme downgrade, the userinfo `@` trick, a
   protocol-relative `//`, two substring-confusion tricks and a trailing slash) and compares each
   answer to two controls: the real redirect URI and one never registered anywhere. All eight were
   rejected. Leaving out the PKCE (Proof Key for Code Exchange) parameters got a spec-compliant
   `invalid_request` error back. Across two runs, every trick got a clean rejection.
-- **Token forgery.** A 15-row battery against one read-only API method that requires a token, one
-  request every 4 seconds, with no real user identities in any token: no header, a malformed token,
-  `alg: none`, RS256 (RSA-signed) with an empty or bad signature, a swapped `kid`, and HS256
-  (HMAC-signed) tokens using secrets derived from the identity provider's public key (algorithm
-  confusion). Every row that answered (14 of 15) got a 401. The error messages showed the
-  validator accepts {=ward: exactly one algorithm=}, so the RS256 and `none` tricks never got past the first check.
+- **Token forgery.** A 15-row battery against an API method that requires a token: no header, a
+  malformed token, `alg: none`, RS256 (RSA-signed) with an empty or bad signature, a swapped
+  `kid`, and HS256 (HMAC-signed) tokens using secrets derived from the identity provider's public
+  key (algorithm confusion). Every row that answered (14 of 15) got a 401. The error messages
+  showed the validator accepts {=ward: exactly one algorithm=}, so the RS256 and `none` tricks
+  never got past the first check.
 - **Known CVEs.** Targeted nuclei templates for the stack I'd actually fingerprinted, across all 18
   apps. Zero matches.
 
@@ -80,12 +80,10 @@ same 401 anyone gets. The only thing an attacker page could read was content tha
 mechanism was real and gateway-wide, but no confidentiality boundary was crossed.
 
 There was one way the finding could still matter: a session cookie that authenticates on its own
-and is sendable cross-site (`SameSite=None; Secure`). So I built `cookie-probe.sh` to look for one,
-with the same rules as every other tool (scope guard, attribution, pacing). It sends a real browser
-User-Agent (with the research header still attached), since these hosts gave non-browser clients
-a placeholder page, and doesn't follow redirects, so a cookie on any response counts and nothing
-leaves scope. Across every reflecting host, {=trophy: zero `Set-Cookie` headers of any kind=}, on
-redirects and normal responses alike. It checks plain GETs only, so a cookie set only after a
+and is sendable cross-site (`SameSite=None; Secure`). So I built `cookie-probe.sh` to look for one.
+It sends a real browser User-Agent, since these hosts gave non-browser clients a placeholder page,
+and doesn't follow redirects, so a cookie on any response counts. Across every reflecting host,
+{=trophy: zero `Set-Cookie` headers of any kind=}, on redirects and normal responses alike. It checks plain GETs only, so a cookie set only after a
 completed login wouldn't show up.
 
 The finding went down to informational, and I didn't submit it.

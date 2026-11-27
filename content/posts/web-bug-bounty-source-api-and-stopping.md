@@ -40,19 +40,16 @@ every name by hand into three tiers:
 - **Tier 1, safe:** read-only metadata and listing calls, the same kind of thing the login page
   already calls.
 - **Tier 2, borderline:** each with the specific reason it was ambiguous.
-- **Tier 3, never send:** anything that changes state, touches credentials, sessions or tokens,
+- **Tier 3, not sent:** anything that changes state, touches credentials, sessions or tokens,
   has side effects outside the app, works with files, or exports data in bulk.
 
-An "empty" call isn't harmless by default. Protobuf can't tell an absent field from a zero one, so
-an empty gRPC-Web request is a call with every field set to its zero value, not a no-op. For
-Tier 3, being wrong was much worse than anything a finding could be worth, so {=point: nothing in
-Tier 3 that could change state ever got sent=}, then or later.
+Protobuf can't tell an absent field from a zero one, so an "empty" gRPC-Web request is a real
+call with every field set to zero, not a no-op. That's why Tier 3 stayed out.
 
-Then I resolved every Tier 1 and Tier 2 name to its real service before sending anything, by
-tracing each `{methodName, service}` object back to the service's full name in the JavaScript. A
-name alone can mislead: a generic-sounding status or progress call can turn out to belong to a
-far more sensitive service. Resolving moved 8 Tier 1 methods and 10 Tier 2 methods into stricter
-tiers before a single request went out.
+Then I resolved every Tier 1 and Tier 2 name to its real service by tracing each
+`{methodName, service}` object back to the service's full name in the JavaScript, since
+{=point: a method name alone can mislead=}: a generic-sounding status call can belong to a far
+more sensitive service. That moved 18 methods into stricter tiers.
 
 ## What Came Back
 
@@ -78,10 +75,10 @@ I built two tools for it, and source-first recon is now step one in my playbook:
 - **`source-discover.sh`** sweeps GitHub, GitLab, Bitbucket, PyPI, npm, crates.io, Maven, RubyGems,
   NuGet, Docker Hub, Quay, SwaggerHub, the Wayback Machine and the iOS App Store for a target's
   code, and writes a manifest for me to prune (namesakes are everywhere). It's passive and only
-  talks to the code hosts' own APIs, so it sends no research header, and it never sends my identity.
+  talks to the code hosts' own APIs.
 - **`source-pull.sh`** clones the repos with full history and fetches the packages from the pruned
   manifest, then runs trufflehog and gitleaks over the history and pulls out API specs and auth
-  details. It {=ward: never builds or runs anything it downloads=}, and a test checks that.
+  details. It {=ward: never builds or runs anything it downloads=}.
 
 For this target, one code host was the whole public surface. Everything in the package registries
 was a mirror of it or something unrelated, and the secret scans were clean. The SDKs turned into a
@@ -97,19 +94,9 @@ same banner the screenshot clustering had shown on a small group of hosts earlie
 The request was identical to what had come back clean on 94 other hosts, but the content said
 these weren't systems I should be poking at without asking.
 
-So I stopped sending to them, and made the stop permanent in code:
-
-- **Hold files.** The scope guard got its fifth rule: any host listed in a `hold-*.txt` next to the
-  scope config is dropped, for every tool, without anyone having to remember an `--exclude` flag. It
-  fails closed on an unreadable file or a bad entry.
-- **Content stop rules.** The HTTP probe got a `--stop-on REGEX` option that halts the whole run the
-  moment a response body matches. I checked it against a local server: it stopped on the matching
-  response, and the next request was never sent.
-
-Then I asked the program. HackerOne treats contacting a program off-platform without permission as
-a violation, and a question filed as a report would have spent one of my trial reports, so I sent
-one ticket to HackerOne Support asking two things: whether the program could provide a test account,
-and whether those hosts were intended targets.
+So I stopped sending to them, added them to the scope guard's hold list, and asked the program
+through HackerOne Support two things: whether they could provide a test account, and whether
+those hosts were intended targets.
 
 The answer came back two days later. The hosts weren't intended targets, and excluding them was
 the right call. And they couldn't provide test accounts.
@@ -120,5 +107,4 @@ Without an account there was no way into the authenticated side, which is where 
 application logic lives. The no-credential surface was done and clean, so I parked the program as
 a monitoring target and moved my time back to fuzzing.
 
-What carries forward is the toolkit: the scope guard with its hold files and stop rules, the
-attribution and pacing rules every tool follows, the probes, and source-first recon.
+What carries forward is the toolkit: the scope guard, the probes, and source-first recon.

@@ -28,17 +28,14 @@ anything else that would identify it. Every example is either generic or rebuilt
 
 ## What I built
 
-- **{=ward: A scope guard every active tool goes through=},** built from the program's official scope
-  files. It fails closed, and it enforces hold lists for hosts I'd decided to ask about first.
-- **Attribution and pacing on every request:** the program's research header on everything active,
-  refusal to run live without it, preview by default, and rate limits on every tool.
+- **{=ward: A scope guard every active tool goes through=},** built from the program's official
+  scope files, with the program's research header and rate limits built into every tool.
 - **Probes for the no-credential checklist:** CORS (with a real-browser proof-of-concept runner),
   OIDC redirect and PKCE checks, gRPC-Web method probing, cookie inspection, open redirects and
   subdomain takeover.
 - **Source-first recon tools** that sweep the common code hosts and package registries for a
   target's public code, then clone and secret-scan it without ever building or running any of it.
-- **Hermetic tests for all of it,** so a tool's safety rules (scope, attribution, pacing) are
-  checked before it ever touches the network.
+- **Hermetic tests for every tool.**
 
 ## Results
 
