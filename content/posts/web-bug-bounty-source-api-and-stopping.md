@@ -101,6 +101,21 @@ those hosts were intended targets.
 The answer came back two days later. The hosts weren't intended targets, and excluding them was
 the right call. And they couldn't provide test accounts.
 
+The other kind of stopping is knowing when I've tested enough, not just what's off-limits. The auth
+on this API is {=iron: one shared control=}: the same check in front of every method on every host,
+not something configured per host. When I widened the gRPC-Web probing to more hosts, and when I
+tried the `Host`-routing trick from the first post across every gateway, the behavior was identical
+every time. So I validated it with a representative sample instead of hammering all of them. Firing
+the full battery at all hundred-plus gateway hosts would have been thousands of requests to
+re-confirm a control that showed zero variance, and that's exactly the kind of volume a defense
+program doesn't want anyway.
+
+Near the end I also went back over my own notes and asked whether I'd been *too* careful, skipping
+things that were actually in bounds. I had. I'd held off on default-credential checks, injection
+canaries on the login parameters, and a batch of API methods I'd filed as "borderline" that were
+really just reads. So I went back and ran the safe ones. All clean, but {=ward: the point was to
+check, not to assume=} my own caution had drawn the line in the right place.
+
 ## Where It Ended
 
 Without an account there was no way into the authenticated side, which is where most of the real

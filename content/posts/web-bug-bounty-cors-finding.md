@@ -31,6 +31,18 @@ out, so I've noted what each one proved:
 - **Login attacks on a local-password app.** Every username, real-looking or not, got an identical
   `401 Invalid credentials`, so no user enumeration. A small, lockout-aware default-credentials
   check got 401 every time. There was no signup and no password reset to abuse.
+- **Default credentials on the admin SSO (single sign-on).** A separate small, lockout-aware
+  default-cred check (admin:admin and a few obvious pairs) against the identity provider's admin
+  login. All rejected, but one username came back with a server error (HTTP 500) where an unknown
+  username got the clean `invalid credentials`, which is {=glitch: technically a username-enumeration
+  oracle=}: the error difference lets me tell a real account from a fake one. I didn't chase it. A
+  username-enumeration oracle on its own isn't worth much, and without some other weakness to chain
+  it into, pushing on it further (enumerating real accounts, poking to turn it into more) would be
+  a waste of time and outside the rules of engagement anyway. So I wrote it down and moved on. (And
+  no, you can't turn that into guessing the password by timing the responses: a login
+  runs the guess through a slow hashing function and compares in constant time, so the response time
+  doesn't depend on how close the guess is. There's nothing to measure, before network jitter even
+  enters.)
 - **OIDC (OpenID Connect) redirect validation and PKCE.** `oidc-probe.sh` sends eight
   `redirect_uri` bypass tricks (an extra path segment, path traversal, a scheme downgrade, the userinfo `@` trick, a
   protocol-relative `//`, two substring-confusion tricks and a trailing slash) and compares each
@@ -43,6 +55,15 @@ out, so I've noted what each one proved:
   key (algorithm confusion). Every row that answered (14 of 15) got a 401. The error messages
   showed the validator accepts {=ward: exactly one algorithm=}, so the RS256 and `none` tricks
   never got past the first check.
+- **Trusted-header spoofing.** Forging a token was a wall, so the other direction is to skip the
+  token entirely and see if anything behind the gateway trusts an identity header it should have
+  stripped. gRPC-Web passes request headers through as gRPC metadata, so I sent a batch of spoofed
+  identity headers (`x-forwarded-user`, `x-remote-user`, and friends) carrying a {=crimson: made-up
+  canary identity and no token=}, plus a couple of alternate token locations (a cookie, a different
+  metadata key). Every one got a clean rejection. One method answered with different wording than
+  the rest (`no credentials present` from the service itself, instead of the gateway's `missing auth
+  header`), which told me it reaches the backend's own check rather than stopping at the edge, but it
+  still wanted a real credential.
 - **Known CVEs.** Targeted nuclei templates for the stack I'd actually fingerprinted, across all 18
   apps. Zero matches.
 
